@@ -7,8 +7,7 @@ const Maintron = (props) => {
     <div className="mainText">
       <h1>Support your community today.</h1>
       <p>
-        ENTER SOME WORDS OF ENCOURAGEMENT HERE AND
-        NOTE SURE WHERE THE BUTTON SHOULD LEAD TO.
+       Kindly is a last minute resource aiming to reducing food waste and feeding our hungry communites
       </p>
       <p>
         <Button onClick={() => props.scrollTo()}bsStyle="primary">Help Your Community</Button>

@@ -17,6 +17,7 @@ class NavigationBar extends React.Component {
         <Navbar.Header>
           <Navbar.Brand>
             <a href="#home">Kindly</a>
+
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
