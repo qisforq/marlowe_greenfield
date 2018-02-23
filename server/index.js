@@ -29,12 +29,9 @@ app.use(
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
 app.get("/fetch", function(req, res) {
-  console.log("retrieving from database...");
   db.query("SELECT * FROM post WHERE isClaimed=false;", (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
     else {
-      console.log("succesfully retireved from database");
-      console.log(results);
       res.send(results);
     }
   });
@@ -43,9 +40,7 @@ app.get("/fetch", function(req, res) {
 //This route receives a request upon submit from the form. The form holds all fields necesaary
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", function(req, res) {
-  console.log("HELLO", req.body);
   var listing = req.body;
-  console.log("saving to database...");
   db.query(
     `INSERT INTO post (title, description, address, city, state, zipCode, phone, isClaimed, createdAt, photoUrl) VALUES ("${
       listing.title
@@ -55,8 +50,6 @@ app.post("/savepost", function(req, res) {
       listing.isClaimed
     }, "${moment().unix()}", "${listing.photoUrl}");`,
     (err, data) => {
-      if (err) console.log("Error saving to database", err);
-      console.log("succesfully saved to database");
       res.end();
     }
   );
@@ -72,13 +65,10 @@ app.post("/latlong", function(req, res) {
 
 //This route handles updating a post that has been claimed by the user
 app.post("/updateentry", function(req, res) {
-  console.log("updating entry...");
   var postID = req.body.postID;
   db.query(
     `UPDATE post SET isClaimed=true WHERE id="${postID}"`,
     (err, data) => {
-      if (err) console.log("Unable to claim item :(", err);
-      console.log("Claimned post with id: " + postID + "!");
       res.end();
     }
   );
@@ -111,12 +101,9 @@ app.post("/login", function(req, res) {
     if (error) {
       throw error;
     } else if (results.length === 0) {
-      console.log("Failed to login");
     } else {
       req.session.regenerate(err => {
         req.session.username = req.body.username;
-        console.log("session", req.session);
-        console.log("session username", req.session.username);
       });
       res.end();
     }
@@ -140,7 +127,6 @@ app.post("/chat", function(req, res) {
     })
     .then(message => {
       var client2 = new twilio(accountSid, authToken);
-      console.log(message.sid);
       client2.messages
         .create({
           body: `Your posting ${req.body.title} has been claimed ! You'll be contacted soon !`,
@@ -148,7 +134,6 @@ app.post("/chat", function(req, res) {
           from: "+14255054003 " // From a valid Twilio number
         })
         .then(message => {
-          console.log(message.sid);
           res.end();
         });
       // res.end()
@@ -157,5 +142,4 @@ app.post("/chat", function(req, res) {
 
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
-  console.log("listening on port 3000!");
 });
