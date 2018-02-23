@@ -103,10 +103,10 @@ class Form extends React.Component {
   }
    render() {
     return (
-      <div className="form">
+      <div className="form formDonate">
           <form>
           <div className="formFields">
-          <ControlLabel>Working example with validation</ControlLabel>
+          <ControlLabel>Post your donations</ControlLabel>
           <FormControl
             type="text"
             value={this.state.title}
