@@ -29,7 +29,7 @@
 .listItem:hover {
   box-shadow: -7px 4px 5px #504f4f;
   font-weight: bold;
-} 
+}
 
 
 .listDescription {
@@ -65,4 +65,13 @@
 }
 .navbar {
   margin-bottom:0;
+
+}
+.navbar-brand
+{
+  font-family: 'Lato', sans-serif;
+  color:grey;
+  font-weight: bold;
+  font-size: 35px;
+  margin: 0px;
 }
