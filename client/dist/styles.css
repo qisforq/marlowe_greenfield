@@ -1,7 +1,8 @@
-.listheader {
+#listheader {
   text-align: center;
   color: #e8532e;
   font-family: monospace;
+  font-size: 4.5rem;
 }
 
 .listheader h2 {
@@ -17,7 +18,7 @@
   box-shadow: -7px 4px 5px #d0caca;
   box-sizing: inherit;
   margin: 10px;
-  font-size: 2rem;
+  font-size: 2.5rem;
   line-height: 2.4rem;
   font-family: monospace
 }
@@ -35,8 +36,8 @@
 .listDescription {
   color: #282828;
   fill: #282828;
-  font-size: 1.2rem;
-  line-height: 2.4rem;
+  font-size: 1.8rem;
+  line-height: 2.0rem;
   padding: 10px 0px 0px 20px;
 }
 
