@@ -9,14 +9,13 @@ class Trigger extends React.Component {
         aria-labelledby="contained-modal-title-lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-lg">Your Donation Has Been Listed!</Modal.Title>
+          <Modal.Title id="contained-modal-title-lg">Thank You for Listing! Your Donation Has Been Listed!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Thank You for Listing</h4>
-         
+        
           <p>
-            You can expect to hear back from an eager receiver in a matter of days! It's thanks to 
-            volunteers like you that .......
+            You can expect to hear back from a eager recipient in a matter of days! It is thanks to 
+            volunteers like you that keep our vision at Kindly alive.
           </p>
     
           
