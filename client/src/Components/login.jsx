@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from '../index.jsx'
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import axios from 'axios'
+import Signup from './signup.jsx'
 
 
 export default class Login extends Component {
@@ -16,6 +17,7 @@ export default class Login extends Component {
     this.validateForm =this.validateForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.changeToSignup = this.changeToSignup.bind(this)
   }
 
   validateForm() {
@@ -40,7 +42,10 @@ export default class Login extends Component {
     }).catch((error) => {
       throw error;
     })
+  }
 
+  changeToSignup() {
+    ReactDOM.render(<Signup />, document.getElementById("app"));
   }
 
   render() {
@@ -48,7 +53,7 @@ export default class Login extends Component {
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
-           
+
           <h1>Kindly</h1>
             <ControlLabel>Email</ControlLabel>
             <FormControl
@@ -75,6 +80,15 @@ export default class Login extends Component {
             onClick={this.handleSubmit}
           >
             Login
+          </Button>
+          <Button
+            block
+            bsStyle="warning"
+            bsSize="large"
+            type="submit"
+            onClick={this.changeToSignup}
+          >
+            New User? Sign Up!
           </Button>
         </form>
       </div>

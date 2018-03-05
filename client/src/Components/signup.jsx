@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import ReactDOM from 'react-dom';
+import Login from './login.jsx';
+import axios from 'axios';
 
 export default class Signup extends Component {
   constructor(props) {
@@ -10,6 +13,10 @@ export default class Signup extends Component {
       password: "",
        zipcode: ""
     };
+
+    this.changeToLogin = this.changeToLogin.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
   }
 
   validateForm() {
@@ -35,9 +42,13 @@ export default class Signup extends Component {
     })
   }
 
+  changeToLogin() {
+    ReactDOM.render(<Login />, document.getElementById("app"));
+  }
+
   render() {
     return (
-      <div className="Signup">
+      <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="username" bsSize="large">
             <ControlLabel>Username</ControlLabel>
@@ -71,6 +82,13 @@ export default class Signup extends Component {
             type="submit"
             onClick={this.handleSignup}
           >Sign up !
+          </Button>
+          <Button
+            block
+            bsSize="large"
+            type="submit"
+            onClick={this.changeToLogin}
+          >Already Signed Up? Login!
           </Button>
         </form>
       </div>

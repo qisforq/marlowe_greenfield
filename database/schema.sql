@@ -1,4 +1,4 @@
---These schemas can be used for your local mySql server
+DROP DATABASE marlowe;
 
 CREATE DATABASE IF NOT EXISTS marlowe;
 
@@ -13,9 +13,9 @@ CREATE TABLE provider (
 
 CREATE TABLE claimer (
   id INTEGER AUTO_INCREMENT NOT NULL,
-  claimerUsername VARCHAR(16),
+  claimerUsername VARCHAR(16) NOT NULL,
   claimerZipCode INTEGER NOT NULL,
-  cPassword VARCHAR(16),
+  cPassword VARCHAR(16) NOT NULL,
   PRIMARY KEY (id)
 );
 
