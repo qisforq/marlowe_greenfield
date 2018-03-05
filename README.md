@@ -1,6 +1,7 @@
 # Project Name
 
-> Pithy project description
+> Kind.ly is for anyone with a warm heart and an excess of food or free time. Kind.ly connecting those with an excess of food after an event and those who are kindly donating their time to ensure their hungry communities stay feed. Finding yourself with the excess food after a conference, wedding, or
+  any event ? Simply login on to kind.ly, post your offerings including a photo and a location and in minutes you're kind donation will be offered up to thousands of users in your community who are willing to faciliate the pick up and drop off at the nearest food bank or homeless shelter. Once you're offering is claimed, you and the provider will be notified via SMS. That's it ! Still want to do more good, with Kind.ly you can login at anytime a view all the other offers in your community. Kindly claim one and you're off ! 
 
 ## Team
 
@@ -8,46 +9,25 @@
   - __Scrum Master__: Aloralyn Ayran
   - __Development Team Members__: Adam Mateo, Aloralyn Ayran, Mike Vasios, Yu Qing Dong
 
-## Table of Contents
-
-1. [Usage](#Usage)
-1. [Requirements](#requirements)
-1. [Development](#development)
-    1. [Installing Dependencies](#installing-dependencies)
-    1. [Tasks](#tasks)
-1. [Team](#team)
-1. [Contributing](#contributing)
 
 ## Usage
 
-> Some usage instructions
+> Use the app
 
-## Requirements
-
-- Node 0.10.x
-- Redis 2.6.x
-- Postgresql 9.1.x
-- etc
-- etc
 
 ## Development
 
-### Installing Dependencies
+1. Clone down this project to your local machine
+2. npm install 
+3. for dev environment initiliaze a local mysql server with a database and schema that can be found
+   in the database folder
+4. To build
+           npm run react-dev
+           npm run server-dev
+5. Build cool things =) 
 
-From within the root directory:
-
-```sh
-sudo npm install -g bower
-npm install
-bower install
-```
-
-### Roadmap
-
-View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
 
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
