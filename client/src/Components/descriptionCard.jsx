@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import {Popover} from 'react-bootstrap';
 
+//This modal pops up when the user clicks a specifie list item
 const DescriptionCard = (props) => {
 	
 	return (

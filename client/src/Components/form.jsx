@@ -102,6 +102,15 @@ class Form extends React.Component {
     });
   }
    render() {
+
+    //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using 
+    // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
+    
+
+    //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to 
+    // the mySql database - this is a restriction set in the schema.
+
+
     return (
       <div className="form formDonate">
           <form>

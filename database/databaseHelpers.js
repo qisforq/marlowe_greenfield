@@ -1,5 +1,4 @@
 var mysql = require('mysql');
-// var pg = require('pg');
 var config = require('../config.js')
 
 var connection = mysql.createConnection({
@@ -18,6 +17,7 @@ connection.connect((err) => {
   }
 });
 
+//IF you need to drop tables on the hosted database, uncomment the below:
 // connection.query(`DROP TABLE IF EXISTS post`, (err, res) => {
 // if (err) console.log(err)
 // })
@@ -57,9 +57,6 @@ connection.query(`CREATE TABLE IF NOT EXISTS post (
 )`, (err, res) => {
 if (err) console.log(err)
 })
-// pg.connect('postgres://pcldshbywowwil:35acd4faed2c5d61503d386e52f1ab7851c718863c07c2bcfa5ea84582adf149@ec2-23-21-198-69.compute-1.amazonaws.com:5432/d2rrbkej3e8sur', () => {
-// })
-
 
 
 module.exports = connection;

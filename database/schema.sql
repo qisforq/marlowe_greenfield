@@ -1,3 +1,5 @@
+--These schemas can be used for your local mySql server
+
 CREATE DATABASE IF NOT EXISTS marlowe;
 
 USE marlowe;

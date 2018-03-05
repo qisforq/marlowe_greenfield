@@ -12,23 +12,24 @@ import Signup from "./components/signup.jsx"
 import MapComponent from "./components/googleMaps.jsx"
 import Trigger from "./components/responsiveButton.jsx"
 import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      lgShow: false,
+      lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: [],
       featuredItem: {
         title: null,
         description: null,
         id: null
       },
-      show: false,
+      show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
       latitude: 40.750576,
       longitude: -73.976437
     };
     this.retrievePosts = this.retrievePosts.bind(this);
-    // this.savePosts = this.savePosts.bind(this);
     this.changeFeatured = this.changeFeatured.bind(this);
     this.handleClaim = this.handleClaim.bind(this);
     this.resetFormView = this.handleClaim.bind(this);
@@ -41,15 +42,18 @@ class App extends React.Component {
     this.retrievePosts();
   }
 
+  //This function toggles the description card to appear,
+  //retrieves lat/long data from server/geo-helper function
+  //sets the lat/long state, which is passed to the googleMaps component that renders the map
   changeFeatured(listItem) {
     if (this.state.show === false){
-      this.setState({ featuredItem: listItem,
-                    show: true
+      this.setState({ 
+        featuredItem: listItem,
+        show: true
      });
       let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
       axios.post('/latlong', {address: address})
         .then(result => {
-          console.log(result.data.lat, result.data.long);
           this.setState({
             latitude: Number(result.data.lat),
             longitude: Number(result.data.long)
@@ -71,6 +75,7 @@ class App extends React.Component {
 
   }
 
+  //This function retrieves all post data from the mySql database
   retrievePosts() {
     axios
       .get("/fetch")
@@ -84,8 +89,8 @@ class App extends React.Component {
       });
   }
 
+  //This function updates the selected post that is claimed (in database)
   handleClaim(claimedPostID) {
-    console.log("claimedPost clicked", claimedPostID);
     axios
       .post("/updateentry", {
         postID: claimedPostID
@@ -102,27 +107,28 @@ class App extends React.Component {
       });
   }
 
-
+  //This func is being passed to the Form Compnent and closes the Trigger Component/Modal
   lgClose() {
     this.setState({
       lgShow: false
     });
     this.retrievePosts();
   }
-
+  
+  //This func is being passed to the Form Compnent and Trigger Component/Modal and opens it
   lgShow(){
     this.setState({
       lgShow: true
     });
   }
 
+  //This func scrolls from the Jumbotron to the Posts components
   ScrollTo(){
     scroll.scrollTo(550);
   }
  
 
   render() {
-    console.log('this is the state of show', this.state.show);
     return (
       <div>
       <NavigationBar onClick={this.ScrollTo}/>
