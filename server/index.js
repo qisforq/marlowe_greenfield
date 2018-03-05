@@ -10,6 +10,8 @@ var geo = require("./geoHelper.js")
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
+
+//Currently the user can create an account, but there isn't any encryption going on - fix it :)
 app.use(
   session({
     secret: "this-is-a-secret-token",
@@ -20,6 +22,7 @@ app.use(
 );
 
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
+//Recommend inplementing a wild-card route app.get('/*')...
 
 /************************************************************/
 //                   General Routes
@@ -56,6 +59,12 @@ app.post("/savepost", function(req, res) {
 });
 
 app.post("/latlong", function(req, res) {
+
+  //This function is using geohelper function which utilizes Google's geocoder API 
+  //Note: if an invalid address is passed to this method, it will cause the server to crash 
+  // due to the map not being able to find a real address. Recommend: Implement google maps auto
+  // complete on the form to always guarantee a correct address
+
   geo(req.body.address, function(lat, long) {
     let result = {lat: lat, long: long};
     res.send(result);
@@ -77,6 +86,10 @@ app.post("/updateentry", function(req, res) {
 /************************************************************/
 //                   authentication
 /************************************************************/
+
+//As mentioned above, user passwords are not encrypted - just plain text passwords
+//Also note, a 'claimer' is the same as a 'user' - all accounts are can Create and Claim posts - we intentionally
+//wanted to create separate "Claimer" and "Provider" accounts; that's now up to you to decide :)
 app.post("/signup", function(req, res) {
   var sqlQuery = `INSERT INTO claimer (claimerUsername, claimerZipCode, cPassword) VALUES (?, ?, ?)`;
   var placeholderValues = [
@@ -114,9 +127,12 @@ app.post("/login", function(req, res) {
 //                   twilio
 /************************************************************/
 
+//Twillio provides a fun/helpful feature to send users a text message on their phone if their post was claimed by another user.
+//Twilio account is under a free-trial subscription - you will need to sign up if you want to keep this feature AND change the credentials, please.
+
 app.post("/chat", function(req, res) {
-  var accountSid = "AC295216dc5e0bd27a16271da275b0c36f"; // Your Account SID from www.twilio.com/console
-  var authToken = "14a805bc4b3f3c784aaa5e4e16acc449"; // Your Auth Token from www.twilio.com/console
+  var accountSid = "AC295216dc5e0bd27a16271da275b0c36f"; // You can creae/retrieve your Account SID from www.twilio.com/console
+  var authToken = "14a805bc4b3f3c784aaa5e4e16acc449"; // You can creae/retrieve your Auth Token from www.twilio.com/console
   var client = new twilio(accountSid, authToken);
 
   client.messages

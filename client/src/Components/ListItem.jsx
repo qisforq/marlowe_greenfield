@@ -7,7 +7,7 @@ const ListItem = (props) => {
 
   return (
     <OverlayTrigger trigger="click" placement="right" overlay={<DescriptionCard/>}>
-  	<div className="listItem" onClick={function() {console.log("clicked!!!!!");
+  	<div className="listItem" onClick={function() {
       props.handleClick(props.post);
     }}>
     <div>

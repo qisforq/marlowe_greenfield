@@ -1,5 +1,7 @@
 import React from 'react';
 import {Modal, Button} from 'react-bootstrap';
+
+//This 'thank you' modal pops up when a users creates a post - feel free to write something more inspirational ;)
 class Trigger extends React.Component {
   render() {
     return (
