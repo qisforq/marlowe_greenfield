@@ -32,11 +32,11 @@ app.use(
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
 app.get("/fetch", function(req, res) {
-  let { username, lng, lat } = req.query
-  if (username) {
+  let { email, lng, lat } = req.query
+  if (!email) {
     var query = "SELECT * FROM post WHERE isClaimed=false;"
   } else {
-    var query = `SELECT * FROM post WHERE username=(SELECT id FROM claimers WHERE username"=${username}");`
+    var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${email}");`
   }
 
   db.query(query, (err, results) => {
@@ -66,13 +66,9 @@ app.get("/fetch", function(req, res) {
 app.post("/savepost", function(req, res) {
   var listing = req.body;
   db.query(
-    `INSERT INTO post (title, description, address, city, state, zipCode, phone, isClaimed, createdAt, photoUrl) VALUES ("${
-      listing.title
-    }", "${listing.description}", "${listing.address}","${listing.city}", "${
-      listing.state
-    }", "${listing.zipCode}", "${listing.phone}", ${
-      listing.isClaimed
-    }, "${moment().unix()}", "${listing.photoUrl}");`,
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
+    "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
       res.end();
     }
