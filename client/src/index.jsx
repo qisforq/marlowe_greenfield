@@ -23,13 +23,14 @@ class App extends React.Component {
       posts: example,
       tab: false,
       featuredItem: {
+        id: null,
         title: null,
         description: null,
-        id: null
+        address: '',
+        lng: '',
+        lat: '',
       },
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
-      latitude: 40.750576,
-      longitude: -73.976437
     };
     this.retrievePosts = this.retrievePosts.bind(this);
     this.retrieveClaimsByDist = this.retrieveClaimsByDist.bind(this);
@@ -43,33 +44,26 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.retrievePosts();
+    // this.retrievePosts();
   }
 
   //This function toggles the description card to appear,
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
-  changeFeatured(listItem) {
+  changeFeatured(listItem) { 
+    let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
     if (this.state.show === false){
       this.setState({
         featuredItem: listItem,
         show: true
-     });
-      let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
-      axios.post('/latlong', {address: address})
-        .then(result => {
-          this.setState({
-            latitude: Number(result.data.lat),
-            longitude: Number(result.data.long)
-          })
-        })
+      });
     }
     else if(this.state.show === true){
       if (this.state.featuredItem.id === listItem.id){
         this.setState({
           show: false
         })
-      }else{
+      } else {
         this.setState({
           featuredItem: listItem,
           show: true
@@ -96,7 +90,7 @@ class App extends React.Component {
       });
   }
 
-  retrieveClaimsByDist(lgn, lat) {
+  retrieveClaimsByDist(lng, lat) {
     return axios
       .get("/fetch", {params: {lng, lat}})
       .then(results => {
@@ -195,11 +189,9 @@ class App extends React.Component {
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-02gMrf0E5Df_WC4Pv6Uf9Oc0cEdiMBg&v=3.exp&libraries=geometry,drawing,places"
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div style={{ height: `400px` }} />}
-          mapElement={<div style={{ height: `100%` }}
-        />
-      }
-          latitude={this.state.latitude}
-          longitude={this.state.longitude}
+          mapElement={<div style={ { height: `100%` } } />}
+          latitude={this.state.featuredItem.lat}
+          longitude={this.state.featuredItem.lng}
         />
         </div>
 
