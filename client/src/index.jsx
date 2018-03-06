@@ -85,6 +85,19 @@ class App extends React.Component {
       });
   }
 
+  retrieveMyPosts() {
+    return axios
+      .get("/fetchMyPosts")
+      .then(results => {
+        this.setState({
+          posts: results.data,
+        })
+      })
+      .catch(function(error) {
+        console.log("There was an error retrieving user's posts.", error);
+      });
+  }
+
   retrieveClaimsByDist(lng, lat) {
     return axios
       .get("/fetch", {params: {lng, lat}})
