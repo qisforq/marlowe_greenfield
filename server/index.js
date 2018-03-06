@@ -66,7 +66,7 @@ app.get("/fetch", function(req, res) {
 app.post("/savepost", function(req, res) {
   var listing = req.body;
   db.query(
-    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
     "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
@@ -129,7 +129,7 @@ app.post("/signup", function(req, res) {
 });
 
 app.post("/login", function(req, res) {
-  var sqlQuery = `SELECT claimerUsername FROM claimer WHERE claimerUsername="${req.body.username}" AND cPassword ="${req.body.password}"`;
+  var sqlQuery = `SELECT email FROM claimer WHERE email="${req.body.username}" AND cPassword ="${req.body.password}"`;
   db.query(sqlQuery, function(error, results) {
     if (error) {
       throw error;

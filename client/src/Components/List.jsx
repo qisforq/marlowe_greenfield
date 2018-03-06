@@ -5,7 +5,7 @@ import {Tabs, Tab} from 'react-bootstrap'
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       tab: false
      }
   }
@@ -24,22 +24,26 @@ class List extends React.Component {
     this.setState({tab: key})
   }
 
-  render() { 
+  render() {
 
     const { posts, handleClick } = this.props
 
-    return ( 
+    return (
       <Tabs
         activeKey={this.state.key}
         onSelect={(e)=>this.handleSelect(e)}
         id="controlled-tab-example"
       >
-        {['All Posts', 'My Posts', 'Nearby'].map(tab =>  
+        {['All Posts', 'My Posts', 'Nearby'].map(tab =>
         <Tab key={tab} name={tab} title={tab}>
           <div className="list">
             <ul>
               { posts.map((post, idx) =>
-                <ListItem key={idx} post={post} title={post.title} description={post.description} city={post.city} handleClick={handleClick} state={post.state}/>
+                <ListItem
+                  key={idx}
+                  post={post}
+                  handleClick={handleClick} 
+                />
               )}
             </ul>
           </div>
@@ -48,5 +52,5 @@ class List extends React.Component {
      )
   }
 }
- 
+
 export default List;
