@@ -178,7 +178,7 @@ class App extends React.Component {
             </ReactBootstrap.Col>
             <ReactBootstrap.Col className="pass" md={6}>
              {this.state.show === false
-              ?<div> <Form showModal={this.lgShow}/>
+              ? <div> <Form showModal={this.lgShow}/>
                  </div>
               :  <DescriptionCard
                     featuredItem = {this.state.featuredItem}
