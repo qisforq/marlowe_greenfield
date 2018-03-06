@@ -17,10 +17,11 @@ export default class Signup extends Component {
     this.changeToLogin = this.changeToLogin.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   validateForm() {
-    return this.state.username.length > 0 && this.state.password.length > 0;
+    return this.state.username.indexOf('@') !== -1 && this.state.username.indexOf('.') !== -1 && this.state.password.length > 0;
   }
 
   handleChange(event){
@@ -51,7 +52,7 @@ export default class Signup extends Component {
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="username" bsSize="large">
-            <ControlLabel>Username</ControlLabel>
+            <ControlLabel>E-mail</ControlLabel>
             <FormControl
               autoFocus
               type="Username"
