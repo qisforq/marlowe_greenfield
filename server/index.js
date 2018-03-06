@@ -6,7 +6,8 @@ var session = require("express-session");
 var twilio = require("twilio");
 var app = express();
 var moment = require("moment");
-var geo = require("./geoHelper.js")
+var geo = require("./geoHelper.js");
+var bcrypt = require("bcrypt");
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -20,6 +21,15 @@ app.use(
     saveUninitialized: true
   })
 );
+
+//This is the middleware used to authenticate the current session.
+const auth = function(req, res, next) {
+  if (req.session.email) {
+    next();
+  } else {
+    res.sendStatus(404);
+  }
+}
 
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
@@ -69,7 +79,7 @@ app.post("/savepost", function(req, res) {
   var listing = req.body;
   console.log(req.body)
   db.query(
-    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
     "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
@@ -111,13 +121,11 @@ app.post('/current/address', (req,res)=>{
  currentAddress = req.body.location[0].formatted_address;
  currentLat = req.body.location[0].geometry.location.lat;
  currentLng = req.body.location[0].geometry.location.lng;
- console.log(currentAddress)
- console.log(currentLng)
- console.log(currentLat)
- res.send({address: currentAddress,
-            longitude: currentLng,
-            latitude: currentLat
-            })
+ res.send({
+   address: currentAddress,
+   longitude: currentLng,
+   latitude: currentLat
+ })
 })
 
 /************************************************************/
@@ -129,31 +137,38 @@ app.post('/current/address', (req,res)=>{
 //wanted to create separate "Claimer" and "Provider" accounts; that's now up to you to decide :)
 app.post("/signup", function(req, res) {
   var sqlQuery = `INSERT INTO claimer (email, cPassword, address) VALUES (?,?,?)`;
-  console.log(req.body)
-  var placeholderValues = [req.body.username, req.body.password , req.body.address];
-  db.query(sqlQuery, placeholderValues, function(error) {
-    console.log(sqlQuery);
-    if (error) {
-      console.log(error)
-      throw error;
-    } else {
-      console.log('Sign Up Success!')
-      res.end();
-    }
-  });
+
+  const saltBae = 10;
+  bcrypt.hash(req.body.password, saltBae, (error, hash) => {
+    var placeholderValues = [req.body.username, hash, req.body.address];
+    db.query(sqlQuery, placeholderValues, function(error) {
+      if (error) {
+        throw error;
+      } else {
+        res.end();
+      }
+    });
+  })
 });
 
 app.post("/login", function(req, res) {
-  var sqlQuery = `SELECT email FROM claimer WHERE email="${req.body.username}" AND cPassword ="${req.body.password}"`;
+  var sqlQuery = `SELECT email, cPassword FROM claimer WHERE email="${req.body.username}"`;
   db.query(sqlQuery, function(error, results) {
     if (error) {
       throw error;
     } else if (results.length === 0) {
+      res.sendStatus(404);
     } else {
-      req.session.regenerate(err => {
-        req.session.username = req.body.username;
-      });
-      res.end();
+      bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
+        if (result) {
+          req.session.regenerate(() => {
+            req.session.email = req.body.username;
+            res.end();
+          });
+        } else if (error) {
+          res.send(error);
+        }
+      })
     }
   });
 });

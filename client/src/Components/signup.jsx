@@ -11,7 +11,6 @@ export default class Signup extends Component {
     this.state = {
       username: "",
       password: "",
-      address: ""
     };
 
     this.changeToLogin = this.changeToLogin.bind(this);
@@ -34,7 +33,7 @@ export default class Signup extends Component {
     e.preventDefault();
     axios.post('/signup', this.state)
     .then(() => {
-      this.setState({username: '', password: '',});
+      this.setState({username: '', password: '',}, this.changeToLogin());
     }).catch((error) => {
       throw error;
     })
@@ -63,13 +62,6 @@ export default class Signup extends Component {
               value={this.state.password}
               onChange={this.handleChange}
               type="password"
-            />
-            </FormGroup>
-          <FormGroup controlId="address" bsSize="large">
-            <ControlLabel>Address</ControlLabel>
-            <FormControl
-              value={this.state.address}
-              onChange={this.handleChange}
             />
             </FormGroup>
           <Button
