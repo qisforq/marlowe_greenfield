@@ -119,6 +119,7 @@ app.post("/login", function(req, res) {
 });
 
 app.post('/logout', function(req, res) {
+  console.log(req.session);
   req.session.destroy();
   res.end();
 })
