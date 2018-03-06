@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
-
+import GoogleSearchBox from "./components/autocomplete.jsx";
 import NavigationBar from "./components/navbar.jsx";
 import Maintron from "./components/jumbotron.jsx";
 import List from "./components/list.jsx";
@@ -155,7 +155,8 @@ class App extends React.Component {
             </ReactBootstrap.Col>
             <ReactBootstrap.Col className="pass" md={6}>
              {this.state.show === false
-              ? <Form showModal={this.lgShow}/>
+              ?<div> <Form showModal={this.lgShow}/>
+                 </div>
               :  <DescriptionCard
                     featuredItem = {this.state.featuredItem}
                     claimHandler={this.handleClaim}
@@ -168,7 +169,7 @@ class App extends React.Component {
 
         <MapComponent
           isMarkerShown
-          googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+          googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-02gMrf0E5Df_WC4Pv6Uf9Oc0cEdiMBg&v=3.exp&libraries=geometry,drawing,places"
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div style={{ height: `400px` }} />}
           mapElement={<div style={{ height: `100%` }}

@@ -83,6 +83,14 @@ app.post("/updateentry", function(req, res) {
   );
 });
 
+app.post('/current/address', (req,res)=>{
+  currentAddress = req.body.location[0].formatted_address;
+ currentLat = req.body.location[0].geometry.location.lat;
+ currentLng = req.body.location[0].geometry.location.lng;
+ console.log(currentLng)
+ console.log(currentLat)
+})
+
 /************************************************************/
 //                   authentication
 /************************************************************/

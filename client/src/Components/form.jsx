@@ -2,6 +2,12 @@ import React from 'react';
 import axios from 'axios';
 import {FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
+import LocationAutocomplete from 'location-autocomplete';
+import {compose, withProps, lifecycle} from "recompose";
+import {withScriptjs} from "react-google-maps";
+import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
+import GoogleSearchBox from "./autocomplete.jsx"
+
 class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -28,8 +34,11 @@ class Form extends React.Component {
     this.handleState = this.handleState.bind(this);
     this.handleZipcode = this.handleZipcode.bind(this);
     this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
+
     //title, description, address, city, state, zip_code, is_claimed
+
   }
+
   savePost(e) {
     e.preventDefault()
     axios.post('/savepost', this.state)
@@ -103,6 +112,7 @@ class Form extends React.Component {
   }
    render() {
 
+
     //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using 
     // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
     
@@ -116,36 +126,14 @@ class Form extends React.Component {
           <form>
           <div className="formFields">
           <ControlLabel>Post your donations</ControlLabel>
+          
           <FormControl
             type="text"
             value={this.state.title}
             placeholder="Title"
             onChange={(e) => {this.handleTitle(e)}}
           />
-          <FormControl
-            type="text"
-            value={this.state.address}
-            placeholder="Street Address"
-            onChange={(e) => {this.handleAddress(e)}}
-          />
-          <FormControl
-            type="text"
-            value={this.state.city}
-            placeholder="City"
-            onChange={(e) => {this.handleCity(e)}}
-          />
-          <FormControl
-            type="text"
-            value={this.state.state}
-            placeholder="State"
-            onChange={(e) => {this.handleState(e)}}
-          />
-          <FormControl
-            type="text"
-            value={this.state.zipCode}
-            placeholder="ZipCode"
-            onChange={(e) => {this.handleZipcode(e)}}
-          />
+          <GoogleSearchBox />
         <FormControl
           type="text"
           value={this.state.phone}
