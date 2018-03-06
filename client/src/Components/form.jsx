@@ -1,14 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import {FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
 import LocationAutocomplete from 'location-autocomplete';
-import {compose, withProps, lifecycle} from "recompose";
-import {withScriptjs} from "react-google-maps";
-import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
-import GoogleSearchBox from "./autocomplete.jsx"
 
-class Form extends React.Component {
+
+class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,26 +14,14 @@ class Form extends React.Component {
       title: '',
       description: '',
       address: '',
-      city: '',
-      state: '',
-      zipCode: '',
       isClaimed: false,
       photoUrl: ''
     }
+
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePhone = this.handlePhone.bind(this);
-    this.handleTitle = this.handleTitle.bind(this);
-    this.handleDescription = this.handleDescription.bind(this);
-    this.handleAddress = this.handleAddress.bind(this);
-    this.handleCity = this.handleCity.bind(this);
-    this.handleState = this.handleState.bind(this);
-    this.handleZipcode = this.handleZipcode.bind(this);
-    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
-
+    this.handleChange = this.handleChange.bind(this);
     //title, description, address, city, state, zip_code, is_claimed
-
   }
 
   savePost(e) {
@@ -51,6 +36,7 @@ class Form extends React.Component {
         console.log('There was an error saving this post.', error);
       })
   }
+
   clearFields() {
     this.setState({
       username: '',
@@ -65,98 +51,80 @@ class Form extends React.Component {
       photoUrl: ''
     });
   }
-  handleUsername(e) {
+
+  handleChange(e) {
     this.setState({
-      username: e.target.value
+      [e.target.id]: e.target.value,
     });
   }
-  handlePhone(e) {
+
+  onDropdownSelect(e) {
+    const lat = e.autocomplete.getPlace().geometry.location.lat();
+    const lng = e.autocomplete.getPlace().geometry.location.lng();
+    const adr = e.autocomplete.getPlace().formatted_address;
+
     this.setState({
-      phone: e.target.value
+      address: adr,
     });
   }
-  handleTitle(e) {
-    this.setState({
-      title: e.target.value
-    });
-  }
-  handleDescription(e) {
-    this.setState({
-      description: e.target.value
-    });
-  }
-  handleAddress(e) {
-    this.setState({
-      address: e.target.value
-    });
-  }
-  handleCity(e) {
-    this.setState({
-      city: e.target.value
-    });
-  }
-  handleState(e) {
-    this.setState({
-      state: e.target.value
-    });
-  }
-  handleZipcode(e) {
-    this.setState({
-      zipCode: e.target.value
-    });
-  }
-  handlePhotoUrl(e) {
-    this.setState({
-      photoUrl: e.target.value
-    });
-  }
+
    render() {
 
-
-    //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using 
+    //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using
     // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
-    
 
-    //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to 
+
+    //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to
     // the mySql database - this is a restriction set in the schema.
 
 
     return (
       <div className="form formDonate">
-          <form>
+        <form>
           <div className="formFields">
           <ControlLabel>Post your donations</ControlLabel>
-          
           <FormControl
+            id="title"
             type="text"
             value={this.state.title}
             placeholder="Title"
-            onChange={(e) => {this.handleTitle(e)}}
+            onChange={this.handleChange}
           />
-          <GoogleSearchBox />
-        <FormControl
-          type="text"
-          value={this.state.phone}
-          placeholder="Phone Number"
-          onChange={(e) => {this.handlePhone(e)}}
+          {/* <LocationAutocomplete
+            // className="form-control"
+            id="address"
+            placeholder="Enter Address"
+            locationType="geocode"
+            googleAPIKey="AIzaSyCoq4_-BeKtYRIs-3FjJL721G1eP5DaU0g"
+            onChange={this.handleChange}
+            onDropdownSelect={this.onDropdownSelect}
+          /> */}
+          <FormControl
+            id="phone"
+            type="text"
+            value={this.state.phone}
+            placeholder="Phone Number"
+            onChange={this.handleChange}
           />
-          <FormControl style={{height: '125px'}}
+          <FormControl
+            style={{height: '125px'}}
+            id="description"
             type="text"
             value={this.state.description}
             placeholder="Description"
-            onChange={(e) => {this.handleDescription(e)}}
+            onChange={this.handleChange}
           />
           <FormControl
+            id="photoUrl"
             type="text"
             value={this.state.photoUrl}
             placeholder="Link an image"
-            onChange={(e) => {this.handlePhotoUrl(e)}}
+            onChange={this.handleChange}
           />
-          </div>
-          <div className="formButton"><Button onClick={this.savePost}>Submit</Button></div>
+        </div>
+        <div className="formButton"><Button onClick={this.savePost}>Submit</Button></div>
       </form>
-      </div>
-    );
+    </div>);
   }
 }
 
