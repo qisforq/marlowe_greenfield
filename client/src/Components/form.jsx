@@ -22,9 +22,20 @@ class Form extends React.Component {
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
     this.handleChange = this.handleChange.bind(this);
-
-    //title, description, address, city, state, zip_code, is_claimed
-
+<<<<<<< HEAD
+    this.handleUsername = this.handleUsername.bind(this);
+    this.handlePhone = this.handlePhone.bind(this);
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleDescription = this.handleDescription.bind(this);
+    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
+=======
+    // this.handleUsername = this.handleUsername.bind(this);
+    // this.handlePhone = this.handlePhone.bind(this);
+    // this.handleTitle = this.handleTitle.bind(this);
+    // this.handleDescription = this.handleDescription.bind(this);
+    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
+    this.autocompleteHandler= this.autocompleteHandler.bind(this)
+>>>>>>> day2-0
   }
 
   savePost(e) {
@@ -32,6 +43,7 @@ class Form extends React.Component {
     axios.post('/savepost', this.state)
       .then( (response) =>{
         console.log('Post has been saved.', response);
+        console.log(this.state)
         this.clearFields();
         this.props.showModal();
       })
@@ -51,9 +63,19 @@ class Form extends React.Component {
     });
   }
 
+  autocompleteHandler(locationObj) {
+    this.setState({address:locationObj}, ()=>{console.log(this.state)})
+  }
+
   handleChange(e) {
     this.setState({
       [e.target.id]: e.target.value,
+    });
+  }
+
+    handlePhotoUrl(e) {
+    this.setState({
+      photoUrl: e.target.value
     });
   }
 
@@ -77,7 +99,7 @@ class Form extends React.Component {
             placeholder="Title"
             onChange={this.handleChange}
           />
-          <GoogleSearchBox />
+          <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
         <FormControl
           id="phone"
           type="text"
