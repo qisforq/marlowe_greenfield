@@ -21,10 +21,18 @@ class Form extends React.Component {
     }
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
+<<<<<<< HEAD
     this.handleChange = this.handleChange.bind(this);
 
     //title, description, address, city, state, zip_code, is_claimed
 
+=======
+    this.handleUsername = this.handleUsername.bind(this);
+    this.handlePhone = this.handlePhone.bind(this);
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleDescription = this.handleDescription.bind(this);
+    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
+>>>>>>> need to rebase
   }
 
   savePost(e) {
