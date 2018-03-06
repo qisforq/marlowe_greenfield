@@ -18,7 +18,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: null,
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: example,
       tab: false,
@@ -43,6 +42,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({})
     this.retrievePosts();
   }
 
@@ -76,19 +76,17 @@ class App extends React.Component {
         })
       }
     }
-
   }
 
   //This function retrieves all post data from the mySql database
   // If username is provided will return all posts (claimed or not)
   // if username is not provided will only return unclaimed posts
-  retrievePosts(email) {
+  retrievePosts() {
     return axios
-      .get("/fetch" , {params: {email: email}})
+      .get("/fetch")
       .then(results => {
         this.setState({
           posts: results.data,
-          tab: email ? 'my' : 'all'
         })
       })
       .catch(function(error) {
@@ -96,7 +94,20 @@ class App extends React.Component {
       });
   }
 
-  retrieveClaimsByDist(lgn, lat) {
+  retrieveMyPosts() {
+    return axios
+      .get("/fetchMyPosts")
+      .then(results => {
+        this.setState({
+          posts: results.data,
+        })
+      })
+      .catch(function(error) {
+        console.log("There was an error retrieving user's posts.", error);
+      });
+  }
+
+  retrieveClaimsByDist(lng, lat) {
     return axios
       .get("/fetch", {params: {lng, lat}})
       .then(results => {
@@ -169,7 +180,7 @@ class App extends React.Component {
             <ReactBootstrap.Col md={6}>
             <h2 id='listheader'> Recent Postings </h2>
               <List
-                getMyPosts={()=>this.retrievePosts(this.state.email)}
+                getMyPosts={this.retrieveUserPosts}
                 getUnclaimed={this.retrievePosts}
                 getNearbyUnclaimed={this.retrieveClaimsByDist}
                 posts={this.state.posts}

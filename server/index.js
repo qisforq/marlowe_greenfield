@@ -34,12 +34,8 @@ app.use(
 
 
 app.get("/fetch", function(req, res) {
-  let { email, lng, lat } = req.query
-  if (!email) {
+  let { lng, lat } = req.query
     var query = "SELECT * FROM post WHERE isClaimed=false;"
-  } else {
-    var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${email}");`
-  }
 
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
@@ -58,6 +54,19 @@ app.get("/fetch", function(req, res) {
         results.filter(post => findDistance({lat, lng}, {lat: post.lat, lng: post.lng}, 10))
       }
 
+      res.send(results);
+    }
+  });
+});
+
+// Gets email address from user's session
+app.get("/fetchMyPosts", function(req, res) {
+  
+  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${req.session.email}");`
+
+  db.query(query, (err, results) => {
+    if (err) console.log("FAILED to retrieve from database");
+    else {
       res.send(results);
     }
   });
