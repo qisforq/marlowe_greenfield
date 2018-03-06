@@ -18,6 +18,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: null,
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: [],
       featuredItem: {
@@ -77,9 +78,22 @@ class App extends React.Component {
   }
 
   //This function retrieves all post data from the mySql database
-  retrievePosts() {
+  retrievePosts(username) {
     axios
-      .get("/fetch")
+      .get("/fetch" , {params: {username: username}})
+      .then(results => {
+        this.setState({
+          posts: results.data
+        })
+      })
+      .catch(function(error) {
+        console.log("There was an error retrieving posts.", error);
+      });
+  }
+
+  retrieveClaims() {
+    axios
+      .get("/fetch" {params: {username: this.state.username}})
       .then(results => {
         this.setState({
           posts: results.data
