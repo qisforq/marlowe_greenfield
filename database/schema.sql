@@ -17,7 +17,7 @@ CREATE TABLE claimer (
   address VARCHAR(100),
   lng VARCHAR(50),
   lat VARCHAR(50),
-  cPassword VARCHAR(16) NOT NULL,
+  cPassword VARCHAR(200) NOT NULL,
   verified BOOLEAN,
   PRIMARY KEY (id)
 );
