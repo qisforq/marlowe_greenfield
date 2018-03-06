@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
 import {FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
-import LocationAutocomplete from 'location-autocomplete';
+import {compose, withProps, lifecycle} from "recompose";
+import {withScriptjs} from "react-google-maps";
+import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
+import GoogleSearchBox from "./autocomplete.jsx"
 
-
-class Form extends Component {
+class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,11 +19,12 @@ class Form extends Component {
       isClaimed: false,
       photoUrl: ''
     }
-
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
     this.handleChange = this.handleChange.bind(this);
+
     //title, description, address, city, state, zip_code, is_claimed
+
   }
 
   savePost(e) {
@@ -36,7 +39,6 @@ class Form extends Component {
         console.log('There was an error saving this post.', error);
       })
   }
-
   clearFields() {
     this.setState({
       username: '',
@@ -44,9 +46,6 @@ class Form extends Component {
       title: '',
       description: '',
       address: '',
-      city: '',
-      state: '',
-      zipCode: '',
       isClaimed: false,
       photoUrl: ''
     });
@@ -58,31 +57,19 @@ class Form extends Component {
     });
   }
 
-  onDropdownSelect(e) {
-    const lat = e.autocomplete.getPlace().geometry.location.lat();
-    const lng = e.autocomplete.getPlace().geometry.location.lng();
-    const adr = e.autocomplete.getPlace().formatted_address;
-
-    this.setState({
-      address: adr,
-    });
-  }
-
-   render() {
-
+  render() {
     //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using
     // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
 
 
     //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to
     // the mySql database - this is a restriction set in the schema.
-
-
     return (
       <div className="form formDonate">
-        <form>
+          <form>
           <div className="formFields">
           <ControlLabel>Post your donations</ControlLabel>
+
           <FormControl
             id="title"
             type="text"
@@ -90,21 +77,13 @@ class Form extends Component {
             placeholder="Title"
             onChange={this.handleChange}
           />
-          {/* <LocationAutocomplete
-            // className="form-control"
-            id="address"
-            placeholder="Enter Address"
-            locationType="geocode"
-            googleAPIKey="AIzaSyCoq4_-BeKtYRIs-3FjJL721G1eP5DaU0g"
-            onChange={this.handleChange}
-            onDropdownSelect={this.onDropdownSelect}
-          /> */}
-          <FormControl
-            id="phone"
-            type="text"
-            value={this.state.phone}
-            placeholder="Phone Number"
-            onChange={this.handleChange}
+          <GoogleSearchBox />
+        <FormControl
+          id="phone"
+          type="text"
+          value={this.state.phone}
+          placeholder="Phone Number"
+          onChange={this.handleChange}
           />
           <FormControl
             style={{height: '125px'}}
@@ -121,10 +100,11 @@ class Form extends Component {
             placeholder="Link an image"
             onChange={this.handleChange}
           />
-        </div>
-        <div className="formButton"><Button onClick={this.savePost}>Submit</Button></div>
+          </div>
+          <div className="formButton"><Button onClick={this.savePost}>Submit</Button></div>
       </form>
-    </div>);
+      </div>
+    );
   }
 }
 
