@@ -1,6 +1,6 @@
-DROP DATABASE marlowe;
+DROP DATABASE IF EXISTS marlowe;
 
-CREATE DATABASE IF NOT EXISTS marlowe;
+CREATE DATABASE marlowe;
 
 USE marlowe;
 
@@ -14,9 +14,9 @@ CREATE TABLE provider (
 CREATE TABLE claimer (
   id INTEGER AUTO_INCREMENT NOT NULL,
   email VARCHAR(50) NOT NULL,
-  address INTEGER NOT NULL,
-  lng VARCHAR(50) NOT NULL,
-  lat VARCHAR(50) NOT NULL,
+  address VARCHAR(100),
+  lng VARCHAR(50),
+  lat VARCHAR(50),
   cPassword VARCHAR(16) NOT NULL,
   verified BOOLEAN,
   PRIMARY KEY (id)
@@ -27,7 +27,7 @@ CREATE TABLE post (
   title VARCHAR(100),
   poster_id INTEGER,
   description VARCHAR(255),
-  address VARCHAR(50),
+  address VARCHAR(200),
   lng VARCHAR(50),
   lat VARCHAR(50),
   phone VARCHAR(12),

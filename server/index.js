@@ -31,6 +31,8 @@ app.use(
 //This route fetches all posting from the database and sends them to the client
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
+
+
 app.get("/fetch", function(req, res) {
   let { username, lng, lat } = req.query
   if (username) {
@@ -65,15 +67,19 @@ app.get("/fetch", function(req, res) {
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", function(req, res) {
   var listing = req.body;
+  console.log(req.body)
   db.query(
-    `INSERT INTO post (title, description, address, city, state, zipCode, phone, isClaimed, createdAt, photoUrl) VALUES ("${
+    `INSERT INTO post (title, description, address, lat, lng, phone, isClaimed, createdAt, photoUrl) VALUES ("${
       listing.title
-    }", "${listing.description}", "${listing.address}","${listing.city}", "${
-      listing.state
-    }", "${listing.zipCode}", "${listing.phone}", ${
+    }", "${listing.description}", "${listing.address}","${listing.address.latitude}", "${
+      listing.address.longitude
+    }", "${listing.phone}", ${
       listing.isClaimed
     }, "${moment().unix()}", "${listing.photoUrl}");`,
     (err, data) => {
+      if(err){
+        console.log(err)
+      }
       res.end();
     }
   );
@@ -104,13 +110,18 @@ app.post("/updateentry", function(req, res) {
   );
 });
 
+
 app.post('/current/address', (req,res)=>{
-  currentAddress = req.body.location[0].formatted_address;
+ currentAddress = req.body.location[0].formatted_address;
  currentLat = req.body.location[0].geometry.location.lat;
  currentLng = req.body.location[0].geometry.location.lng;
  console.log(currentAddress)
  console.log(currentLng)
  console.log(currentLat)
+ res.send({address: currentAddress,
+            longitude: currentLng,
+            latitude: currentLat
+            })
 })
 
 /************************************************************/
@@ -121,20 +132,23 @@ app.post('/current/address', (req,res)=>{
 //Also note, a 'claimer' is the same as a 'user' - all accounts are can Create and Claim posts - we intentionally
 //wanted to create separate "Claimer" and "Provider" accounts; that's now up to you to decide :)
 app.post("/signup", function(req, res) {
-  var sqlQuery = `INSERT INTO claimer (claimerUsername, claimerZipCode, cPassword) VALUES (?, ?, ?)`;
-  var placeholderValues = [ req.body.username, req.body.zipcode, req.body.password ];
+  var sqlQuery = `INSERT INTO claimer (email, cPassword, address) VALUES (?,?,?)`;
+  console.log(req.body)
+  var placeholderValues = [req.body.username, req.body.password , req.body.address];
   db.query(sqlQuery, placeholderValues, function(error) {
     console.log(sqlQuery);
     if (error) {
+      console.log(error)
       throw error;
     } else {
+      console.log('Sign Up Success!')
       res.end();
     }
   });
 });
 
 app.post("/login", function(req, res) {
-  var sqlQuery = `SELECT claimerUsername FROM claimer WHERE claimerUsername="${req.body.username}" AND cPassword ="${req.body.password}"`;
+  var sqlQuery = `SELECT email FROM claimer WHERE email="${req.body.username}" AND cPassword ="${req.body.password}"`;
   db.query(sqlQuery, function(error, results) {
     if (error) {
       throw error;

@@ -24,6 +24,10 @@ lifecycle({
       onPlacesChanged: () => {
         const places = refs.searchBox.getPlaces();
         axios.post('/current/address', {location: places})
+        .then((res)=>{
+          console.log(res.data)
+          this.props.autocompleteHandler(res.data)
+        })
         .catch((error) => {
           throw error
         })
