@@ -11,7 +11,6 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       phone: '',
       title: '',
       description: '',
@@ -45,7 +44,6 @@ class Form extends React.Component {
   }
   clearFields() {
     this.setState({
-      username: '',
       phone: '',
       title: '',
       description: '',

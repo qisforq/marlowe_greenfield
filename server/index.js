@@ -44,12 +44,8 @@ const auth = function(req, res, next) {
 
 
 app.get("/fetch", function(req, res) {
-  let { email, lng, lat } = req.query
-  if (!email) {
+  let { lng, lat } = req.query
     var query = "SELECT * FROM post WHERE isClaimed=false;"
-  } else {
-    var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${email}");`
-  }
 
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
@@ -73,14 +69,32 @@ app.get("/fetch", function(req, res) {
   });
 });
 
+// Gets email address from user's session
+app.get("/fetchMyPosts", function(req, res) {
+  
+  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${req.session.email}");`
+
+  db.query(query, (err, results) => {
+    if (err) console.log("FAILED to retrieve from database");
+    else {
+      res.send(results);
+    }
+  });
+});
+
 //This route receives a request upon submit from the form. The form holds all fields necesaary
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", function(req, res) {
   var listing = req.body;
   console.log(req.body)
   db.query(
+<<<<<<< HEAD
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
+=======
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
+>>>>>>> Commit before rebase
     "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
       if(err){
@@ -109,7 +123,7 @@ app.post("/latlong", function(req, res) {
 app.post("/updateentry", function(req, res) {
   var postID = req.body.postID;
   db.query(
-    `UPDATE post SET isClaimed=true WHERE id="${postID}"`,
+    `UPDATE post SET claimer_id=(SELECT id FROM claimers WHERE email="${req.session.email}") isClaimed=true WHERE id="${postID}"`,
     (err, data) => {
       res.end();
     }
