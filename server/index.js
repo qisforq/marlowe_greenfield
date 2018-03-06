@@ -32,9 +32,30 @@ app.use(
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
 app.get("/fetch", function(req, res) {
-  db.query("SELECT * FROM post WHERE isClaimed=false;", (err, results) => {
+  let { username, lng, lat } = req.query
+  if (username) {
+    var query = "SELECT * FROM post WHERE isClaimed=false;"
+  } else {
+    var query = `SELECT * FROM post WHERE username=(SELECT id FROM claimers WHERE username"=${username}");`
+  }
+
+  db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
     else {
+
+      var findDistance = function(centerPoint, checkPoint, miles) {
+        let ky = 40000 / 360;
+        let kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+        let dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
+        let dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
+        let dist = (Math.sqrt(dx * dx + dy * dy)/2) + ((Math.sqrt(dx * dx + dy * dy)/2)/4)
+        return dist <= miles;
+      }
+
+      if (lng && lat) {
+        results.filter(post => findDistance({lat, lng}, {lat: post.lat, lng: post.lng}, 10))
+      }
+
       res.send(results);
     }
   });
