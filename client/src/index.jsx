@@ -72,8 +72,6 @@ class App extends React.Component {
   }
 
   //This function retrieves all post data from the mySql database
-  // If username is provided will return all posts (claimed or not)
-  // if username is not provided will only return unclaimed posts
   retrievePosts() {
     return axios
       .get("/fetch")
@@ -93,7 +91,6 @@ class App extends React.Component {
       .then(results => {
         this.setState({
           posts: results.data,
-          tab: 'near'
         })
       })
       .catch(function(error) {
@@ -113,7 +110,7 @@ class App extends React.Component {
           show:!this.state.show
         })
 
-        axios.post('/chat', {
+        axios.post('/chat', { //Should be replaced with the send an email functionality
           title: this.state.featuredItem.title
         }).then(messageSent => console.log('text messages sent!'))
       });

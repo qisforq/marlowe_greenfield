@@ -88,8 +88,13 @@ app.post("/savepost", function(req, res) {
   var listing = req.body;
   console.log(req.body)
   db.query(
+<<<<<<< HEAD
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
+=======
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
+>>>>>>> Commit before rebase
     "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
       if(err){
@@ -118,7 +123,7 @@ app.post("/latlong", function(req, res) {
 app.post("/updateentry", function(req, res) {
   var postID = req.body.postID;
   db.query(
-    `UPDATE post SET isClaimed=true WHERE id="${postID}"`,
+    `UPDATE post SET claimer_id=(SELECT id FROM claimers WHERE email="${req.session.email}") isClaimed=true WHERE id="${postID}"`,
     (err, data) => {
       res.end();
     }
