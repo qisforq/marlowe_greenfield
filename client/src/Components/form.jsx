@@ -29,14 +29,7 @@ class Form extends React.Component {
     this.handlePhone = this.handlePhone.bind(this);
     this.handleTitle = this.handleTitle.bind(this);
     this.handleDescription = this.handleDescription.bind(this);
-    this.handleAddress = this.handleAddress.bind(this);
-    this.handleCity = this.handleCity.bind(this);
-    this.handleState = this.handleState.bind(this);
-    this.handleZipcode = this.handleZipcode.bind(this);
     this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
-
-    //title, description, address, city, state, zip_code, is_claimed
-
   }
 
   savePost(e) {
