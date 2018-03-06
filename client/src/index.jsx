@@ -12,7 +12,7 @@ import Signup from "./components/signup.jsx"
 import MapComponent from "./components/googleMaps.jsx"
 import Trigger from "./components/responsiveButton.jsx"
 import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
-
+import example from './example.js'
 
 class App extends React.Component {
   constructor(props) {
@@ -20,7 +20,8 @@ class App extends React.Component {
     this.state = {
       username: null,
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
-      posts: [],
+      posts: example,
+      tab: false,
       featuredItem: {
         title: null,
         description: null,
@@ -31,6 +32,7 @@ class App extends React.Component {
       longitude: -73.976437
     };
     this.retrievePosts = this.retrievePosts.bind(this);
+    this.retrieveClaimsByDist = this.retrieveClaimsByDist.bind(this);
     this.changeFeatured = this.changeFeatured.bind(this);
     this.handleClaim = this.handleClaim.bind(this);
     this.resetFormView = this.handleClaim.bind(this);
@@ -78,12 +80,15 @@ class App extends React.Component {
   }
 
   //This function retrieves all post data from the mySql database
+  // If username is provided will return all posts (claimed or not)
+  // if username is not provided will only return unclaimed posts
   retrievePosts(username) {
-    axios
+    return axios
       .get("/fetch" , {params: {username: username}})
       .then(results => {
         this.setState({
-          posts: results.data
+          posts: results.data,
+          tab: username ? 'my' : 'all'
         })
       })
       .catch(function(error) {
@@ -91,12 +96,13 @@ class App extends React.Component {
       });
   }
 
-  retrieveClaims() {
-    axios
-      .get("/fetch" {params: {username: this.state.username}})
+  retrieveClaimsByDist(lgn, lat) {
+    return axios
+      .get("/fetch", {params: {lng, lat}})
       .then(results => {
         this.setState({
-          posts: results.data
+          posts: results.data,
+          tab: 'near'
         })
       })
       .catch(function(error) {
@@ -163,6 +169,9 @@ class App extends React.Component {
             <ReactBootstrap.Col md={6}>
             <h2 id='listheader'> Recent Postings </h2>
               <List
+                getMyPosts={()=>this.retrievePosts(this.state.username)}
+                getUnclaimed={this.retrievePosts}
+                getNearbyUnclaimed={this.retrieveClaimsByDist}
                 posts={this.state.posts}
                 handleClick={this.changeFeatured}
               />
