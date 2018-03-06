@@ -36,6 +36,7 @@ class App extends React.Component {
     this.lgShow = this.lgShow.bind(this);
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
+    this.onLogout = this.onLogout.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +48,7 @@ class App extends React.Component {
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
   changeFeatured(listItem) {
     if (this.state.show === false){
-      this.setState({ 
+      this.setState({
         featuredItem: listItem,
         show: true
      });
@@ -114,7 +115,7 @@ class App extends React.Component {
     });
     this.retrievePosts();
   }
-  
+
   //This func is being passed to the Form Compnent and Trigger Component/Modal and opens it
   lgShow(){
     this.setState({
@@ -126,12 +127,22 @@ class App extends React.Component {
   ScrollTo(){
     scroll.scrollTo(550);
   }
- 
+
+  onLogout() {
+    axios.post('/logout')
+    .then(() => {
+      ReactDOM.render(<LoginPage />, document.getElementById("app"));
+    })
+    .catch((error) => {
+      throw error;
+    })
+  }
+
 
   render() {
     return (
       <div>
-      <NavigationBar onClick={this.ScrollTo}/>
+      <NavigationBar onClick={this.ScrollTo} onLogout={this.onLogout}/>
       <Maintron scrollTo={this.ScrollTo}/>
         <ReactBootstrap.Grid className="show-grid">
           <ReactBootstrap.Row>

@@ -21,12 +21,12 @@ class NavigationBar extends React.Component {
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
-          <NavItem eventKey={1} href="#" onClick={() => props.scrollTo()}>
+          <NavItem eventKey={1} href="#" onClick={() => this.props.scrollTo()}>
             Recent Posts
           </NavItem>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={1} href="#">
+          <NavItem eventKey={1} href="#" onClick={() => this.props.onLogout()}>
           Log Out
           </NavItem>
         </Nav>
