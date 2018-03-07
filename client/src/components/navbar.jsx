@@ -11,8 +11,10 @@ class NavigationBar extends React.Component {
     }
   }
 
+
+
   render () {
-    const { scrollTo, onLogout } = this.props;
+    const { scrollTo, onLogout, handleSettings } = this.props;
 
     return (
       <Navbar>
@@ -27,7 +29,7 @@ class NavigationBar extends React.Component {
           </NavItem>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={3} href="#" onClick={scrollTo}>
+          <NavItem eventKey={3} href="#" onClick={handleSettings}>
             Settings
           </NavItem>
           <NavItem eventKey={2} href="#" onClick={onLogout}>

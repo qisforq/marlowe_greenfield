@@ -6,6 +6,7 @@ import NavigationBar from "./components/navbar.jsx";
 import Maintron from "./components/jumbotron.jsx";
 import List from "./components/list.jsx";
 import Form from "./components/form.jsx";
+import Settings from "./components/Settings.jsx";
 import DescriptionCard from "./components/descriptionCard.jsx";
 import LoginPage from "./components/login.jsx"
 import Signup from "./components/signup.jsx"
@@ -13,6 +14,7 @@ import MapComponent from "./components/googleMaps.jsx"
 import Trigger from "./components/responsiveButton.jsx"
 import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 import example from './example.js'
+import {Grid, Row, Col} from 'react-bootstrap';
 
 class App extends React.Component {
   constructor(props) {
@@ -32,6 +34,7 @@ class App extends React.Component {
       },
       isLogin: false,
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
+      toggleSettings: false, //this toggles the settings page to show/hide
       latitude: 40.767499,
       longitude: -73.833079
     };
@@ -46,6 +49,7 @@ class App extends React.Component {
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.handleSettings = this.handleSettings.bind(this);
 
   }
 
@@ -212,51 +216,66 @@ class App extends React.Component {
     })
   }
 
+  handleSettings() {
+    this.setState({
+      toggleSettings: !this.state.toggleSettings
+    });
+  }
+
 
   render() {
     return (
       <div>
-      <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout}/>
-      <Maintron scrollTo={this.ScrollTo}/>
-        <ReactBootstrap.Grid className="show-grid">
-          <ReactBootstrap.Row>
-            <ReactBootstrap.Col md={6}>
-            <h2 id='listheader'> Recent Postings </h2>
-              <List
-                posts={this.state.posts}
-                handleClick={this.changeFeatured}
-                handleSelect={this.handleSelect}
-                currentTab={this.state.tab}
-              />
-            </ReactBootstrap.Col>
-            <ReactBootstrap.Col className="pass" md={6}>
-             {this.state.show === false
-              ? <div> <Form showModal={this.lgShow}/>
-                 </div>
-              :  <DescriptionCard
+        <NavigationBar
+          scrollTo={this.ScrollTo}
+          onLogout={this.onLogout}
+          handleSettings={this.handleSettings}
+        />
+        {this.state.toggleSettings ? (
+          <div>
+            <Settings toggleSettings={this.handleSettings}/>
+          </div>
+        ) : (
+          <div>
+            <Maintron scrollTo={this.ScrollTo}/>
+            <ReactBootstrap.Grid className="show-grid">
+              <ReactBootstrap.Row>
+                <ReactBootstrap.Col md={6}>
+                  <h2 id='listheader'> Recent Postings </h2>
+                  <List
+                    posts={this.state.posts}
+                    handleClick={this.changeFeatured}
+                    handleSelect={this.handleSelect}
+                    currentTab={this.state.tab}
+                  />
+                </ReactBootstrap.Col>
+                <ReactBootstrap.Col className="pass" md={6}>
+                  {this.state.show === false
+                    ? <div> <Form showModal={this.lgShow}/>
+                  </div>
+                  :  <DescriptionCard
                     featuredItem = {this.state.featuredItem}
                     claimHandler={this.handleClaim}
                     tab={this.state.tab}
                   /> }
-            </ReactBootstrap.Col>
-          </ReactBootstrap.Row>
-        </ReactBootstrap.Grid>
-        <Trigger show={this.state.lgShow} onHide={this.lgClose} />
-         <div className="map">
-
-        <MapComponent
-          isMarkerShown
-          googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-02gMrf0E5Df_WC4Pv6Uf9Oc0cEdiMBg&v=3.exp&libraries=geometry,drawing,places"
-          loadingElement={<div style={{ height: `100%` }} />}
-          containerElement={<div style={{ height: `400px` }} />}
-          mapElement={<div style={ { height: `100%` } } />}
-          latitude= {this.state.latitude}
-          longitude= {this.state.longitude}
-          markers = {this.state.posts}
-        />
-        </div>
-
-
+                </ReactBootstrap.Col>
+              </ReactBootstrap.Row>
+            </ReactBootstrap.Grid>
+            <Trigger show={this.state.lgShow} onHide={this.lgClose} />
+            <div className="map">
+              <MapComponent
+                isMarkerShown
+                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-02gMrf0E5Df_WC4Pv6Uf9Oc0cEdiMBg&v=3.exp&libraries=geometry,drawing,places"
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `400px` }} />}
+                mapElement={<div style={ { height: `100%` } } />}
+                latitude= {this.state.latitude}
+                longitude= {this.state.longitude}
+                markers = {this.state.posts}
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
