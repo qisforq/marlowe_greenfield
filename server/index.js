@@ -24,21 +24,12 @@ app.use(
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
-<<<<<<< HEAD
   console.log(req.url)
   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup') {
     res.send({notLoggedIn: true})
     return
   }
-=======
-  // if (req.session.email) {
-  //   next();
-  // } else {
-  //   res.sendStatus(404);
-  // }
-  res.isLoggedIn = !!req.session.email
->>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
-  next()
+  next();
 }
 
 app.use(auth)
@@ -103,18 +94,10 @@ app.get("/fetchMyPosts", function(req, res) {
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", function(req, res) {
   var listing = req.body;
-  console.log(req.body)
-<<<<<<< HEAD
   db.query(
-
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
     "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
-=======
-  db.query(`INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
-    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
-    "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
->>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
     (err, data) => {
       if(err){
         console.log(err)
@@ -216,6 +199,63 @@ app.post('/logout', function(req, res) {
   console.log(req.session);
   req.session.destroy();
   res.end();
+})
+
+/************************************************************/
+//                   User settings
+/************************************************************/
+
+// These routes are for updating user's Settings
+
+app.get("/settings", (req, res) => {
+  db.query(`SELECT * FROM claimer WHERE email="${req.session.email}";`,
+  (err, results) => {
+    if (err) {
+      console.log("Failed to retrieve user info");
+      res.status(404).send()
+    } else {
+      console.log('here are the results for getting settings:', results);
+      res.send(results);
+    }
+  });
+});
+
+app.put('/settings', (req, res) => {
+  let query = ``;
+  let {email, address} = req.body;
+  if (email && address) {
+    console.log('both address and email');
+
+    query = `
+      UPDATE claimer
+      SET email="${req.body.email}", address="${req.body.address}"
+      WHERE email="${req.session.email}";
+    `
+  } else if (email) {
+    console.log('just email, no address');
+    query = `
+      UPDATE claimer
+      SET email="${req.body.email}"
+      WHERE email="${req.session.email}";
+    `
+  } else if (address) {
+    console.log('just address, no email');
+    query = `
+      UPDATE claimer
+      SET address="${req.body.address}"
+      WHERE email="${req.session.email}";
+    `
+  } else {
+    res.status(400).send()
+  }
+
+  db.query(query, (err, result) => {
+    if (err) {
+      res.status(500).send('uh oh spaghettio in app.post:/settings');
+      throw err;
+    }
+    res.send(result)
+  })
 })
 
 /************************************************************/

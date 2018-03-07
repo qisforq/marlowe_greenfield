@@ -39,7 +39,7 @@ body {
 .listItem:hover {
   box-shadow: -7px 4px 5px #504f4f;
   font-weight: bold;
-} 
+}
 
 
 .listDescription {
@@ -103,4 +103,20 @@ body {
   top: 25%;
 }
 
+.settings {
+  border-style: none;
+  left: 0px;
+  right: 0px;
+  display: block;
+  padding: 10px 15px 10px 0px;
+}
 
+.settingsForm {
+  padding: 5px 10px 5px 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #e7e7e7;
+  background-color: #f8f8f8;
+}
+
+/*  */
