@@ -198,7 +198,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-      <NavigationBar onClick={this.ScrollTo} onLogout={this.onLogout}/>
+      <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout}/>
       <Maintron scrollTo={this.ScrollTo}/>
         <ReactBootstrap.Grid className="show-grid">
           <ReactBootstrap.Row>
