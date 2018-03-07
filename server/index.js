@@ -50,7 +50,7 @@ const auth = function(req, res, next) {
     res.send({notLoggedIn: true})
     return
   }
-  next()
+  next();
 }
 
 app.use(auth)
@@ -252,6 +252,63 @@ app.post('/logout', function(req, res) {
 })
 
 /************************************************************/
+//                   User settings
+/************************************************************/
+
+// These routes are for updating user's Settings
+
+app.get("/settings", (req, res) => {
+  db.query(`SELECT * FROM claimer WHERE email="${req.session.email}";`,
+  (err, results) => {
+    if (err) {
+      console.log("Failed to retrieve user info");
+      res.status(404).send()
+    } else {
+      console.log('here are the results for getting settings:', results);
+      res.send(results);
+    }
+  });
+});
+
+app.put('/settings', (req, res) => {
+  let query = ``;
+  let {email, address} = req.body;
+  if (email && address) {
+    console.log('both address and email');
+
+    query = `
+      UPDATE claimer
+      SET email="${req.body.email}", address="${req.body.address}"
+      WHERE email="${req.session.email}";
+    `
+  } else if (email) {
+    console.log('just email, no address');
+    query = `
+      UPDATE claimer
+      SET email="${req.body.email}"
+      WHERE email="${req.session.email}";
+    `
+  } else if (address) {
+    console.log('just address, no email');
+    query = `
+      UPDATE claimer
+      SET address="${req.body.address}"
+      WHERE email="${req.session.email}";
+    `
+  } else {
+    res.status(400).send()
+  }
+
+  db.query(query, (err, result) => {
+    if (err) {
+      res.status(500).send('uh oh spaghettio in app.post:/settings');
+      throw err;
+    }
+    res.send(result)
+  })
+})
+
+/************************************************************/
 //                   twilio
 /************************************************************/
 
@@ -305,9 +362,6 @@ app.post("/email", (req,res)=>{
   .catch((err) => {
     console.log(err)
   })
-
-
-
 })
 
 var _PORT = process.env.PORT || 3000;
