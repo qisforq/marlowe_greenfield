@@ -187,7 +187,7 @@ class App extends React.Component {
   onLogout() {
     axios.post('/logout')
     .then(() => {
-      ReactDOM.render(<LoginPagePage />, document.getElementById("app"));
+      ReactDOM.render(<LoginPage />, document.getElementById("app"));
     })
     .catch((error) => {
       throw error;
