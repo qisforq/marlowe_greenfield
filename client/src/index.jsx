@@ -45,7 +45,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // this.retrievePosts();
+    this.retrievePosts();
   }
 
   //This function toggles the description card to appear,
@@ -72,7 +72,6 @@ class App extends React.Component {
       console.log(this.state)
     }
     else if(this.state.show === true){
-      console.log('hadgfasdfasd')
       if (this.state.featuredItem.id === listItem.id){
         this.setState({
           show: false
@@ -91,10 +90,14 @@ class App extends React.Component {
     return axios
       .get("/fetch")
       .then(results => {
-        console.log('COOOCOOO',results.data)
-        this.setState({
-          posts: results.data,
-        })
+        if (results.data.notLoggedIn) {
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        } else {
+          this.setState({
+            posts: results.data,
+          })
+        }
       })
       .catch(function(error) {
         console.log("There was an error retrieving posts.", error);
@@ -105,6 +108,10 @@ class App extends React.Component {
     return axios
       .get("/fetchMyPosts")
       .then(results => {
+        if (results.data.notLoggedIn) {
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        }
         this.setState({
           posts: results.data,
         })
@@ -118,6 +125,10 @@ class App extends React.Component {
     return axios
       .get("/fetch", {params: {lng, lat}})
       .then(results => {
+        if (results.data.notLoggedIn) {
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        }
         this.setState({
           posts: results.data,
         })
@@ -134,6 +145,11 @@ class App extends React.Component {
         postID: claimedPostID
       })
       .then(done => {
+        if (done.data.notLoggedIn) {
+          console.log('tick')
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        }
         this.retrievePosts();
         this.setState({
           show:!this.state.show
@@ -168,7 +184,7 @@ class App extends React.Component {
   onLogout() {
     axios.post('/logout')
     .then(() => {
-      ReactDOM.render(<LoginPage />, document.getElementById("app"));
+      ReactDOM.render(<LoginPagePage />, document.getElementById("app"));
     })
     .catch((error) => {
       throw error;
@@ -225,4 +241,11 @@ class App extends React.Component {
 }
 
 export default App
-ReactDOM.render(<LoginPage />, document.getElementById("app"));
+axios.get('/checkLogin')
+      .then(status => {
+        if (!status.data.notLoggedIn) {
+          ReactDOM.render(<App />, document.getElementById("app"));
+        } else {
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+        }
+      })

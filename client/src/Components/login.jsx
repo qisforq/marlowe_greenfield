@@ -35,7 +35,7 @@ export default class Login extends Component {
     axios.post('/login', {
       username: this.state.email,
       password: this.state.password
-    }).then(() => {
+    }).then((results) => {
       console.log("Successfully logged in")
       this.setState({username: '', password: ''});
       ReactDOM.render(<App />, document.getElementById("app"));
