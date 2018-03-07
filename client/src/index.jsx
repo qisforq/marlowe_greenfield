@@ -29,6 +29,7 @@ class App extends React.Component {
         lng: '',
         lat: '',
       },
+      isLogin: false,
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
     };
     this.retrievePosts = this.retrievePosts.bind(this);
@@ -40,6 +41,7 @@ class App extends React.Component {
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
+
   }
 
   componentDidMount() {
@@ -49,7 +51,7 @@ class App extends React.Component {
   //This function toggles the description card to appear,
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
-  changeFeatured(listItem) { 
+  changeFeatured(listItem) {
     let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
     if (this.state.show === false){
       this.setState({
@@ -86,6 +88,7 @@ class App extends React.Component {
   }
 
   retrieveMyPosts() {
+    console.log('begin retrieveMyPosts!');
     return axios
       .get("/fetchMyPosts")
       .then(results => {
@@ -170,7 +173,7 @@ class App extends React.Component {
             <ReactBootstrap.Col md={6}>
             <h2 id='listheader'> Recent Postings </h2>
               <List
-                getMyPosts={this.retrieveUserPosts}
+                getMyPosts={this.retrieveMyPosts}
                 getUnclaimed={this.retrievePosts}
                 getNearbyUnclaimed={this.retrieveClaimsByDist}
                 posts={this.state.posts}
