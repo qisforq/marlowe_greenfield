@@ -50,19 +50,23 @@ class App extends React.Component {
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
   changeFeatured(listItem) {
+    console.log(this.state)
     if (this.state.show === false){
       this.setState({
         featuredItem: listItem,
-        show: true
+        show: true,
+        latitude: Number(listItem.lat),
+        longitude: Number(listItem.lng)
      });
-      let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
-      axios.post('/latlong', {address: address})
-        .then(result => {
-          this.setState({
-            latitude: Number(result.data.lat),
-            longitude: Number(result.data.long)
-          })
-        })
+      // let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
+      // axios.post('/latlong', {address: address})
+      //   .then(result => {
+      //     this.setState({
+      //       latitude: Number(result.data.lat),
+      //       longitude: Number(result.data.long)
+      //     })
+      //   })
+      console.log(this.state)
     }
     else if(this.state.show === true){
       if (this.state.featuredItem.id === listItem.id){
@@ -86,6 +90,7 @@ class App extends React.Component {
     return axios
       .get("/fetch" , {params: {email: email}})
       .then(results => {
+        console.log('COOOCOOO',results.data)
         this.setState({
           posts: results.data,
           tab: email ? 'my' : 'all'

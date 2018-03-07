@@ -22,20 +22,12 @@ class Form extends React.Component {
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
     this.handleChange = this.handleChange.bind(this);
-<<<<<<< HEAD
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePhone = this.handlePhone.bind(this);
-    this.handleTitle = this.handleTitle.bind(this);
-    this.handleDescription = this.handleDescription.bind(this);
-    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
-=======
     // this.handleUsername = this.handleUsername.bind(this);
     // this.handlePhone = this.handlePhone.bind(this);
     // this.handleTitle = this.handleTitle.bind(this);
     // this.handleDescription = this.handleDescription.bind(this);
     this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
     this.autocompleteHandler= this.autocompleteHandler.bind(this)
->>>>>>> day2-0
   }
 
   savePost(e) {

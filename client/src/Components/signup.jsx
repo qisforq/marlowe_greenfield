@@ -65,13 +65,6 @@ export default class Signup extends Component {
               type="password"
             />
             </FormGroup>
-          <FormGroup controlId="address" bsSize="large">
-            <ControlLabel>Address</ControlLabel>
-            <FormControl
-              value={this.state.address}
-              onChange={this.handleChange}
-            />
-            </FormGroup>
           <Button
             block
             bsSize="large"
