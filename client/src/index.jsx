@@ -25,11 +25,13 @@ class App extends React.Component {
         id: null,
         title: null,
         description: null,
-        address: '',
-        lng: '',
-        lat: '',
+        address: ''
+        // lng: -73.833079,
+        // lat: 40.767499,
       },
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
+      latitude: 40.767499,
+      longitude: -73.833079
     };
     this.retrievePosts = this.retrievePosts.bind(this);
     this.retrieveClaimsByDist = this.retrieveClaimsByDist.bind(this);
@@ -49,15 +51,28 @@ class App extends React.Component {
   //This function toggles the description card to appear,
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
-  changeFeatured(listItem) { 
-    let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
+  changeFeatured(listItem) {
+    console.log(listItem.lat)
+    // let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
     if (this.state.show === false){
       this.setState({
         featuredItem: listItem,
-        show: true
-      });
+        show: true,
+        latitude: Number(listItem.lat),
+        longitude : Number(listItem.lng)
+     });
+      // let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
+      // axios.post('/latlong', {address: address})
+      //   .then(result => {
+      //     this.setState({
+      //       latitude: Number(result.data.lat),
+      //       longitude: Number(result.data.long)
+      //     })
+      //   })
+      console.log(this.state)
     }
     else if(this.state.show === true){
+      console.log('hadgfasdfasd')
       if (this.state.featuredItem.id === listItem.id){
         this.setState({
           show: false
@@ -76,6 +91,7 @@ class App extends React.Component {
     return axios
       .get("/fetch")
       .then(results => {
+        console.log('COOOCOOO',results.data)
         this.setState({
           posts: results.data,
         })
@@ -197,8 +213,8 @@ class App extends React.Component {
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div style={{ height: `400px` }} />}
           mapElement={<div style={ { height: `100%` } } />}
-          latitude={this.state.featuredItem.lat}
-          longitude={this.state.featuredItem.lng}
+          latitude= {this.state.latitude}
+          longitude= {this.state.longitude}
         />
         </div>
 

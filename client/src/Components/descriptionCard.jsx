@@ -5,6 +5,7 @@ import {Popover} from 'react-bootstrap';
 //This modal pops up when the user clicks a specifie list item
 const DescriptionCard = ({featuredItem, claimHandler}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
+  console.log(featuredItem)
 	return (
     <Popover className="pop" id="popover-positioned-right" title="Recent Donation">
         <button onClick={()=> console.log(props)}></button>

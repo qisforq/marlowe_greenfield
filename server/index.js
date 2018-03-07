@@ -50,7 +50,7 @@ app.get("/fetch", function(req, res) {
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
     else {
-
+      console.log('KABOOM',results)
       var findDistance = function(centerPoint, checkPoint, miles) {
         let ky = 40000 / 360;
         let kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
@@ -88,14 +88,10 @@ app.post("/savepost", function(req, res) {
   var listing = req.body;
   console.log(req.body)
   db.query(
-<<<<<<< HEAD
-    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
-    VALUES ("${listing.title}", (SELECT id FROM claimers WHERE email="${listing.email}"), "${listing.description}", "${listing.address}",
-=======
+
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
-    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
->>>>>>> Commit before rebase
-    "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
+    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
+    "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
       if(err){
         console.log(err)
@@ -105,19 +101,19 @@ app.post("/savepost", function(req, res) {
   );
 });
 
-app.post("/latlong", function(req, res) {
+// app.post("/latlong", function(req, res) {
 
-  //This function is using geohelper function which utilizes Google's geocoder API
-  //Note: if an invalid address is passed to this method, it will cause the server to crash
-  // due to the map not being able to find a real address. Recommend: Implement google maps auto
-  // complete on the form to always guarantee a correct address
+//   //This function is using geohelper function which utilizes Google's geocoder API
+//   //Note: if an invalid address is passed to this method, it will cause the server to crash
+//   // due to the map not being able to find a real address. Recommend: Implement google maps auto
+//   // complete on the form to always guarantee a correct address
 
-  geo(req.body.address, function(lat, long) {
-    let result = {lat: lat, long: long};
-    res.send(result);
-    res.end();
-  });
-});
+//   geo(req.body.address, function(lat, long) {
+//     let result = {lat: lat, long: long};
+//     res.send(result);
+//     res.end();
+//   });
+// });
 
 //This route handles updating a post that has been claimed by the user
 app.post("/updateentry", function(req, res) {
@@ -150,11 +146,12 @@ app.post('/current/address', (req,res)=>{
 //Also note, a 'claimer' is the same as a 'user' - all accounts are can Create and Claim posts - we intentionally
 //wanted to create separate "Claimer" and "Provider" accounts; that's now up to you to decide :)
 app.post("/signup", function(req, res) {
-  var sqlQuery = `INSERT INTO claimer (email, cPassword, address) VALUES (?,?,?)`;
+
+  var sqlQuery = `INSERT INTO claimer (email, cPassword) VALUES (?,?)`;
 
   const saltBae = 10;
   bcrypt.hash(req.body.password, saltBae, (error, hash) => {
-    var placeholderValues = [req.body.username, hash, req.body.address];
+    var placeholderValues = [req.body.username, hash];
     db.query(sqlQuery, placeholderValues, function(error) {
       if (error) {
         throw error;
