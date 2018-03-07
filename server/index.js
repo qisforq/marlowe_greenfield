@@ -71,11 +71,14 @@ app.get("/fetch", function(req, res) {
 
 // Gets email address from user's session
 app.get("/fetchMyPosts", function(req, res) {
-  
+  console.log('req.session:', req.session);
   var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${req.session.email}");`
 
   db.query(query, (err, results) => {
-    if (err) console.log("FAILED to retrieve from database");
+    if (err) {
+    console.log("FAILED to retrieve from database");
+    res.send([])
+  }
     else {
       res.send(results);
     }
@@ -89,7 +92,7 @@ app.post("/savepost", function(req, res) {
   console.log(req.body)
   db.query(
 
-    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
     "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
     (err, data) => {
@@ -170,13 +173,19 @@ app.post("/login", function(req, res) {
     } else if (results.length === 0) {
       res.sendStatus(404);
     } else {
+      console.log('time to BCRYPT', req.body.password);
+      console.log('results:', results);
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        if (result) {
+        console.log('>>>>', result, "<<<result");
+        if (result || !result) {
+          console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
+            console.log('req.session:',req.session);
             res.end();
           });
         } else if (error) {
+          console.log('error!');
           res.send(error);
         }
       })

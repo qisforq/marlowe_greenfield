@@ -8,6 +8,8 @@ class List extends React.Component {
     this.state = {
       tab: false
      }
+
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   handleSelect(key) {
@@ -16,33 +18,31 @@ class List extends React.Component {
       'My Posts': this.props.getMyPosts,
       'Nearby': this.props.getNearbyUnclaimed
     }
-
-    handle[e.target.name]()
+    console.log('handle:', handle, 'key:', key);
+    console.log('this.props',this.props);
+    handle[key]()
       .then(()=> {
-        this.setState({tab: e.target.name})
+        this.setState({tab: key})
       })
-    this.setState({tab: key})
   }
 
   render() {
-
     const { posts, handleClick } = this.props
-
     return (
       <Tabs
-        activeKey={this.state.key}
-        onSelect={(e)=>this.handleSelect(e)}
+        activeKey={this.state.tab}
+        onSelect={this.handleSelect}
         id="controlled-tab-example"
       >
         {['All Posts', 'My Posts', 'Nearby'].map(tab =>
-        <Tab key={tab} name={tab} title={tab}>
+        <Tab key={tab} eventKey={tab} title={tab}>
           <div className="list">
             <ul>
               { posts.map((post, idx) =>
                 <ListItem
                   key={idx}
                   post={post}
-                  handleClick={handleClick} 
+                  handleClick={handleClick}
                 />
               )}
             </ul>
