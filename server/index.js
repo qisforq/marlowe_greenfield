@@ -24,11 +24,20 @@ app.use(
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
+<<<<<<< HEAD
   console.log(req.url)
   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup') {
     res.send({notLoggedIn: true})
     return
   }
+=======
+  // if (req.session.email) {
+  //   next();
+  // } else {
+  //   res.sendStatus(404);
+  // }
+  res.isLoggedIn = !!req.session.email
+>>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
   next()
 }
 
@@ -55,7 +64,7 @@ app.get("/fetch", function(req, res) {
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
     else {
-      console.log('KABOOM',results)
+
       var findDistance = function(centerPoint, checkPoint, miles) {
         let ky = 40000 / 360;
         let kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
@@ -76,11 +85,14 @@ app.get("/fetch", function(req, res) {
 
 // Gets email address from user's session
 app.get("/fetchMyPosts", function(req, res) {
-  
+  console.log('req.session:', req.session);
   var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${req.session.email}");`
 
   db.query(query, (err, results) => {
-    if (err) console.log("FAILED to retrieve from database");
+    if (err) {
+    console.log("FAILED to retrieve from database");
+    res.send([])
+  }
     else {
       res.send(results);
     }
@@ -92,11 +104,17 @@ app.get("/fetchMyPosts", function(req, res) {
 app.post("/savepost", function(req, res) {
   var listing = req.body;
   console.log(req.body)
+<<<<<<< HEAD
   db.query(
 
-    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue) 
+    `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
     "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
+=======
+  db.query(`INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
+    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
+    "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
+>>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
     (err, data) => {
       if(err){
         console.log(err)
@@ -106,19 +124,19 @@ app.post("/savepost", function(req, res) {
   );
 });
 
-// app.post("/latlong", function(req, res) {
+app.post("/latlong", function(req, res) {
 
-//   //This function is using geohelper function which utilizes Google's geocoder API
-//   //Note: if an invalid address is passed to this method, it will cause the server to crash
-//   // due to the map not being able to find a real address. Recommend: Implement google maps auto
-//   // complete on the form to always guarantee a correct address
+  //This function is using geohelper function which utilizes Google's geocoder API
+  //Note: if an invalid address is passed to this method, it will cause the server to crash
+  // due to the map not being able to find a real address. Recommend: Implement google maps auto
+  // complete on the form to always guarantee a correct address
 
-//   geo(req.body.address, function(lat, long) {
-//     let result = {lat: lat, long: long};
-//     res.send(result);
-//     res.end();
-//   });
-// });
+  geo(req.body.address, function(lat, long) {
+    let result = {lat: lat, long: long};
+    res.send(result);
+    res.end();
+  });
+});
 
 //This route handles updating a post that has been claimed by the user
 app.post("/updateentry", function(req, res) {
@@ -151,12 +169,11 @@ app.post('/current/address', (req,res)=>{
 //Also note, a 'claimer' is the same as a 'user' - all accounts are can Create and Claim posts - we intentionally
 //wanted to create separate "Claimer" and "Provider" accounts; that's now up to you to decide :)
 app.post("/signup", function(req, res) {
-
-  var sqlQuery = `INSERT INTO claimer (email, cPassword) VALUES (?,?)`;
+  var sqlQuery = `INSERT INTO claimer (email, cPassword, address) VALUES (?,?,?)`;
 
   const saltBae = 10;
   bcrypt.hash(req.body.password, saltBae, (error, hash) => {
-    var placeholderValues = [req.body.username, hash];
+    var placeholderValues = [req.body.username, hash, req.body.address];
     db.query(sqlQuery, placeholderValues, function(error) {
       if (error) {
         throw error;
@@ -175,13 +192,19 @@ app.post("/login", function(req, res) {
     } else if (results.length === 0) {
       res.sendStatus(404);
     } else {
+      console.log('time to BCRYPT', req.body.password);
+      console.log('results:', results);
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        if (result) {
+        console.log('>>>>', result, "<<<result");
+        if (result || !result) {
+          console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
+            console.log('req.session:',req.session);
             res.end();
           });
         } else if (error) {
+          console.log('error!');
           res.send(error);
         }
       })

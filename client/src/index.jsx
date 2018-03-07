@@ -29,6 +29,7 @@ class App extends React.Component {
         // lng: -73.833079,
         // lat: 40.767499,
       },
+      isLogin: false,
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
       latitude: 40.767499,
       longitude: -73.833079
@@ -42,6 +43,7 @@ class App extends React.Component {
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
+
   }
 
   componentDidMount() {
@@ -105,6 +107,7 @@ class App extends React.Component {
   }
 
   retrieveMyPosts() {
+    console.log('begin retrieveMyPosts!');
     return axios
       .get("/fetchMyPosts")
       .then(results => {
@@ -195,14 +198,14 @@ class App extends React.Component {
   render() {
     return (
       <div>
-      <NavigationBar onClick={this.ScrollTo} onLogout={this.onLogout}/>
+      <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout}/>
       <Maintron scrollTo={this.ScrollTo}/>
         <ReactBootstrap.Grid className="show-grid">
           <ReactBootstrap.Row>
             <ReactBootstrap.Col md={6}>
             <h2 id='listheader'> Recent Postings </h2>
               <List
-                getMyPosts={this.retrieveUserPosts}
+                getMyPosts={this.retrieveMyPosts}
                 getUnclaimed={this.retrievePosts}
                 getNearbyUnclaimed={this.retrieveClaimsByDist}
                 posts={this.state.posts}
