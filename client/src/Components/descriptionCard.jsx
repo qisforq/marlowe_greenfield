@@ -3,9 +3,9 @@ import moment from 'moment';
 import {Popover} from 'react-bootstrap';
 
 //This modal pops up when the user clicks a specifie list item
-const DescriptionCard = ({featuredItem, claimHandler}) => {
+const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
-  console.log(featuredItem)
+  console.log(tab)
 	return (
     <Popover className="pop" id="popover-positioned-right" title="Recent Donation">
         <button onClick={()=> console.log(props)}></button>
@@ -17,7 +17,7 @@ const DescriptionCard = ({featuredItem, claimHandler}) => {
         <p>Reach me at: {featuredItem.phone}</p>
         <img height='150px' src={featuredItem.photoUrl}/>
         <div>
-        <button onClick={() => claimHandler(id)}>Claim</button>
+        {tab !== 'My Posts' && <button onClick={() => claimHandler(id)}>Claim</button>}
         </div>
       </div>
     </Popover>
