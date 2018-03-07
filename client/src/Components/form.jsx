@@ -6,6 +6,7 @@ import {compose, withProps, lifecycle} from "recompose";
 import {withScriptjs} from "react-google-maps";
 import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
 import GoogleSearchBox from "./autocomplete.jsx"
+import LoginPage from './login.jsx'
 
 class Form extends React.Component {
   constructor(props) {
@@ -33,10 +34,16 @@ class Form extends React.Component {
     e.preventDefault()
     axios.post('/savepost', this.state)
       .then( (response) =>{
-        console.log('Post has been saved.', response);
-        console.log(this.state)
-        this.clearFields();
-        this.props.showModal();
+        if (response.data.notLoggedIn) {
+          console.log('tick')
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        } else {
+          console.log('Post has been saved.', response);
+          console.log(this.state)
+          this.clearFields();
+          this.props.showModal();
+        }
       })
       .catch(function(error) {
         console.log('There was an error saving this post.', error);

@@ -24,13 +24,15 @@ app.use(
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
-  if (req.session.email) {
-    next();
-  } else {
-    res.sendStatus(404);
+  console.log(req.url)
+  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup') {
+    res.send({notLoggedIn: true})
+    return
   }
+  next()
 }
 
+app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -42,6 +44,9 @@ const auth = function(req, res, next) {
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
 
+app.get('/checkLogin', function(req, res) {
+  res.send({notLoggedIn: !req.session.email})
+})
 
 app.get("/fetch", function(req, res) {
   let { lng, lat } = req.query
@@ -156,7 +161,7 @@ app.post("/signup", function(req, res) {
       if (error) {
         throw error;
       } else {
-        res.end();
+        res.send();
       }
     });
   })
