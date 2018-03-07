@@ -34,7 +34,7 @@ class List extends React.Component {
         onSelect={(e)=>this.handleSelect(e)}
         id="controlled-tab-example"
       >
-        {['All Posts', 'My Posts', 'Nearby'].map(tab =>
+        {['All Posts'].map(tab =>
         <Tab key={tab} name={tab} title={tab}>
           <div className="list">
             <ul>

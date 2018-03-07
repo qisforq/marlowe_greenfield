@@ -31,7 +31,7 @@ CREATE TABLE post (
   lng VARCHAR(50),
   lat VARCHAR(50),
   phone VARCHAR(12),
-  isClaimed BOOLEAN,
+  isClaimed BOOLEAN DEFAULT false,
   claimer_id INTEGER,
   createdAt INTEGER,
   photoUrl VARCHAR(512),

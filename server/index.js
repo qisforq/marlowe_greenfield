@@ -8,6 +8,7 @@ var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
+var axios = require("axios")
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -44,13 +45,13 @@ const auth = function(req, res, next) {
 
 
 app.get("/fetch", function(req, res) {
+  console.log('in the server fetch')
   let { lng, lat } = req.query
-    var query = "SELECT * FROM post WHERE isClaimed=false;"
+    var query = "SELECT * FROM post WHERE isClaimed=0;"
 
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
     else {
-      console.log('KABOOM',results)
       var findDistance = function(centerPoint, checkPoint, miles) {
         let ky = 40000 / 360;
         let kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
@@ -117,13 +118,39 @@ app.post("/savepost", function(req, res) {
 
 //This route handles updating a post that has been claimed by the user
 app.post("/updateentry", function(req, res) {
-  var postID = req.body.postID;
   db.query(
-    `UPDATE post SET claimer_id=(SELECT id FROM claimers WHERE email="${req.session.email}") isClaimed=true WHERE id="${postID}"`,
+    `UPDATE post SET claimer_id=(SELECT id FROM claimer WHERE email="${req.session.email}"), isClaimed=true WHERE id="${req.body.id}"`,
     (err, data) => {
+      if(err){
+        console.log('failed')
+        throw(err)
+      }else{
+      console.log('UPDATED CLAIMS')
       res.end();
+      }
     }
   );
+
+  var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
+  var subject = '&subject=YOU HAVE CLAIMED A DONATION!' 
+  var sender = '&from=' + 'kindlywebmasters@gmail.com'
+  var senderName = '&fromName' + 'kindlywebmasters'
+  var receiver = '&to=' + `${req.session.email}` //donaters email address
+  var message = '&bodyText=' + 'You have claimed a donation (' +  req.body.description + ' ). Please pick-up the donation at : '+  req.body.address + ', Thanks for contributing to the community!' 
+  var isTransactional = '&isTransactional=true'
+
+  var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
+
+  axios.post(URL)
+  .then((response) => {
+    console.log('email sent')
+    res.send(response.data)
+  })
+  .catch((err) => {
+    throw(err)
+  })
+
+
 });
 
 
@@ -222,6 +249,33 @@ app.post("/chat", function(req, res) {
       // res.end()
     });
 });
+
+app.post("/email", (req,res)=>{
+  var data = req.body 
+  console.log(data)
+  var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
+  var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!' 
+  var sender = '&from=' + 'kindlywebmasters@gmail.com'
+  var senderName = '&fromName' + 'some organization name'
+  var receiver = '&to=eshum89@gmail.com' //donaters email address
+  var message = '&bodyText=' + 'Your Donation has been Claimed by ' + 'some org ' + 'Thanks for saving contributing to the community!' 
+  var isTransactional = '&isTransactional=true'
+
+  var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
+
+  axios.post(URL)
+  .then((response) => {
+    console.log('sent')
+    console.log(response)
+    res.send(response.data)
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+
+
+
+})
 
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
