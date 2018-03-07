@@ -15,6 +15,7 @@ CREATE TABLE claimer (
   id INTEGER AUTO_INCREMENT NOT NULL,
   email VARCHAR(50) NOT NULL,
   address VARCHAR(100),
+  org VARCHAR(200),
   lng VARCHAR(50),
   lat VARCHAR(50),
   cPassword VARCHAR(1000) NOT NULL,

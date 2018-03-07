@@ -13,6 +13,7 @@ import MapComponent from "./components/googleMaps.jsx"
 import Trigger from "./components/responsiveButton.jsx"
 import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 import example from './example.js'
+import DonationAmmount from './Components/DonationAmmount.jsx'
 
 class App extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class App extends React.Component {
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: example,
       tab: false,
+      showDeductions: false,
       featuredItem: {
         id: null,
         title: null,
@@ -45,6 +47,7 @@ class App extends React.Component {
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.showDeductions = this.showDeductions.bind(this)
 
   }
 
@@ -65,6 +68,10 @@ class App extends React.Component {
       .then(()=> {
         this.setState({tab: key})
       })
+  }
+
+  showDeductions() {
+    this.setState({showDeductions: !this.state.showDeductions})
   }
 
   //This function toggles the description card to appear,
@@ -214,9 +221,18 @@ class App extends React.Component {
 
 
   render() {
+
+    if (this.state.showDeductions) {
+      return (
+        <div>
+          <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout} showDeductions={this.showDeductions}/>
+          <DonationAmmount />
+        </div>
+      )
+    }
     return (
       <div>
-      <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout}/>
+      <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout} showDeductions={this.showDeductions}/>
       <Maintron scrollTo={this.ScrollTo}/>
         <ReactBootstrap.Grid className="show-grid">
           <ReactBootstrap.Row>
