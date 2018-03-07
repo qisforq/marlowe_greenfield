@@ -25,8 +25,9 @@ class Settings extends Component {
         address: this.state.address
       }).then((response) => {
         console.log(response, 'axios response for saving settings!');
+        this.props.toggleSettings();
       }).catch((error) => {
-        console.log(error, 'axios error for saving settings');
+        console.log(error, 'Error: settings could not be saved');
       });
   }
 
