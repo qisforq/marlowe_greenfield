@@ -1,12 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import {FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
+import {FormControl, FormGroup, ControlLabel, Button, Label} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
 import {compose, withProps, lifecycle} from "recompose";
 import {withScriptjs} from "react-google-maps";
 import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
 import GoogleSearchBox from "./autocomplete.jsx"
 import LoginPage from './login.jsx'
+import Dropzone from 'react-dropzone'
 
 class Form extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class Form extends React.Component {
       description: '',
       address: '',
       isClaimed: false,
-      photoUrl: ''
+      photoUrl: null
     }
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
@@ -26,13 +27,26 @@ class Form extends React.Component {
     // this.handlePhone = this.handlePhone.bind(this);
     // this.handleTitle = this.handleTitle.bind(this);
     // this.handleDescription = this.handleDescription.bind(this);
-    this.handlePhotoUrl = this.handlePhotoUrl.bind(this);
+    this.handlePhoto = this.handlePhoto.bind(this);
     this.autocompleteHandler= this.autocompleteHandler.bind(this);
   }
 
   savePost(e) {
     e.preventDefault()
-    axios.post('/savepost', this.state)
+    const formData = new FormData();
+    formData.append('phone', this.state.phone)
+    formData.append('title', this.state.title)
+    formData.append('description', this.state.description)
+    formData.append('isClaimed', this.state.isClaimed)
+    for (let key in this.state.address) {
+      formData.append(key, this.state.address[key]);
+    }
+    if (this.state.photoUrl !== null) {
+      this.state.photoUrl.forEach((photo) => formData.append('photoArray', photo));
+    } else {
+      formData.append('emptyPhoto', this.state.photoUrl);
+    }
+    axios.post('/savepost', formData)
       .then( (response) =>{
         if (response.data.notLoggedIn) {
           console.log('tick')
@@ -56,7 +70,7 @@ class Form extends React.Component {
       description: '',
       address: '',
       isClaimed: false,
-      photoUrl: ''
+      photoUrl: null
     });
   }
 
@@ -70,13 +84,20 @@ class Form extends React.Component {
     });
   }
 
-    handlePhotoUrl(e) {
+  handlePhoto(photos) {
     this.setState({
-      photoUrl: e.target.value
-    });
+      photoUrl: photos
+    }, () => console.log(this.state.photoUrl));
   }
 
   render() {
+    let photos;
+    if (this.state.photoUrl !== null) {
+      photos = this.state.photoUrl.map((file) =>
+        <p>
+          {file.name}
+        </p>
+      )}
     //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using
     // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
 
@@ -85,40 +106,42 @@ class Form extends React.Component {
     // the mySql database - this is a restriction set in the schema.
     return (
       <div className="form formDonate">
-          <form>
+          <form encType='multipart/form-data'>
           <div className="formFields">
           <ControlLabel>Post your donations</ControlLabel>
-
+          <FormGroup>
+            <FormControl
+              id="title"
+              type="text"
+              value={this.state.title}
+              placeholder="Title"
+              onChange={this.handleChange}
+            />
+            <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
           <FormControl
-            id="title"
+            id="phone"
             type="text"
-            value={this.state.title}
-            placeholder="Title"
+            value={this.state.phone}
+            placeholder="Phone Number"
             onChange={this.handleChange}
-          />
-          <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
-        <FormControl
-          id="phone"
-          type="text"
-          value={this.state.phone}
-          placeholder="Phone Number"
-          onChange={this.handleChange}
-          />
-          <FormControl
-            style={{height: '125px'}}
-            id="description"
-            type="text"
-            value={this.state.description}
-            placeholder="Description"
-            onChange={this.handleChange}
-          />
-          <FormControl
-            id="photoUrl"
-            type="text"
-            value={this.state.photoUrl}
-            placeholder="Link an image"
-            onChange={this.handleChange}
-          />
+            />
+            <FormControl
+              style={{height: '125px'}}
+              id="description"
+              type="text"
+              value={this.state.description}
+              placeholder="Description"
+              onChange={this.handleChange}
+            />
+            <div className='dropzone'>
+              <Dropzone onDrop={this.handlePhoto} accept='image/*' style={{width: '100%', height: '85px', borderRadius: '5px', border: '1px solid rgb(210, 210, 210)', overflow: 'auto'}}>
+                <p>
+                  <Label>Drop Your Photos or Click to Upload!</Label>
+                </p>
+                {photos}
+              </Dropzone>
+            </div>
+          </FormGroup>
           </div>
           <div className="formButton"><Button onClick={this.savePost}>Submit</Button></div>
       </form>

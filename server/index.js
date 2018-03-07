@@ -8,7 +8,11 @@ var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
-var axios = require("axios")
+var axios = require("axios");
+var multer = require('multer');
+var multerS3 = require('multer-s3');
+var aws = require('aws-sdk');
+var config = require('../config.js');
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -22,6 +26,23 @@ app.use(
     saveUninitialized: true
   })
 );
+
+//This is for file uploading to AWS S3. It incorpoates the use of Multer which reads large files such as images, as chunks.
+aws.config.update({
+    secretAccessKey: config.AWS_SECRET,
+    accessKeyId: config.AWS_KEY,
+    region: 'us-east-1'
+});
+const s3 = new aws.S3();
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'oddjobs-best',
+    key: function(req, file, cb) {
+      cb(null, `${new Date()}-${file.originalname}`);
+    }
+  })
+});
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
@@ -54,6 +75,8 @@ app.get("/fetch", function(req, res) {
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
+    console.log('LINE 78', query);
+    console.log('LINE 79', results);
     if (err) console.log("FAILED to retrieve from database");
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
@@ -92,13 +115,15 @@ app.get("/fetchMyPosts", function(req, res) {
 
 //This route receives a request upon submit from the form. The form holds all fields necesaary
 //to make a new db entry. This route will take in the request and simply save to the db
-app.post("/savepost", function(req, res) {
-  var listing = req.body;
-  db.query(
+app.post("/savepost", upload.any(), function(req, res) {
+  const listing = req.body;
+  const images = req.files.map((image) => image.location)
+  const storeImages = `[${images.join(', ')}]`;
 
+  db.query(
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
-    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
-    "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
+    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
+    "${listing.longitude}", "${listing.latitude}", "${listing.phone}", "${moment().unix()}", "${storeImages}", "${listing.estimatedValue}");`,
     (err, data) => {
       if(err){
         console.log(err)
@@ -138,11 +163,11 @@ app.post("/updateentry", function(req, res) {
   );
 
   var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
-  var subject = '&subject=YOU HAVE CLAIMED A DONATION!' 
+  var subject = '&subject=YOU HAVE CLAIMED A DONATION!'
   var sender = '&from=' + 'kindlywebmasters@gmail.com'
   var senderName = '&fromName' + 'kindlywebmasters'
   var receiver = '&to=' + `${req.session.email}` //donaters email address
-  var message = '&bodyText=' + 'You have claimed a donation (' +  req.body.description + ' ). Please pick-up the donation at : '+  req.body.address + ', Thanks for contributing to the community!' 
+  var message = '&bodyText=' + 'You have claimed a donation (' +  req.body.description + ' ). Please pick-up the donation at : '+  req.body.address + ', Thanks for contributing to the community!'
   var isTransactional = '&isTransactional=true'
 
   var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -260,14 +285,13 @@ app.post("/chat", function(req, res) {
 });
 
 app.post("/email", (req,res)=>{
-  var data = req.body 
-  console.log(data)
+  var data = req.body
   var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
-  var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!' 
+  var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!'
   var sender = '&from=' + 'kindlywebmasters@gmail.com'
   var senderName = '&fromName' + 'some organization name'
   var receiver = '&to=eshum89@gmail.com' //donaters email address
-  var message = '&bodyText=' + 'Your Donation has been Claimed by ' + 'some org ' + 'Thanks for saving contributing to the community!' 
+  var message = '&bodyText=' + 'Your Donation has been Claimed by ' + 'some org ' + 'Thanks for saving contributing to the community!'
   var isTransactional = '&isTransactional=true'
 
   var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional

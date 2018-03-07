@@ -109,6 +109,7 @@ class App extends React.Component {
     return axios
       .get("/fetch")
       .then(results => {
+        console.log(results);
         if (results.data.notLoggedIn) {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
@@ -117,10 +118,6 @@ class App extends React.Component {
             posts: results.data,
           })
         }
-        console.log('COOOCOOO',results)
-        this.setState({
-          posts: results.data,
-        })
       })
       .catch(function(error) {
         console.log("There was an error retrieving posts.", error);

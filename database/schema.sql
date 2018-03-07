@@ -34,7 +34,7 @@ CREATE TABLE post (
   isClaimed BOOLEAN DEFAULT FALSE,
   claimer_id INTEGER,
   createdAt INTEGER,
-  photoUrl VARCHAR(512),
+  photoUrl VARCHAR(3000),
   estimatedValue VARCHAR(50),
   PRIMARY KEY (id),
   FOREIGN KEY (poster_id) REFERENCES claimer(id),
