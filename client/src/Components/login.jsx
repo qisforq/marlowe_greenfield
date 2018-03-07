@@ -31,12 +31,13 @@ export default class Login extends Component {
   }
 
   handleSubmit(e){
+    console.log('CLICKity CLACK');
     e.preventDefault();
     axios.post('/login', {
       username: this.state.email,
       password: this.state.password
-    }).then(() => {
-      console.log("Successfully logged in")
+    }).then((res) => {
+      console.log("Successfully logged in:", res)
       this.setState({username: '', password: ''});
       ReactDOM.render(<App />, document.getElementById("app"));
     }).catch((error) => {
