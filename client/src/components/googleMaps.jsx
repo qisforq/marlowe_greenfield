@@ -7,8 +7,15 @@ const MapComponent = withScriptjs(withGoogleMap((props) =>
     defaultCenter={{ lat: props.latitude, lng: props.longitude }}
     center={{ lat: props.latitude, lng: props.longitude }}
   >
-    {props.isMarkerShown && <Marker position={{ lat: props.latitude, lng: props.longitude }} />}
+  {props.isMarkerShown && <Marker position={{ lat: props.latitude, lng: props.longitude }} />}
+
   </GoogleMap>
 ))
 
 export default MapComponent;
+
+          // {props.markers.map(props => (
+          //   <RestaurantMarker key={props.name} {...props}/>
+          // ))}
+
+          // {props.isMarkerShown && <Marker position={{ lat: props.latitude, lng: props.longitude }} />}

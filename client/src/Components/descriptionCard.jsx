@@ -6,6 +6,7 @@ import {Popover} from 'react-bootstrap';
 const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
   console.log(tab)
+  console.log('fuck', featuredItem)
 	return (
     <Popover className="pop" id="popover-positioned-right" title="Recent Donation">
         <button onClick={()=> console.log(props)}></button>
@@ -18,6 +19,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
         <img height='150px' src={featuredItem.photoUrl}/>
         <div>
         {tab !== 'My Posts' && <button onClick={() => claimHandler(id)}>Claim</button>}
+        <button onClick={() => claimHandler(featuredItem)}>Claim</button>
         </div>
       </div>
     </Popover>

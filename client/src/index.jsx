@@ -18,6 +18,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      allLocations: [],
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: example,
       tab: false,
@@ -71,7 +72,6 @@ class App extends React.Component {
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
   changeFeatured(listItem) {
-    console.log(listItem.lat)
     // let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
     if (this.state.show === false){
       this.setState({
@@ -117,6 +117,10 @@ class App extends React.Component {
             posts: results.data,
           })
         }
+        console.log('COOOCOOO',results)
+        this.setState({
+          posts: results.data,
+        })
       })
       .catch(function(error) {
         console.log("There was an error retrieving posts.", error);
@@ -161,10 +165,8 @@ class App extends React.Component {
 
   //This function updates the selected post that is claimed (in database)
   handleClaim(claimedPostID) {
-    axios
-      .post("/updateentry", {
-        postID: claimedPostID
-      })
+    console.log(claimedPostID)
+    axios.post("/updateentry", claimedPostID)
       .then(done => {
         if (done.data.notLoggedIn) {
           console.log('tick')
@@ -184,6 +186,7 @@ class App extends React.Component {
 
   //This func is being passed to the Form Compnent and closes the Trigger Component/Modal
   lgClose() {
+    console.log('closed')
     this.setState({
       lgShow: false
     });
@@ -252,6 +255,7 @@ class App extends React.Component {
           mapElement={<div style={ { height: `100%` } } />}
           latitude= {this.state.latitude}
           longitude= {this.state.longitude}
+          markers = {this.state.posts}
         />
         </div>
 
