@@ -6,32 +6,16 @@ class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tab: false
      }
 
-    this.handleSelect = this.handleSelect.bind(this);
-  }
-
-  handleSelect(key) {
-    let handle = {
-      'All Posts': this.props.getUnclaimed,
-      'My Posts': this.props.getMyPosts,
-      'Nearby': this.props.getNearbyUnclaimed
-    }
-    console.log('handle:', handle, 'key:', key);
-    console.log('this.props',this.props);
-    handle[key]()
-      .then(()=> {
-        this.setState({tab: key})
-      })
   }
 
   render() {
-    const { posts, handleClick } = this.props
+    const { posts, handleClick, handleSelect, currentTab } = this.props
     return (
       <Tabs
-        activeKey={this.state.tab}
-        onSelect={this.handleSelect}
+        activeKey={currentTab}
+        onSelect={handleSelect}
         id="controlled-tab-example"
       >
         {['All Posts', 'My Posts', 'Nearby'].map(tab =>
@@ -43,6 +27,7 @@ class List extends React.Component {
                   key={idx}
                   post={post}
                   handleClick={handleClick}
+                  tab={tab}
                 />
               )}
             </ul>

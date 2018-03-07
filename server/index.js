@@ -24,20 +24,10 @@ app.use(
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
-<<<<<<< HEAD
-  console.log(req.url)
   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup') {
     res.send({notLoggedIn: true})
     return
   }
-=======
-  // if (req.session.email) {
-  //   next();
-  // } else {
-  //   res.sendStatus(404);
-  // }
-  res.isLoggedIn = !!req.session.email
->>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
   next()
 }
 
@@ -59,7 +49,7 @@ app.get('/checkLogin', function(req, res) {
 
 app.get("/fetch", function(req, res) {
   let { lng, lat } = req.query
-    var query = "SELECT * FROM post WHERE isClaimed=false;"
+    var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
     if (err) console.log("FAILED to retrieve from database");
@@ -86,7 +76,7 @@ app.get("/fetch", function(req, res) {
 // Gets email address from user's session
 app.get("/fetchMyPosts", function(req, res) {
   console.log('req.session:', req.session);
-  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimers WHERE email"=${req.session.email}");`
+  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
     if (err) {
@@ -103,18 +93,11 @@ app.get("/fetchMyPosts", function(req, res) {
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", function(req, res) {
   var listing = req.body;
-  console.log(req.body)
-<<<<<<< HEAD
   db.query(
 
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
     VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address.address}",
     "${listing.address.longitude}", "${listing.address.latitude}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
-=======
-  db.query(`INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
-    VALUES ("${listing.title}", (SELECT id FROM claimer WHERE email="${req.session.email}"), "${listing.description}", "${listing.address}",
-    "${listing.lng}", "${listing.lat}", "${listing.phone}", "${moment().unix()}", "${listing.photoUrl}", "${listing.estimatedValue}");`,
->>>>>>> 80331049ac1395911fc66ef873d759d6eb637afb
     (err, data) => {
       if(err){
         console.log(err)
@@ -141,12 +124,13 @@ app.post("/latlong", function(req, res) {
 //This route handles updating a post that has been claimed by the user
 app.post("/updateentry", function(req, res) {
   var postID = req.body.postID;
-  db.query(
-    `UPDATE post SET claimer_id=(SELECT id FROM claimers WHERE email="${req.session.email}") isClaimed=true WHERE id="${postID}"`,
-    (err, data) => {
-      res.end();
-    }
-  );
+    db.query(
+      `UPDATE post SET claimer_id=(SELECT id FROM claimer WHERE email="${req.session.email}"), isClaimed=TRUE WHERE id="${postID}"`,
+      (err, data) => {
+        console.log(err, data)
+        res.end();
+      }
+    );
 });
 
 
@@ -213,7 +197,6 @@ app.post("/login", function(req, res) {
 });
 
 app.post('/logout', function(req, res) {
-  console.log(req.session);
   req.session.destroy();
   res.end();
 })

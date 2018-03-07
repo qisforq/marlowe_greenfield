@@ -34,8 +34,10 @@ class App extends React.Component {
       latitude: 40.767499,
       longitude: -73.833079
     };
+    this.handleSelect = this.handleSelect.bind(this);
     this.retrievePosts = this.retrievePosts.bind(this);
     this.retrieveClaimsByDist = this.retrieveClaimsByDist.bind(this);
+    this.retrieveMyPosts = this.retrieveMyPosts.bind(this);
     this.changeFeatured = this.changeFeatured.bind(this);
     this.handleClaim = this.handleClaim.bind(this);
     this.resetFormView = this.handleClaim.bind(this);
@@ -50,6 +52,21 @@ class App extends React.Component {
     this.retrievePosts();
   }
 
+  handleSelect(key) {
+    console.log(key)
+    let handle = {
+      'All Posts': this.retrievePosts,
+      'My Posts': this.retrieveMyPosts,
+      'Nearby': this.retrieveClaimsByDist
+    }
+    console.log('handle:', handle, 'key:', key);
+    console.log('this.props',this.props);
+    handle[key]()
+      .then(()=> {
+        this.setState({tab: key})
+      })
+  }
+
   //This function toggles the description card to appear,
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
@@ -61,7 +78,7 @@ class App extends React.Component {
         featuredItem: listItem,
         show: true,
         latitude: Number(listItem.lat),
-        longitude : Number(listItem.lng)
+        longitude : Number(listItem.lng),
      });
       // let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
       // axios.post('/latlong', {address: address})
@@ -115,6 +132,7 @@ class App extends React.Component {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
         }
+        console.log(results.data)
         this.setState({
           posts: results.data,
         })
@@ -187,7 +205,7 @@ class App extends React.Component {
   onLogout() {
     axios.post('/logout')
     .then(() => {
-      ReactDOM.render(<LoginPagePage />, document.getElementById("app"));
+      ReactDOM.render(<LoginPage />, document.getElementById("app"));
     })
     .catch((error) => {
       throw error;
@@ -205,11 +223,10 @@ class App extends React.Component {
             <ReactBootstrap.Col md={6}>
             <h2 id='listheader'> Recent Postings </h2>
               <List
-                getMyPosts={this.retrieveMyPosts}
-                getUnclaimed={this.retrievePosts}
-                getNearbyUnclaimed={this.retrieveClaimsByDist}
                 posts={this.state.posts}
                 handleClick={this.changeFeatured}
+                handleSelect={this.handleSelect}
+                currentTab={this.state.tab}
               />
             </ReactBootstrap.Col>
             <ReactBootstrap.Col className="pass" md={6}>
@@ -219,6 +236,7 @@ class App extends React.Component {
               :  <DescriptionCard
                     featuredItem = {this.state.featuredItem}
                     claimHandler={this.handleClaim}
+                    tab={this.state.tab}
                   /> }
             </ReactBootstrap.Col>
           </ReactBootstrap.Row>
