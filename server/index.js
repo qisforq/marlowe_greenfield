@@ -275,7 +275,7 @@ app.post("/chat", function(req, res) {
 app.get('/donations', (req, res)=> {
   // get all claimed posts for this user
 
-  db.query(`SELECT * FROM post WHERE isClaimed=FALSE AND poster_id="1"`, (err, results)=> {
+  db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email=${req.session.email})`, (err, results)=> {
 
     var output = {years:[], organizations:{}}
 
@@ -300,7 +300,7 @@ app.get('/donations', (req, res)=> {
     return Promise.all(Object.keys(output.organizations).map(orgId => 
       new Promise((resolve)=> {
         // get org name and verified status
-        db.query(`SELECT org, verified FROM claimer WHERE id=1`, (err, info) => {
+        db.query(`SELECT org, verified FROM claimer WHERE id=${orgId}`, (err, info) => {
          let orgName = info[0].org
          let verified = info[0].verified
 
