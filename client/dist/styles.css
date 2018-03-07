@@ -39,7 +39,7 @@ body {
 .listItem:hover {
   box-shadow: -7px 4px 5px #504f4f;
   font-weight: bold;
-} 
+}
 
 
 .listDescription {
@@ -103,4 +103,8 @@ body {
   top: 25%;
 }
 
-
+.dropzone {
+  position: relative;
+  left: 8px;
+  width: 100%;
+}

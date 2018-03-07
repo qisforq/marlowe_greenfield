@@ -7,6 +7,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
   console.log(tab)
   console.log('fuck', featuredItem)
+  const myImages = featuredItem.photoUrl.slice(1, featuredItem.photoUrl.length - 1).split(',');
 	return (
     <Popover className="pop" id="popover-positioned-right" title="Recent Donation">
         <button onClick={()=> console.log(props)}></button>
@@ -16,10 +17,11 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
         <p>posted on: {moment(featuredItem.createdAt * 1000).format('MMMM Do YYYY')}</p>
         <p>{description}</p>
         <p>Reach me at: {featuredItem.phone}</p>
-        <img height='150px' src={featuredItem.photoUrl}/>
+        {
+          myImages.map((photo) => <img height='150px' width='150px' src={photo} />)
+        }
         <div>
         {tab !== 'My Posts' && <button onClick={() => claimHandler(id)}>Claim</button>}
-        <button onClick={() => claimHandler(featuredItem)}>Claim</button>
         </div>
       </div>
     </Popover>
