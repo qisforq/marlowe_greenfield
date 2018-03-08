@@ -9,6 +9,7 @@ CREATE TABLE claimer (
   email VARCHAR(50) NOT NULL,
   address VARCHAR(100),
   org VARCHAR(200),
+  phone VARCHAR(12),
   lng VARCHAR(50),
   lat VARCHAR(50),
   cPassword VARCHAR(1000) NOT NULL,
