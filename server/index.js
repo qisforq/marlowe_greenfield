@@ -69,6 +69,10 @@ app.get('/checkLogin', function(req, res) {
   res.send({notLoggedIn: !req.session.email})
 })
 
+app.get('/allPosts', function(req, res) {
+  db.query(`SELECT * FROM post`, (err, data)=> res.send(data))
+})
+
 app.get("/fetch", function(req, res) {
   console.log('in the server fetch')
   let { lng, lat } = req.query
@@ -236,18 +240,15 @@ app.post("/login", function(req, res) {
     } else if (results.length === 0) {
       res.sendStatus(404);
     } else {
-      console.log('time to BCRYPT', req.body.password);
-      console.log('results:', results);
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        console.log('>>>>', result, "<<<result");
-        if (result || !result) {
+        if (!error) {
           console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
             console.log('req.session:',req.session);
             res.end();
           });
-        } else if (error) {
+        } else {
           console.log('error!');
           res.send(error);
         }

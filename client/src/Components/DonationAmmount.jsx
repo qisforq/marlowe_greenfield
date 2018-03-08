@@ -1,17 +1,30 @@
 import React from 'react'
 import {Panel, ListGroup, ListGroupItem, DropdownButton, MenuItem} from 'react-bootstrap'
+import axios from 'axios'
 
 class DonationAmmount extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
       years: [],
-      selected: false
+      orgs: [],
+      selectedYear: null,
+      selectedOrg: false
      }
+   axios.get('/dontations')
+     .then((data) => console.log(data))
   }
 
-  handleSelect(key) {
-    console.log(key)
+  componentWillMount() {
+
+  }
+
+  componentWillUnmount() {
+    console.log('unmount')
+  }
+
+  handleSelect(e) {
+    this.setState({selectedYear: e.target.name})
   }
 
   render() { 
@@ -22,8 +35,7 @@ class DonationAmmount extends React.Component {
         id={`dropdown-years`}
         onSelect={this.handleSelect}
       >
-        <MenuItem eventKey="1">2016</MenuItem>
-        <MenuItem eventKey="2">2017</MenuItem>
+        {this.state.years.map((year, i) => <MenuItem eventKey={i}>{year}</MenuItem>)}
       </DropdownButton>
       <Panel id="collapsible-panel-example-2">
           <Panel.Heading>
