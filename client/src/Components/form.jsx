@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {FormControl, FormGroup, ControlLabel, Button, Label} from 'react-bootstrap';
+import {FormControl, FormGroup, InputGroup, ControlLabel, Button, Label, HelpBlock} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
 import {compose, withProps, lifecycle} from "recompose";
 import {withScriptjs} from "react-google-maps";
@@ -17,6 +17,8 @@ class Form extends React.Component {
       title: '',
       description: '',
       address: '',
+      estimatedValue: '',
+      valueInptValidation: null,
       isClaimed: false,
       photoUrl: null
     }
@@ -90,6 +92,18 @@ class Form extends React.Component {
     }, () => console.log(this.state.photoUrl));
   }
 
+  validateEstimate() {
+    let val = this.state.estimatedValue
+    let state = null
+    if (!val.match(/[\d\.]/g) && val !== '') state = 'warning'
+
+    if (state !== this.state.valueInptValidation) {
+      this.setState({valueInptValidation: state})
+    }
+
+    return state
+  }
+
   render() {
     let photos;
     if (this.state.photoUrl !== null) {
@@ -104,20 +118,51 @@ class Form extends React.Component {
 
     //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to
     // the mySql database - this is a restriction set in the schema.
+
+    //className="form formDonate"
     return (
       <div className="form formDonate">
           <form encType='multipart/form-data'>
           <div className="formFields">
           <ControlLabel>Post your donations</ControlLabel>
-          <FormGroup>
-            <FormControl
-              id="title"
-              type="text"
-              value={this.state.title}
-              placeholder="Title"
-              onChange={this.handleChange}
+
+        <FormGroup>
+          <FormControl
+            id="title"
+            type="text"
+            value={this.state.title}
+            placeholder="Title"
+            onChange={this.handleChange}
+          />
+          <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
+          <FormControl
+            id="phone"
+            type="text"
+            value={this.state.phone}
+            placeholder="Phone Number"
+            onChange={this.handleChange}
+          />
+          <FormControl
+            style={{height: '125px'}}
+            id="description"
+            type="text"
+            value={this.state.description}
+            placeholder="Description"
+            onChange={this.handleChange}
+          />
+           <FormGroup
+              controlId="estimatedValue"
+              validationState={this.validateEstimate()}
+            >
+            <FormControl 
+              type="text"  
+              value={this.state.estimatedValue}
+              placeholder="Estimated Value"
+              onChange={this.handleChange} 
             />
-            <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
+            <FormControl.Feedback />
+              {this.state.valueInptValidation && <HelpBlock>should only be numbers</HelpBlock>}
+            </FormGroup>
           <FormControl
             id="phone"
             type="text"

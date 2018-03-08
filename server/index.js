@@ -8,11 +8,17 @@ var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
+<<<<<<< HEAD
 var axios = require("axios");
 var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
 var config = require('../config.js');
+=======
+var moment = require('moment')
+var axios = require('axios')
+var config = require('../config.js')
+>>>>>>> dontationAmmount-2
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -46,7 +52,7 @@ const upload = multer({
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
-  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup') {
+  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
     res.send({notLoggedIn: true})
     return
   }
@@ -261,6 +267,12 @@ app.post('/logout', function(req, res) {
   res.end();
 })
 
+app.get('/org', function(req, res) {
+  db.query(`SELECT org FROM claimer WHERE email="${req.session.email}"`, (err, data) => {
+    res.send(!!data[0].org)
+  })
+})
+
 /************************************************************/
 //                   User settings
 /************************************************************/
@@ -351,6 +363,7 @@ app.post("/chat", function(req, res) {
     });
 });
 
+<<<<<<< HEAD
 app.post("/email", (req,res)=>{
   var data = req.body
   var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
@@ -416,6 +429,121 @@ app.get('/user/notVerified', (req, res) => {
 })
 
 
+=======
+
+/************************************************************/
+//                   deduction
+/************************************************************/
+
+
+// Function creates this object form database and charity navigator api
+
+  
+  /*
+    {years: [2017, 2018],
+    organizations: [
+     org id: {
+       orgInfo {
+         org: name,
+         ein: 1234,
+         verified: true
+       },
+       donations: [
+         {
+            created_at,
+            item,
+            value
+          }, 
+          {
+            created_at,
+            item,
+            value
+          },
+       ]
+    }  
+    ]
+  }
+  */
+
+app.get('/donations', (req, res)=> {
+  // get all claimed posts for this user
+
+  db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email=${req.session.email})`, (err, results)=> {
+
+    var output = {years:[], organizations:{}}
+
+    results.forEach(donation => {
+
+      // if year does not exist, push to years array
+      var year = new Date(donation.createdAt * 1000).getFullYear()
+      if (!output.years.includes(year)) {
+        output.years.push(year)
+      }
+
+      //if organization does not yet exist in output, create that organization
+      if(!output.organizations[donation.poster_id]) {
+        output.organizations[donation.poster_id] = {donations:[]} // add org info at end
+      }
+
+      // push dontation to it's organization's donation array
+      output.organizations[donation.poster_id].donations
+        .push({item: donation.title, value: donation.estimatedValue, createdAt: donation.createdAt})
+    })
+
+    return Promise.all(Object.keys(output.organizations).map(orgId => 
+      new Promise((resolve)=> {
+        // get org name and verified status
+        db.query(`SELECT org, verified FROM claimer WHERE id=${orgId}`, (err, info) => {
+         let orgName = info[0].org
+         let verified = info[0].verified
+
+         if (orgName === null) {
+           res.send('not valid org name')
+           return
+         }
+
+         // get ein number and deductibility status from charity navigator
+          axios.get(`https://api.data.charitynavigator.org/v2/Organizations`,
+            {params: {
+              app_id: config.charityNav.id,
+              app_key: config.charityNav.key,
+              pageSize: 1,
+              pageNum: 1,
+              search: orgName
+            }}
+          ).then(charityData => {
+            let ein = charityData.data[0].ein
+            let deductable = charityData.data[0].irsClassification.deductibility
+
+            // Each promise resolves with this org info object
+            resolve({id: orgId, orgName, ein, deductable, verified})
+          })
+          .catch(err => {
+            console.log('err')
+            res.send(404, 'error')
+          })
+        })
+      })
+    ))
+    .then(data => {
+      data.forEach(org => {
+
+        // attach the  org info object to each org in output.organizations
+        output.organizations[org.id].orgInfo = org
+        delete output.organizations[org.id].orgInfo.id
+      })
+    })
+    .then(()=> {
+      res.send(output)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.send(500, err)
+    })
+  })
+})
+
+>>>>>>> dontationAmmount-2
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
 });
