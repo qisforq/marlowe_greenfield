@@ -39,7 +39,8 @@ class App extends React.Component {
       toggleSettings: false, //this toggles the settings page to show/hide
       page: false,
       latitude: 40.750487,
-      longitude: -73.976401
+      longitude: -73.976401,
+      renderLoader: true
     };
     this.handleSelect = this.handleSelect.bind(this);
     this.retrievePosts = this.retrievePosts.bind(this);
@@ -56,9 +57,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    setTimeout(() => this.setState({renderLoader: false}), 1500)
     this.checkOrgStatus()
     .then(()=> this.retrievePosts())
-
   }
 
   checkOrgStatus() {
@@ -238,7 +239,15 @@ class App extends React.Component {
 
 
   render() {
-
+    if (this.state.renderLoader === true) {
+      return (
+        <div>
+          <div id='loader' style={{display:'block', margin: '0 auto', bottom:'50%', left:'45%', position:'absolute'}}>
+            <img src='https://s3.amazonaws.com/oddjobs-best/loader.gif'/>
+          </div>
+        </div>
+      )
+    }
     const pages = {
       deduction: <DonationAmmount />,
       settings: <Settings toggleSettings={()=> this.setState({page: false})}/>,
