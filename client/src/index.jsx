@@ -35,9 +35,9 @@ class App extends React.Component {
         // lng: -73.833079,
         // lat: 40.767499,
       },
-      isLogin: false,
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
       toggleSettings: false, //this toggles the settings page to show/hide
+      page: false,
       latitude: 40.767499,
       longitude: -73.833079
     };
@@ -52,8 +52,7 @@ class App extends React.Component {
     this.lgClose = this.lgClose.bind(this);
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
-    this.handleSettings = this.handleSettings.bind(this);
-    this.showDeductions = this.showDeductions.bind(this)
+    this.handlePage = this.handlePage.bind(this);
   }
 
   componentDidMount() {
@@ -70,7 +69,6 @@ class App extends React.Component {
   }
 
   handleSelect(key) {
-    console.log(key)
     let handle = {
       'All Posts': this.retrievePosts,
       'My Posts': this.retrieveMyPosts,
@@ -84,8 +82,8 @@ class App extends React.Component {
       })
   }
 
-  showDeductions() {
-    this.setState({showDeductions: !this.state.showDeductions})
+  handlePage(e) {
+    this.setState({page: e.target.name})
   }
 
   //This function toggles the description card to appear,
@@ -241,26 +239,20 @@ class App extends React.Component {
 
   render() {
 
-    if (this.state.showDeductions) {
-      return (
-        <div>
-          <NavigationBar scrollTo={this.ScrollTo} onLogout={this.onLogout} showDeductions={this.showDeductions}/>
-          <DonationAmmount />
-        </div>
-      )
+    const pages = {
+      deduction: <DonationAmmount />,
+      settings: <Settings toggleSettings={()=> this.setState({page: false})}/>,
+      main: false
     }
-    return (
+    
+    return(
       <div>
         <NavigationBar
           scrollTo={this.ScrollTo}
           onLogout={this.onLogout}
-          handleSettings={this.handleSettings}
+          handlePage={this.handlePage}
         />
-        {this.state.toggleSettings ? (
-          <div>
-            <Settings toggleSettings={this.handleSettings}/>
-          </div>
-        ) : (
+        {pages[this.state.page] ||
           <div>
             <Maintron scrollTo={this.ScrollTo}/>
             <ReactBootstrap.Grid className="show-grid">
@@ -300,7 +292,7 @@ class App extends React.Component {
               />
             </div>
           </div>
-        )}
+        }
       </div>
     );
   }

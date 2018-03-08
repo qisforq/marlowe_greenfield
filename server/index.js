@@ -8,17 +8,11 @@ var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
-<<<<<<< HEAD
 var axios = require("axios");
 var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
 var config = require('../config.js');
-=======
-var moment = require('moment')
-var axios = require('axios')
-var config = require('../config.js')
->>>>>>> dontationAmmount-2
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -363,7 +357,6 @@ app.post("/chat", function(req, res) {
     });
 });
 
-<<<<<<< HEAD
 app.post("/email", (req,res)=>{
   var data = req.body
   var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
@@ -429,7 +422,6 @@ app.get('/user/notVerified', (req, res) => {
 })
 
 
-=======
 
 /************************************************************/
 //                   deduction
@@ -543,7 +535,6 @@ app.get('/donations', (req, res)=> {
   })
 })
 
->>>>>>> dontationAmmount-2
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
 });

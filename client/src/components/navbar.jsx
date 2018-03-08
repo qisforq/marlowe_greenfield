@@ -15,28 +15,28 @@ class NavigationBar extends React.Component {
 
 
   render () {
-    const { scrollTo, onLogout, handleSettings, showDeductions } = this.props;
+    const { scrollTo, onLogout, handlePage } = this.props;
 
     return (
       <Navbar>
         <Navbar.Header>
-          <Navbar.Brand>
-            <a href="#home">Kindly</a>
+          <Navbar.Brand  href="#">
+            <a name={'main'} onClick={handlePage} href="#home">Kindly</a>
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
-          <NavItem eventKey={1} href="#" onClick={scrollTo}>
+          <NavItem eventKey={1} name={'recent'} href="#" onClick={scrollTo}>
             Recent Posts
           </NavItem>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={3} href="#" onClick={handleSettings}>
+          <NavItem eventKey={2} name={'settings'} href="#" onClick={handlePage}>
             Settings
           </NavItem>
-          <NavItem eventKey={4} href="#" onClick={showDeductions}>
+          <NavItem eventKey={3} name={'deduction'} href="#" onClick={handlePage}>
             Deductions
           </NavItem>
-          <NavItem eventKey={2} href="#" onClick={onLogout}>
+          <NavItem eventKey={4} name={'logout'} href="#" onClick={onLogout}>
           Log Out
           </NavItem>
         </Nav>
