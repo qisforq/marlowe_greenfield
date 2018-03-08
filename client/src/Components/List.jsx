@@ -1,6 +1,6 @@
 import React from 'react';
 import ListItem from './listItem.jsx'
-import {Tabs, Tab} from 'react-bootstrap'
+import {Tabs, Tab, PanelGroup, Panel} from 'react-bootstrap'
 
 class List extends React.Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class List extends React.Component {
   }
 
   render() {
-    const { posts, handleClick, handleSelect, currentTab, isOrg } = this.props
+    const { posts, handleClick, handleSelect, currentTab, isOrg, featuredItem, claimHandler } = this.props
     return (
       <Tabs
         activeKey={currentTab}
@@ -17,17 +17,19 @@ class List extends React.Component {
       >
         {(isOrg ? ['All Posts', 'My Posts', 'Nearby', 'Claimed'] : ['My Posts', 'My Claimed', 'Nearby']).map(tab =>
         <Tab key={tab} eventKey={tab} title={tab}>
-          <div className="list">
-            <ul>
+          <div className="list" style={{overflow:'auto', height:'450px'}}>
+            <PanelGroup id='accordion' accordion>
               { posts.map((post, idx) =>
                 <ListItem
                   key={idx}
                   post={post}
                   handleClick={handleClick}
                   tab={tab}
+                  featuredItem = {featuredItem}
+                  claimHandler={claimHandler}
                 />
               )}
-            </ul>
+            </PanelGroup>
           </div>
         </Tab>)}
       </Tabs>

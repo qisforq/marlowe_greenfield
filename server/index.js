@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(
   session({
     secret: "this-is-a-secret-token",
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 600000 },
     resave: true,
     saveUninitialized: true
   })
@@ -421,8 +421,6 @@ app.get('/user/notVerified', (req, res) => {
     res.send('You have been rejected for verification');
 })
 
-
-
 /************************************************************/
 //                   deduction
 /************************************************************/
@@ -430,7 +428,7 @@ app.get('/user/notVerified', (req, res) => {
 
 // Function creates this object form database and charity navigator api
 
-  
+
   /*
     {years: [2017, 2018],
     organizations: [
@@ -445,14 +443,14 @@ app.get('/user/notVerified', (req, res) => {
             created_at,
             item,
             value
-          }, 
+          },
           {
             created_at,
             item,
             value
           },
        ]
-    }  
+    }
     ]
   }
   */
@@ -482,7 +480,7 @@ app.get('/donations', (req, res)=> {
         .push({item: donation.title, value: donation.estimatedValue, createdAt: donation.createdAt})
     })
 
-    return Promise.all(Object.keys(output.organizations).map(orgId => 
+    return Promise.all(Object.keys(output.organizations).map(orgId =>
       new Promise((resolve)=> {
         // get org name and verified status
         db.query(`SELECT org, verified FROM claimer WHERE id=${orgId}`, (err, info) => {
