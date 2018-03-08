@@ -21,7 +21,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
           myImages.map((photo) => <img height='150px' width='150px' src={photo} />)
         }
         <div>
-        {tab !== 'My Posts' && <button onClick={() => claimHandler(id)}>Claim</button>}
+        {tab !== 'My Posts' && <button onClick={() => claimHandler(featuredItem)}>Claim</button>}
         </div>
       </div>
     </Popover>

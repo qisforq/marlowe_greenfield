@@ -10,6 +10,9 @@ class List extends React.Component {
 
   }
 
+
+  
+
   render() {
     const { posts, handleClick, handleSelect, currentTab } = this.props
     return (
