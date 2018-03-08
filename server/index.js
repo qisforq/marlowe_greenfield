@@ -182,18 +182,6 @@ app.post("/updateentry", function(req, res) {
   })
 });
 
-app.get('/user/verified', (req, res) => {
-  console.log(req.url);
-  console.log(req.query);
-  var sqlQuery = `UPDATE claimer SET verified = false WHERE id = ${req.query.id}`;
-  db.query(sqlQuery, (error) => {
-    if (error) {
-      res.send(error);
-    }
-    res.end();
-  })
-})
-
 app.post('/current/address', (req,res)=>{
  currentAddress = req.body.location[0].formatted_address;
  currentLat = req.body.location[0].geometry.location.lat;
@@ -389,8 +377,8 @@ app.post('/verified/email', (req, res) => {
     var senderName = '&fromName' + 'some organization name'
     var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
     var message = '&bodyText=' + 'The following organization/user is requesting verification: \t ' + `${data.email}`
-    + '\n\n To verify the user, click the following link : \n\n' + `https://localhost:3000/user/verified/?id=${data.id}`
-    + '\n\n To deny user verification, click the following link: \n\n' + `https://localhost:3000/user/notVerified/` + '\n\n'
+    + '\n\n To verify the user, click the following link : \n\n' + `http://localhost:3000/user/verified/?id=1`
+    + '\n\n To deny user verification, click the following link: \n\n' + `http://www.localhost:3000/user/notVerified/?id=1` + '\n\n'
     var isTransactional = '&isTransactional=true'
 
     var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -406,8 +394,10 @@ app.post('/verified/email', (req, res) => {
   })
 
 app.get('/user/verified', (req, res) => {
-  console.log(req.url);
-  console.log(req.query);
+  console.log('this is req', req)
+  console.log('this is req.url', req.url);
+  console.log('this is req.query', req.query);
+  // var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
   var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
   db.query(sqlQuery, (error) => {
     if (error) {
@@ -418,7 +408,7 @@ app.get('/user/verified', (req, res) => {
 })
 
 app.get('/user/notVerified', (req, res) => {
-    var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
+    var sqlQuery = `UPDATE claimer SET verified = false WHERE id = ${req.query.id}`;
     db.query(sqlQuery, (error) => {
     if (error) {
       res.send(error);
