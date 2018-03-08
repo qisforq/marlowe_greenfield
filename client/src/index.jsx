@@ -37,9 +37,9 @@ class App extends React.Component {
       },
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
       toggleSettings: false, //this toggles the settings page to show/hide
-      page: false,
-      latitude: 40.767499,
-      longitude: -73.833079
+      page: false
+      latitude: 40.750487,
+      longitude: -73.976401
     };
     this.handleSelect = this.handleSelect.bind(this);
     this.retrievePosts = this.retrievePosts.bind(this);
@@ -58,7 +58,7 @@ class App extends React.Component {
   componentDidMount() {
     this.checkOrgStatus()
     .then(()=> this.retrievePosts())
-    
+
   }
 
   checkOrgStatus() {
@@ -244,7 +244,7 @@ class App extends React.Component {
       settings: <Settings toggleSettings={()=> this.setState({page: false})}/>,
       main: false
     }
-    
+
     return(
       <div>
         <NavigationBar
@@ -264,17 +264,15 @@ class App extends React.Component {
                     handleClick={this.changeFeatured}
                     handleSelect={this.handleSelect}
                     currentTab={this.state.tab}
-                  />
-                </ReactBootstrap.Col>
-                <ReactBootstrap.Col className="pass" md={6}>
-                  {this.state.show === false
-                    ? <div> <Form showModal={this.lgShow}/>
-                  </div>
-                  :  <DescriptionCard
                     featuredItem = {this.state.featuredItem}
                     claimHandler={this.handleClaim}
                     tab={this.state.tab}
-                  /> }
+                  />
+                </ReactBootstrap.Col>
+                <ReactBootstrap.Col className="pass" md={6}>
+                  <div>
+                    <Form showModal={this.lgShow}/>
+                  </div>
                 </ReactBootstrap.Col>
               </ReactBootstrap.Row>
             </ReactBootstrap.Grid>

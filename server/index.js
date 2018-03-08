@@ -423,9 +423,12 @@ app.get('/user/notVerified', (req, res) => {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> Did things
+=======
+>>>>>>> styling
 /************************************************************/
 //                   deduction
 /************************************************************/
@@ -539,9 +542,13 @@ app.get('/donations', (req, res)=> {
 })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> Did things
+=======
+
+>>>>>>> styling
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
 });
