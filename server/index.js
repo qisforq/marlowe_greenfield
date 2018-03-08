@@ -180,9 +180,19 @@ app.post("/updateentry", function(req, res) {
   .catch((err) => {
     throw(err)
   })
-
 });
 
+app.get('/user/verified', (req, res) => {
+  console.log(req.url);
+  console.log(req.query);
+  var sqlQuery = `UPDATE claimer SET verified = false WHERE id = ${req.query.id}`;
+  db.query(sqlQuery, (error) => {
+    if (error) {
+      res.send(error);
+    }
+    res.end();
+  })
+})
 
 app.post('/current/address', (req,res)=>{
  currentAddress = req.body.location[0].formatted_address;
@@ -363,6 +373,49 @@ app.post("/email", (req,res)=>{
     console.log(err)
   })
 })
+
+app.post('/verified/email', (req, res) => {
+    var data = req.body
+    var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
+    var subject = '&subject=REQUEST FOR VERIFICATION'
+    var sender = '&from=' + 'kindlyverify@gmail.com'
+    var senderName = '&fromName' + 'some organization name'
+    var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
+    var message = '&bodyText=' + 'The following organization/user is requesting verification: ' + `${data.email}`
+    + 'Click the following link if we should verify.' + `https://localhost:3000/user/verified/?id=${data.id}`
+    + 'Otherwise, click the following link to deny verification request.' + `https://localhost:3000/user/notVerified/`
+    var isTransactional = '&isTransactional=true'
+
+    var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
+
+    axios.post(URL)
+    .then((response) => {
+      console.log('sent')
+      console.log(response)
+      res.send(response.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  })
+})
+
+app.get('/user/verified', (req, res) => {
+  console.log(req.url);
+  console.log(req.query);
+  var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
+  db.query(sqlQuery, (error) => {
+    if (error) {
+      res.send(error);
+    }
+    res.end();
+  })
+})
+
+app.get('/user/notVerified', (req, res) => {
+    res.send('You have been rejected for verification');
+})
+
 
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
