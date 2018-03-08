@@ -77,7 +77,7 @@ class Form extends React.Component {
   }
 
   autocompleteHandler(locationObj) {
-    this.setState({address:locationObj}, ()=>{console.log(this.state)})
+    this.setState({address:locationObj}, ()=>{console.log(locationObj)})
   }
 
   handleChange(e) {
