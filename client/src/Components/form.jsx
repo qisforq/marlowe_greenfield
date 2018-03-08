@@ -154,30 +154,15 @@ class Form extends React.Component {
               controlId="estimatedValue"
               validationState={this.validateEstimate()}
             >
-            <FormControl 
-              type="text"  
+            <FormControl
+              type="text"
               value={this.state.estimatedValue}
               placeholder="Estimated Value"
-              onChange={this.handleChange} 
+              onChange={this.handleChange}
             />
             <FormControl.Feedback />
               {this.state.valueInptValidation && <HelpBlock>should only be numbers</HelpBlock>}
             </FormGroup>
-          <FormControl
-            id="phone"
-            type="text"
-            value={this.state.phone}
-            placeholder="Phone Number"
-            onChange={this.handleChange}
-            />
-            <FormControl
-              style={{height: '125px'}}
-              id="description"
-              type="text"
-              value={this.state.description}
-              placeholder="Description"
-              onChange={this.handleChange}
-            />
             <div className='dropzone'>
               <Dropzone onDrop={this.handlePhoto} accept='image/*' style={{width: '100%', height: '85px', borderRadius: '5px', border: '1px solid rgb(210, 210, 210)', overflow: 'auto'}}>
                 <p>
