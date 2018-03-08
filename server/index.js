@@ -233,7 +233,6 @@ app.post("/login", function(req, res) {
           console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
-            console.log('req.session:',req.session);
             res.end();
           });
         } else {

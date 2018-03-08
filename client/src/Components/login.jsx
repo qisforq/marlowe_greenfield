@@ -51,6 +51,7 @@ export default class Login extends Component {
 
   render() {
     return (
+    <div className='styleLogin' style={{backgroundImage: `url('images/kindness.png')`, backgroundSize: 'cover', width: '100%', height: '100%', position:'absolute', backgroundPosition:'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
@@ -93,6 +94,7 @@ export default class Login extends Component {
           </Button>
         </form>
       </div>
+    </div>
     );
   }
 }
