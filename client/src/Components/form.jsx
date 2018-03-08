@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
+import {FormControl, FormGroup, InputGroup, ControlLabel, Button, HelpBlock} from 'react-bootstrap';
 import Trigger from "../components/responsiveButton.jsx";
 import {compose, withProps, lifecycle} from "recompose";
 import {withScriptjs} from "react-google-maps";
@@ -16,6 +16,8 @@ class Form extends React.Component {
       title: '',
       description: '',
       address: '',
+      estimatedValue: '',
+      valueInptValidation: null,
       isClaimed: false,
       photoUrl: ''
     }
@@ -76,6 +78,18 @@ class Form extends React.Component {
     });
   }
 
+  validateEstimate() {
+    let val = this.state.estimatedValue
+    let state = null
+    if (!val.match(/[\d\.]/g) && val !== '') state = 'warning'
+
+    if (state !== this.state.valueInptValidation) {
+      this.setState({valueInptValidation: state})
+    }
+
+    return state
+  }
+
   render() {
     //Here is where a user enters their posting. Ensure that the address input is a real address. Recommend using
     // google maps auto complete API to ensure this. Server will break if an inputted address is invalid (not a real address)
@@ -83,6 +97,8 @@ class Form extends React.Component {
 
     //STATE INPUT: only accepts two chars (e.g, NY, CA) - if anything beyond two chars is submitted, this will not be saved to
     // the mySql database - this is a restriction set in the schema.
+
+    //className="form formDonate"
     return (
       <div className="form formDonate">
           <form>
@@ -97,12 +113,12 @@ class Form extends React.Component {
             onChange={this.handleChange}
           />
           <GoogleSearchBox  autocompleteHandler= {this.autocompleteHandler}/>
-        <FormControl
-          id="phone"
-          type="text"
-          value={this.state.phone}
-          placeholder="Phone Number"
-          onChange={this.handleChange}
+          <FormControl
+            id="phone"
+            type="text"
+            value={this.state.phone}
+            placeholder="Phone Number"
+            onChange={this.handleChange}
           />
           <FormControl
             style={{height: '125px'}}
@@ -112,6 +128,19 @@ class Form extends React.Component {
             placeholder="Description"
             onChange={this.handleChange}
           />
+           <FormGroup
+              controlId="estimatedValue"
+              validationState={this.validateEstimate()}
+            >
+            <FormControl 
+              type="text"  
+              value={this.state.estimatedValue}
+              placeholder="Estimated Value"
+              onChange={this.handleChange} 
+            />
+            <FormControl.Feedback />
+              {this.state.valueInptValidation && <HelpBlock>should only be numbers</HelpBlock>}
+            </FormGroup>
           <FormControl
             id="photoUrl"
             type="text"

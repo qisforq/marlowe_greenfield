@@ -27,7 +27,7 @@ app.use(
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
-  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/donations') {
+  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
     res.send({notLoggedIn: true})
     return
   }
@@ -202,6 +202,12 @@ app.post("/login", function(req, res) {
 app.post('/logout', function(req, res) {
   req.session.destroy();
   res.end();
+})
+
+app.get('/org', function(req, res) {
+  db.query(`SELECT org FROM claimer WHERE email="${req.session.email}"`, (err, data) => {
+    res.send(!!data[0].org)
+  })
 })
 
 /************************************************************/

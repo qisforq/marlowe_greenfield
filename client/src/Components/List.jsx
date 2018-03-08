@@ -5,20 +5,17 @@ import {Tabs, Tab} from 'react-bootstrap'
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-     }
-
   }
 
   render() {
-    const { posts, handleClick, handleSelect, currentTab } = this.props
+    const { posts, handleClick, handleSelect, currentTab, isOrg } = this.props
     return (
       <Tabs
         activeKey={currentTab}
         onSelect={handleSelect}
         id="controlled-tab-example"
       >
-        {['All Posts', 'My Posts', 'Nearby'].map(tab =>
+        {(isOrg ? ['All Posts', 'My Posts', 'Nearby', 'Claimed'] : ['My Posts', 'My Claimed', 'Nearby']).map(tab =>
         <Tab key={tab} eventKey={tab} title={tab}>
           <div className="list">
             <ul>

@@ -21,7 +21,8 @@ class App extends React.Component {
     this.state = {
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: example,
-      tab: false,
+      isOrg: false,
+      tab: 'All Posts',
       showDeductions: false,
       featuredItem: {
         id: null,
@@ -52,7 +53,16 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.retrievePosts();
+    this.checkOrgStatus()
+    .then(()=> this.retrievePosts())
+    
+  }
+
+  checkOrgStatus() {
+    return axios.get('/org')
+    .then((data)=> {
+      this.setState({isOrg: !!data.data})
+    })
   }
 
   handleSelect(key) {
@@ -240,6 +250,7 @@ class App extends React.Component {
             <h2 id='listheader'> Recent Postings </h2>
               <List
                 posts={this.state.posts}
+                isOrg={this.state.isOrg}
                 handleClick={this.changeFeatured}
                 handleSelect={this.handleSelect}
                 currentTab={this.state.tab}

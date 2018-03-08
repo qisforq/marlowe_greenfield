@@ -4,13 +4,6 @@ CREATE DATABASE marlowe;
 
 USE marlowe;
 
-CREATE TABLE provider (
-  id INTEGER AUTO_INCREMENT NOT NULL,
-  providerUsername VARCHAR(16),
-  pPassword VARCHAR(16),
-  PRIMARY KEY(id)
-);
-
 CREATE TABLE claimer (
   id INTEGER AUTO_INCREMENT NOT NULL,
   email VARCHAR(50) NOT NULL,
