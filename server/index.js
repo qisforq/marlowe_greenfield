@@ -398,7 +398,6 @@ app.post('/verified/email', (req, res) => {
       console.log(err)
     })
   })
-})
 
 app.get('/user/verified', (req, res) => {
   console.log(req.url);
