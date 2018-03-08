@@ -45,15 +45,15 @@ const upload = multer({
 });
 
 //This is the middleware used to authenticate the current session.
-const auth = function(req, res, next) {
-  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
-    res.send({notLoggedIn: true})
-    return
-  }
-  next();
-}
+// const auth = function(req, res, next) {
+//   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
+//     res.send({notLoggedIn: true})
+//     return
+//   }
+//   next();
+// }
 
-app.use(auth)
+// app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -167,7 +167,7 @@ app.post("/updateentry", function(req, res) {
   var sender = '&from=' + 'kindlywebmasters@gmail.com'
   var senderName = '&fromName' + 'kindlywebmasters'
   var receiver = '&to=' + `${req.session.email}` //donaters email address
-  var message = '&bodyText=' + 'You have claimed a donation (' +  req.body.description + ' ). Please pick-up the donation at : '+  req.body.address + ', Thanks for contributing to the community!'
+  var message = '&bodyText=' + 'You have claimed a donation (' +  req.body.description + ' ) . Please pick-up the donation at : '+  req.body.address + ', \n\n Thanks for using Kindly! \n\n'
   var isTransactional = '&isTransactional=true'
 
   var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -331,31 +331,31 @@ app.put('/settings', (req, res) => {
 //Twillio provides a fun/helpful feature to send users a text message on their phone if their post was claimed by another user.
 //Twilio account is under a free-trial subscription - you will need to sign up if you want to keep this feature AND change the credentials, please.
 
-app.post("/chat", function(req, res) {
-  var accountSid = "AC295216dc5e0bd27a16271da275b0c36f"; // You can creae/retrieve your Account SID from www.twilio.com/console
-  var authToken = "14a805bc4b3f3c784aaa5e4e16acc449"; // You can creae/retrieve your Auth Token from www.twilio.com/console
-  var client = new twilio(accountSid, authToken);
+// app.post("/chat", function(req, res) {
+//   var accountSid = "AC295216dc5e0bd27a16271da275b0c36f"; // You can creae/retrieve your Account SID from www.twilio.com/console
+//   var authToken = "14a805bc4b3f3c784aaa5e4e16acc449"; // You can creae/retrieve your Auth Token from www.twilio.com/console
+//   var client = new twilio(accountSid, authToken);
 
-  client.messages
-    .create({
-      body: `Thank you for claiming ${req.body.title} and helping the world !`,
-      to: '+19296660205', // Text this number - this is hard coded unless you'd like to upgrade your account =)
-      from: "+14255054003 " // From a valid Twilio number
-    })
-    .then(message => {
-      var client2 = new twilio(accountSid, authToken);
-      client2.messages
-        .create({
-          body: `Your posting ${req.body.title} has been claimed ! You'll be contacted soon !`,
-          to: +'19162567256', // Text this number this is hard coded unless you'd like to upgrade your account =)
-          from: "+14255054003 " // From a valid Twilio number
-        })
-        .then(message => {
-          res.end();
-        });
-      // res.end()
-    });
-});
+//   client.messages
+//     .create({
+//       body: `Thank you for claiming ${req.body.title} and helping the world !`,
+//       to: '+19296660205', // Text this number - this is hard coded unless you'd like to upgrade your account =)
+//       from: "+14255054003 " // From a valid Twilio number
+//     })
+//     .then(message => {
+//       var client2 = new twilio(accountSid, authToken);
+//       client2.messages
+//         .create({
+//           body: `Your posting ${req.body.title} has been claimed ! You'll be contacted soon !`,
+//           to: +'19162567256', // Text this number this is hard coded unless you'd like to upgrade your account =)
+//           from: "+14255054003 " // From a valid Twilio number
+//         })
+//         .then(message => {
+//           res.end();
+//         });
+//       // res.end()
+//     });
+// });
 
 app.post("/email", (req,res)=>{
   var data = req.body
@@ -382,14 +382,15 @@ app.post("/email", (req,res)=>{
 
 app.post('/verified/email', (req, res) => {
     var data = req.body
+    console.log('sending email')
     var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
     var subject = '&subject=REQUEST FOR VERIFICATION'
     var sender = '&from=' + 'kindlyverify@gmail.com'
     var senderName = '&fromName' + 'some organization name'
     var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
-    var message = '&bodyText=' + 'The following organization/user is requesting verification: ' + `${data.email}`
-    + 'Click the following link if we should verify.' + `https://localhost:3000/user/verified/?id=${data.id}`
-    + 'Otherwise, click the following link to deny verification request.' + `https://localhost:3000/user/notVerified/`
+    var message = '&bodyText=' + 'The following organization/user is requesting verification: \t ' + `${data.email}`
+    + '\n\n To verify the user, click the following link : \n\n' + `https://localhost:3000/user/verified/?id=${data.id}`
+    + '\n\n To deny user verification, click the following link: \n\n' + `https://localhost:3000/user/notVerified/` + '\n\n'
     var isTransactional = '&isTransactional=true'
 
     var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -397,7 +398,6 @@ app.post('/verified/email', (req, res) => {
     axios.post(URL)
     .then((response) => {
       console.log('sent')
-      console.log(response)
       res.send(response.data)
     })
     .catch((err) => {
@@ -418,7 +418,13 @@ app.get('/user/verified', (req, res) => {
 })
 
 app.get('/user/notVerified', (req, res) => {
-    res.send('You have been rejected for verification');
+    var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
+    db.query(sqlQuery, (error) => {
+    if (error) {
+      res.send(error);
+    }
+    res.end();
+  })
 })
 
 /************************************************************/

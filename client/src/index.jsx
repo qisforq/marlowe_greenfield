@@ -37,7 +37,7 @@ class App extends React.Component {
       },
       show: false, //this state is used to show/hide the DescriptionCard comoponent, which is changed via changeFeatured function
       toggleSettings: false, //this toggles the settings page to show/hide
-      page: false
+      page: false,
       latitude: 40.750487,
       longitude: -73.976401
     };
