@@ -8,17 +8,11 @@ var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
-<<<<<<< HEAD
 var axios = require("axios");
 var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
 var config = require('../config.js');
-=======
-var moment = require('moment')
-var axios = require('axios')
-var config = require('../config.js')
->>>>>>> dontationAmmount-2
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -27,7 +21,7 @@ app.use(bodyParser.json());
 app.use(
   session({
     secret: "this-is-a-secret-token",
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 600000 },
     resave: true,
     saveUninitialized: true
   })
@@ -363,7 +357,6 @@ app.post("/chat", function(req, res) {
     });
 });
 
-<<<<<<< HEAD
 app.post("/email", (req,res)=>{
   var data = req.body
   var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
@@ -429,8 +422,6 @@ app.get('/user/notVerified', (req, res) => {
 })
 
 
-=======
-
 /************************************************************/
 //                   deduction
 /************************************************************/
@@ -438,7 +429,7 @@ app.get('/user/notVerified', (req, res) => {
 
 // Function creates this object form database and charity navigator api
 
-  
+
   /*
     {years: [2017, 2018],
     organizations: [
@@ -453,14 +444,14 @@ app.get('/user/notVerified', (req, res) => {
             created_at,
             item,
             value
-          }, 
+          },
           {
             created_at,
             item,
             value
           },
        ]
-    }  
+    }
     ]
   }
   */
@@ -490,7 +481,7 @@ app.get('/donations', (req, res)=> {
         .push({item: donation.title, value: donation.estimatedValue, createdAt: donation.createdAt})
     })
 
-    return Promise.all(Object.keys(output.organizations).map(orgId => 
+    return Promise.all(Object.keys(output.organizations).map(orgId =>
       new Promise((resolve)=> {
         // get org name and verified status
         db.query(`SELECT org, verified FROM claimer WHERE id=${orgId}`, (err, info) => {
@@ -543,7 +534,7 @@ app.get('/donations', (req, res)=> {
   })
 })
 
->>>>>>> dontationAmmount-2
+
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
 });
