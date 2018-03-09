@@ -4,7 +4,6 @@ var request = require("request");
 var db = require("../database/databaseHelpers");
 var session = require("express-session");
 var twilio = require("twilio");
-var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
@@ -15,7 +14,9 @@ var aws = require('aws-sdk');
 var config = require('../config.js');
 var path = require('path');
 
-app.use(express.static(__dirname + "/../client/dist"));
+var app = express();
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use(bodyParser.json());
 
 //Currently the user can create an account, but there isn't any encryption going on - fix it :)
@@ -534,6 +535,6 @@ app.get('/*', (req, res) => {
 })
 
 var port = process.env.PORT || 3000;
-app.listen(process.env.PORT, function() {
-  console.log('CONNECTED TO PORT')
+app.listen(port, function() {
+  console.log('CONNECTED TO PORT', port)
 });
