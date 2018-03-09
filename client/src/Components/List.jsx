@@ -9,6 +9,7 @@ class List extends React.Component {
 
   render() {
     const { posts, handleClick, handleSelect, currentTab, isOrg, featuredItem, claimHandler } = this.props
+    console.log(this.props);
     return (
       <Tabs
         activeKey={currentTab}
