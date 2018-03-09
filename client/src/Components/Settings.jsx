@@ -142,9 +142,9 @@ class Settings extends Component {
 
   render() {
     return (
-      <div style={{"margin": "15px 15px"}}>
+      <div style={{"margin": "20px 15px"}}>
         <div>
-          <PageHeader>
+          <PageHeader style={{marginTop: '60px'}}>
             <small>User Settings</small>
           </PageHeader>
         </div>
