@@ -3,7 +3,7 @@ import {Jumbotron, Button} from 'react-bootstrap';
 
 const Maintron = (props) => {
   return (
-    <Jumbotron >
+    <Jumbotron style={{backgroundImage: `url('images/allHandsin.png')`}} >
     <div className="mainText">
       <h1>Support your community today.</h1>
       <p>
