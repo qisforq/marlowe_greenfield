@@ -118,15 +118,27 @@ body {
   left: 0px;
   right: 0px;
   display: block;
-  padding: 10px 15px 10px 0px;
+  /* padding: 10px 0px 10px 0px !important; */
+}
+
+.settingsLabel {
+  border-style: none;
+  display: block;
+  padding: 14px 0px 10px 0px !important;
+}
+
+.settingsLabel2 {
+  border-style: none;
 }
 
 .settingsForm {
-  padding: 5px 10px 5px 20px;
+  padding: 5px 10px 5px 20px !important;
   margin-top: 5px;
   margin-bottom: 5px;
   border: 1px solid #e7e7e7;
   background-color: #f8f8f8;
 }
-
+.settingsForm2 {
+  padding-top: 14px;
+}
 /*  */
