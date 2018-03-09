@@ -346,25 +346,28 @@ app.put('/settings', (req, res) => {
 // });
 
 app.post("/email", (req,res)=>{
-  var data = req.body
-  var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
-  var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!'
-  var sender = '&from=' + 'kindlywebmasters@gmail.com'
-  var senderName = '&fromName' + 'some organization name'
-  var receiver = '&to=eshum89@gmail.com' //donaters email address
-  var message = '&bodyText=' + 'Your Donation has been Claimed by ' + 'some org ' + 'Thanks for saving contributing to the community!'
-  var isTransactional = '&isTransactional=true'
-
-  var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
-
-  axios.post(URL)
-  .then((response) => {
-    console.log('sent')
-    console.log(response)
-    res.send(response.data)
-  })
-  .catch((err) => {
-    console.log(err)
+  var donater
+  db.query(`select email from claimer where id=${req.body.poster_id}`, (err, result)=>{
+    if(err){
+      throw(err)
+    }
+    donater = result[0].email
+      var data = req.body
+      var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
+      var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!'
+      var sender = '&from=' + 'kindlywebmasters@gmail.com'
+      var senderName = '&fromName' + 'Kindly Webmasters'
+      var receiver = '&to='+ `${donater}` //donaters email address
+      var message = '&bodyText=' + 'Your Donation has been Claimed by :' + `${req.session.email}` + '\n\n Thanks for saving contributing to the community! \n\n'
+      var isTransactional = '&isTransactional=true'
+      var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
+      axios.post(URL)
+      .then((response) => {
+        res.send(response.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   })
 })
 
