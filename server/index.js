@@ -374,11 +374,11 @@ app.post('/verified/email', (req, res) => {
     var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
     var subject = '&subject=REQUEST FOR VERIFICATION'
     var sender = '&from=' + 'kindlyverify@gmail.com'
-    var senderName = '&fromName' + 'some organization name'
+    var senderName = '&fromName' + 'Kindly Webmaster'
     var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
     var message = '&bodyText=' + 'The following organization/user is requesting verification: \t ' + `${data.email}`
-    + '\n\n To verify the user, click the following link : \n\n' + `http://localhost:3000/user/verified/?id=1`
-    + '\n\n To deny user verification, click the following link: \n\n' + `http://www.localhost:3000/user/notVerified/?id=1` + '\n\n'
+    + '\n\n To verify the user, click the following link : \n\n' + `http://localhost:3000/user/verified/?id=${data.id}`
+    + '\n\n To deny user verification, click the following link: \n\n' + `http://www.localhost:3000/user/notVerified/?id=${data.id}` + '\n\n'
     var isTransactional = '&isTransactional=true'
 
     var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -397,7 +397,6 @@ app.get('/user/verified', (req, res) => {
   console.log('this is req', req)
   console.log('this is req.url', req.url);
   console.log('this is req.query', req.query);
-  // var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
   var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
   db.query(sqlQuery, (error) => {
     if (error) {

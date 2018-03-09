@@ -79,12 +79,12 @@ class Settings extends Component {
     .then((results) => {
       let address = results.data[0].address || `(none)`;
       let email = results.data[0].email || `(none)`;
-      let verified = results.data[0].verified || 'Not Yet Verified';
       let id = results.data[0].id || '';
       let org = results.data[0].org || `(none)`;
       let lng = results.data[0].lng || '';
       let lat = results.data[0].lat || '';
       let phone = results.data[0].phone || `(none)`;
+      let verified = results.data[0].verified;
 
       this.setState({
         id: id,
@@ -94,6 +94,7 @@ class Settings extends Component {
         org: org,
         phone: phone
       }, () => {
+        console.log(this.state.verified);
         if (!this.state.email) {
           this.setState({
             toggleEmail: !this.state.toggleEmail,
@@ -327,11 +328,21 @@ class Settings extends Component {
                 </ListGroup>
               </Col>
               <Col xs={6} md={6} className="settingsForm2">
-                      <ListGroup>
-                        <ListGroupItem className="settings settingsForm">
-                          <strong>{this.state.verified}</strong>
-                        </ListGroupItem>
-                      </ListGroup>
+                {
+                  (this.state.verfied !== 0)
+                  ?
+                  (<ListGroup>
+                    <ListGroupItem id='yesVerfied' className="settings settingsForm">
+                      <strong>Verified</strong>
+                    </ListGroupItem>
+                  </ListGroup>)
+                  :
+                  (<ListGroup>
+                    <ListGroupItem id='notVerfied' className="settings settingsForm">
+                      <strong>Not Yet Verified</strong>
+                    </ListGroupItem>
+                  </ListGroup>)
+                }
               </Col>
               <Col xs={3} md={4}>
                 <ListGroup>
