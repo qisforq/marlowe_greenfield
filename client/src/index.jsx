@@ -57,7 +57,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({renderLoader: false}), 1500)
+    //setTimeout(() => this.setState({renderLoader: false}), 1500)
     this.checkOrgStatus()
     .then(()=> this.retrievePosts())
   }
