@@ -18,7 +18,7 @@ class NavigationBar extends React.Component {
     const { scrollTo, onLogout, handlePage } = this.props;
 
     return (
-      <Navbar fixedTop fluid staticTop>
+      <Navbar fixedTop fluid staticTop bsStyle='pills' style={{backgroundColor: 'white'}}>
         <Navbar.Header>
           <Navbar.Brand  href="#">
             <a name={'main'} onClick={handlePage} href="#home">Kindly</a>

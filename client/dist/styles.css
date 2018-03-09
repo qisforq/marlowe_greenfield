@@ -1,5 +1,6 @@
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #4482bc;
 }
 
 .listheader {
@@ -52,9 +53,10 @@ body {
 
 .jumbotron {
   text-align: center;
-  color: black;
+  margin-top: 50px;
+  color: white;
   height: 575px;
-  background-image: url('images/allHandsIn.jpg');
+  background-image: url('images/allHandsIn.png');
   /* background-size: auto 100%; */
   /* background-position: 0 0; */
   background-repeat: no-repeat;
