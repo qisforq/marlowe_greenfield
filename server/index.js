@@ -29,8 +29,8 @@ app.use(
 
 //This is for file uploading to AWS S3. It incorpoates the use of Multer which reads large files such as images, as chunks.
 aws.config.update({
-    secretAccessKey: config.AWS_SECRET,
-    accessKeyId: config.AWS_KEY,
+    secretAccessKey: process.env.AWS_SECRET,
+    accessKeyId: process.env.AWS_KEY,
     region: 'us-east-1'
 });
 const s3 = new aws.S3();
@@ -490,8 +490,8 @@ app.get('/donations', (req, res)=> {
          // get ein number and deductibility status from charity navigator
           axios.get(`https://api.data.charitynavigator.org/v2/Organizations`,
             {params: {
-              app_id: config.charityNav.id,
-              app_key: config.charityNav.key,
+              app_id: process.env.CHARITY_ID || config.charityNav.id,
+              app_key: process.env.CHARITY_KEY || config.charityNav.key,
               pageSize: 1,
               pageNum: 1,
               search: orgName

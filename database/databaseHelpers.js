@@ -2,10 +2,10 @@ var mysql = require('mysql');
 var config = require('../config.js')
 
 var connection = mysql.createConnection({
-  host: 'localhost' || config.host,
-  user: 'root' || config.user,
-  //password: null || config.password,
-  port: '' || config.port,
+  host: 'localhost' || process.env.DB_HOST,
+  user: 'root' || process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: '' || process.env.DB_PORT,
   database: 'marlowe'
 });
 
