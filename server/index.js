@@ -67,6 +67,10 @@ const upload = multer({
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
 
+app.get('/*', (req, res) => {
+  res.send(path.join(__dirname, '../client/dist'));
+})
+
 app.get('/checkLogin', function(req, res) {
   res.send({notLoggedIn: !req.session.email})
 })
@@ -81,8 +85,6 @@ app.get("/fetch", function(req, res) {
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
-    console.log('LINE 78', query);
-    console.log('LINE 79', results);
     if (err) console.log("FAILED to retrieve from database");
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
@@ -528,10 +530,6 @@ app.get('/donations', (req, res)=> {
       res.send(500, err)
     })
   })
-})
-
-app.get('/*', (req, res) => {
-  res.send(path.join(__dirname, "../client/dist"));
 })
 
 var port = process.env.PORT || 3000;
