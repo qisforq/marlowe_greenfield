@@ -114,12 +114,18 @@ body {
   left: 8px;
   width: 100%;
 }
+
 .settings {
   border-style: none;
   left: 0px;
   right: 0px;
   display: block;
   /* padding: 10px 0px 10px 0px !important; */
+}
+
+#yesVerfied {
+  background-color: rgb(109, 226, 117);
+  color: white;
 }
 
 .settingsLabel {

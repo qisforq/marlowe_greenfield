@@ -2,8 +2,10 @@ var mysql = require('mysql');
 var config = require('../config.js')
 
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+  host: 'localhost' || config.host,
+  user: 'root' || config.user,
+  //password: null || config.password,
+  port: '' || config.port,
   database: 'marlowe'
 });
 
@@ -15,46 +17,49 @@ connection.connect((err) => {
   }
 });
 
-//IF you need to drop tables on the hosted database, uncomment the below:
-// connection.query(`DROP TABLE IF EXISTS post`, (err, res) => {
-// if (err) console.log(err)
-// })
+const claimerTable = `CREATE TABLE IF NOT EXISTS claimer (
+  id INTEGER AUTO_INCREMENT NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  address VARCHAR(100),
+  org VARCHAR(200),
+  phone VARCHAR(12),
+  lng VARCHAR(50),
+  lat VARCHAR(50),
+  cPassword VARCHAR(1000) NOT NULL,
+  verified BOOLEAN,
+  PRIMARY KEY (id)
+)`;
 
-// connection.query(`CREATE TABLE IF NOT EXISTS provider (
-// id INTEGER AUTO_INCREMENT NOT NULL,providerUsername VARCHAR(16),
-// pPassword VARCHAR(16),PRIMARY KEY(id));`
-// , (err, results) => {
-//   if (err) console.log(err)
-// })
-//
-// connection.query(`CREATE TABLE IF NOT EXISTS claimer (
-//   id INTEGER AUTO_INCREMENT NOT NULL,
-//   claimerUsername VARCHAR(16),
-//   claimerZipCode INTEGER NOT NULL,
-//   cPassword VARCHAR(16),
-//   PRIMARY KEY (id)
-// );`, (err, res) => {
-// if (err) console.log(err)
-// })
-//
-// connection.query(`CREATE TABLE IF NOT EXISTS post (
-//   id INTEGER AUTO_INCREMENT NOT NULL,
-//   title VARCHAR(100),
-//   username VARCHAR(20),
-//   description VARCHAR(255),
-//   address VARCHAR(50),
-//   city VARCHAR(25),
-//   state VARCHAR(2),
-//   zipCode VARCHAR(6),
-//   phone VARCHAR(12),
-//   isClaimed BOOLEAN,
-//   emailAddress VARCHAR(50),
-//   createdAt INTEGER,
-//   photoUrl VARCHAR(512),
-//   PRIMARY KEY (id)
-// )`, (err, res) => {
-// if (err) console.log(err)
-// })
+const postTable = `CREATE TABLE IF NOT EXISTS post (
+  id INTEGER AUTO_INCREMENT NOT NULL,
+  title VARCHAR(100),
+  poster_id INTEGER NOT NULL,
+  description VARCHAR(255),
+  address VARCHAR(200),
+  lng VARCHAR(50),
+  lat VARCHAR(50),
+  phone VARCHAR(12),
+  isClaimed BOOLEAN DEFAULT FALSE,
+  claimer_id INTEGER,
+  createdAt INTEGER,
+  photoUrl VARCHAR(3000),
+  estimatedValue VARCHAR(50),
+  PRIMARY KEY (id),
+  FOREIGN KEY (poster_id) REFERENCES claimer(id),
+  FOREIGN KEY (claimer_id) REFERENCES claimer(id),
+  CHECK (poster_id <> claimer_id)
+)`;
 
+connection.query(claimerTable, (error) => {
+  if (error) {
+    throw error;
+  }
+})
+
+connection.query(postTable, (error) => {
+  if (error) {
+    throw error;
+  }
+})
 
 module.exports = connection;
