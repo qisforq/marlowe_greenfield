@@ -37,9 +37,15 @@ Promise.all(demoUsers.map(user => {
       else {
         console.log('inserted demo users')
 
+<<<<<<< HEAD
         const insertPostsQuery =
         `INSERT INTO post (title, poster_id, description, address, lat, lng, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue) VALUES ?;`
         const demoPosts = [
+=======
+        const insertPostsQuery = 
+        `INSERT INTO post (title, poster_id, description, address, lat, lng, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue) VALUES ?;`
+        const demoPosts = [      
+>>>>>>> Added verification styles, totals pannel and filtering for donation ammount
           // Jerry
           ["DONATING MY LIFE", 1, "MY LIFE IS WORTHLESSSSSSSS. JUST KIDDING ITS WORTH 500", "2348 7th Ave, New York, NY 10030, USA", "-73.94280520000001", "40.8171364", "1234567890", 0, null, 1520543425, "[]", "500"],
           ["I'm just a boy, giving out some love", 1, "Free love", "2345 4th Ave, Brooklyn, NY 11232, USA", "-74.0060355", "40.6523829", "1234567890", 0, null, 1520543530, "[]", "80"],
@@ -53,14 +59,22 @@ Promise.all(demoUsers.map(user => {
           ["DONATING my son's xbox", 2, "", "Empire State Building, New York, NY 10001, USA", "-73.98575770000002", "40.7485413", "124297752", 0, null, 1520544433, "[]", "200"],
           ["Donating a dozen donughts", 2, "Glazed only", "Hell's Kitchen, New York, NY, USA", "-73.99181809999999", "40.7637581", "9112132124", 0, null, 1520544706, "[]", "12"],
           ["50 Chicken nuggets", 2, "", "Hell's Kitchen, New York, NY, USA", "-73.99181809999999", "40.7637581", "12431212", 0, null, 1520544902, "[]", "13"],
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> Added verification styles, totals pannel and filtering for donation ammount
           // Quentin - Use for Donation ammount demo
           ["Moving Give Away ", 3, "Giving away stuff from moving sale. Furniture, clothes etc.", "259 1st St, Mineola, NY 11501, USA", "-73.64318709999998", "40.74097860000001", "555 5555", 1, 5, 1520609853, "[]", "200"],
           ["Canned food and Bottled Water", 3, "A few food items for donation", "New York, NY 10003, USA", "-73.99646089999999", "40.72951339999999", "555 5555", 1, 5, 1520609929, "[]", "60"],
           ["Desktop Computer", 3, "Late 2013 iMac computer", "Astoria, Queens, NY, USA", "-73.9234619", "40.7643574", "555 5555", 0, null, 1520609969, "[]", "900"],
           ["XBOX", 3, "XBOX One with a few games. Maybe useful for a children's hospital", "New York, NY 10018, USA", "-73.98323260000001", "40.7535965", "555 5555", 1, 5, 1520610009, "[]", "400"],
           ["iPhone 6", 3, "Working iPhone 6.", "Bank of America Tower, New York, NY 10036, USA", "-73.98493129999997", "40.7556029", "555 5555", 0, null, 1520610046, "[]", "300"],
+<<<<<<< HEAD
           ["Canada Goose Jacket", 3, "That one jacket that everyone has. You can have one too!", "Midtown, New York, NY, USA", "-73.98401949999999", "40.7549309", "555 5555", 1, 5, 1520610082, "[]", "1500`"],
+=======
+          ["Canada Goose Jacket", 3, "That one jacket that everyone has. You can have one too!", "Midtown, New York, NY, USA", "-73.98401949999999", "40.7549309", "555 5555", 1, 5, 1520610082, "[]", "1500"],
+>>>>>>> Added verification styles, totals pannel and filtering for donation ammount
           ["Coffee", 3, "Extra bag of coffee beans", "16 W 23rd St, New York, NY 10010, USA", "-73.990456", "40.741602", "555 5555", 0, null, 1520610120, "[]", "12"],
           ["Art Supplies", 3, "A whole collection of school art supplies. Enough for a class of ~ 20", "New York, NY 10174, USA", "-73.9755189", "40.75175779999999", "555 5555", 1, 6, 1520610374, "[]", "300"],
           ["Laser tag party for group of 15", 3, "Giving away a laser tag party for a group of 15. Great for a kids party", "62 Chelsea Piers, New York, NY 10011, USA", "-74.00853560000002", "40.7480678", "555 5555", 1, 5, 1520610466, "[]", "600"],
@@ -71,7 +85,11 @@ Promise.all(demoUsers.map(user => {
             if (err) console.log('error inserting demo posts', err)
             else {
               console.log('inserted demo posts')
+<<<<<<< HEAD
               }
+=======
+              } 
+>>>>>>> Added verification styles, totals pannel and filtering for donation ammount
               process.exit()
           })
         }

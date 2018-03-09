@@ -48,6 +48,7 @@ class Form extends React.Component {
     } else {
       formData.append('emptyPhoto', this.state.photoUrl);
     }
+    console.log('FORM DATA', formData)
     axios.post('/savepost', formData)
       .then( (response) =>{
         if (response.data.notLoggedIn) {
@@ -56,7 +57,6 @@ class Form extends React.Component {
           return
         } else {
           console.log('Post has been saved.', response);
-          console.log(this.state)
           this.clearFields();
           this.props.showModal();
         }

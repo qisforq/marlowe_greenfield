@@ -148,6 +148,7 @@ body {
   color: #777;
 }
 
+<<<<<<< HEAD
 .settingsForm2 {
   margin-left: 0px !important;
   margin-right: 0px;
@@ -165,3 +166,43 @@ body {
   padding-left:0px !important;
   margin-left:0px !important;
 }
+=======
+.yearsDrop {
+
+}
+
+.totalContainer {
+  margin-top: 8px
+}
+
+.orgTotal {
+  display: block;
+  font-size: 24px;
+  text-align: center;
+}
+
+.totalHeader {
+  display: block;
+  font-size: 10px;
+  text-align: center;
+}
+
+.panel-title-margins {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: inherit;
+}
+
+.panel-dense {
+  margin-bottom: 5px;
+  background-color: #fff;
+  /* border: 1px solid transparent; */
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+
+/*  */
+>>>>>>> Added verification styles, totals pannel and filtering for donation ammount
