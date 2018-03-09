@@ -532,7 +532,5 @@ app.get('/donations', (req, res)=> {
   })
 })
 
-var port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log('CONNECTED TO PORT', port)
-});
+var port = process.env.PORT;
+app.listen(port, () => console.log("Connected to port:", port) )
