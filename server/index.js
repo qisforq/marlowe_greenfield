@@ -64,6 +64,9 @@ const upload = multer({
 //This route fetches all posting from the database and sends them to the client
 //later this function should receive the zip code of the authenticated user and display
 //only relevant postings to the user
+app.get('/*', (req, res) => {
+  res.send(__dirname + "/../client/dist");
+})
 
 app.get('/checkLogin', function(req, res) {
   res.send({notLoggedIn: !req.session.email})
@@ -528,10 +531,7 @@ app.get('/donations', (req, res)=> {
   })
 })
 
-app.get('/*', (req, res) => {
-  res.send(__dirname + "/../client/dist");
-})
-
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
+  console.log('CONNECTED TO PORT', _PORT)
 });
