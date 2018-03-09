@@ -380,8 +380,8 @@ app.post('/verified/email', (req, res) => {
     var senderName = '&fromName' + 'Kindly Webmaster'
     var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
     var message = '&bodyText=' + 'The following organization/user is requesting verification: \t ' + `${data.email}`
-    + '\n\n To verify the user, click the following link : \n\n' + `http://localhost:3000/user/verified/?id=${data.id}`
-    + '\n\n To deny user verification, click the following link: \n\n' + `http://www.localhost:3000/user/notVerified/?id=${data.id}` + '\n\n'
+    + '\n\n To verify the user, click the following link : \n\n' + `http://kindly-jonson.herokuapp.com/user/verified/?id=${data.id}`
+    + '\n\n To deny user verification, click the following link: \n\n' + `http://kindly-jonson.herokuapp.com/user/notVerified/?id=${data.id}` + '\n\n'
     var isTransactional = '&isTransactional=true'
 
     var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
