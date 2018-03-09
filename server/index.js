@@ -528,6 +528,10 @@ app.get('/donations', (req, res)=> {
   })
 })
 
+app.get('/*', (req, res) => {
+  res.send(__dirname + "/../client/dist");
+})
+
 var _PORT = process.env.PORT || 3000;
 app.listen(_PORT, function() {
 });
