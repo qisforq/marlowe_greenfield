@@ -1,6 +1,7 @@
 import React from 'react'
-import {Panel, ListGroup, ListGroupItem, DropdownButton, MenuItem} from 'react-bootstrap'
+import {Panel, Table, DropdownButton, MenuItem} from 'react-bootstrap'
 import axios from 'axios'
+import moment from 'moment'
 
 class DonationAmmount extends React.Component {
   constructor(props) {
@@ -11,47 +12,89 @@ class DonationAmmount extends React.Component {
       selectedYear: null,
       selectedOrg: false
      }
-   axios.get('/dontations')
-     .then((data) => console.log(data))
+     this.handleSelect = this.handleSelect.bind(this)
   }
 
-  componentWillMount() {
-
+  componentDidMount() {
+    axios.get('/dontations')
+    .then((data) => console.log(data))
+    .then(()=> {
+    })
+    this.handleSelect('View All')
   }
 
-  componentWillUnmount() {
-    console.log('unmount')
-  }
+  handleSelect(key) {
+    this.setState({selectedYear: key}, ()=> {
+      let orgArr = [] 
+      console.log('ORGS', this.state.orgs)
+      for (let val in this.state.orgs) {
+  
+        let org = Object.assign({}, this.state.orgs[val])
+        let donations = org.donations.filter(donation => {
+          console.log('Is date equal? ', moment.unix(donation.created_at).format('YYYY') === key.toString())
+          return moment.unix(donation.created_at).format('YYYY') === key.toString()
+        })
+  
+        // console.log(donations)
+  
+        org.donations = (key === 'View All' ? org.donations : donations).sort((a,b)=> a.created_at < b.created_at)
 
-  handleSelect(e) {
-    this.setState({selectedYear: e.target.name})
+        if (org.donations.length > 0) {
+          orgArr.push(org)
+        }
+      }
+      
+      this.setState({displayOrgs: orgArr})
+    })
   }
 
   render() {
     return (
       <div style={{marginTop: '55px'}}>
       <DropdownButton
-        title={'Years'}
+        title={this.state.selectedYear}
         id={`dropdown-years`}
-        onSelect={this.handleSelect}
-      >
-        {this.state.years.map((year, i) => <MenuItem eventKey={i}>{year}</MenuItem>)}
+      > 
+        <MenuItem onSelect={this.handleSelect} name={'View All'} eventKey={'View All'}>View All</MenuItem>
+        {this.state.years.sort().reverse().map((year, i) => <MenuItem onSelect={this.handleSelect} name={year} eventKey={year}>{year}</MenuItem>)}
       </DropdownButton>
-      <Panel id="collapsible-panel-example-2">
-          <Panel.Heading>
-            <Panel.Title toggle>
-              Title that functions as a collapse toggle
-            </Panel.Title>
-          </Panel.Heading>
-          <Panel.Collapse>
-            <Panel.Body>
-            <ListGroup>
-              <ListGroupItem>Item 1</ListGroupItem>
-              <ListGroupItem>Item 2</ListGroupItem>
-            </ListGroup>
-            </Panel.Body>
-          </Panel.Collapse>
-        </Panel>
+      {this.state.displayOrgs.map(org => {
+        return (
+          <Panel id="collapsible-panel-example-2">
+              <Panel.Heading>
+                  <Panel.Title toggle componentClass="h3">{org.orgInfo.orgName}</Panel.Title>
+                  test
+              </Panel.Heading>
+              <Panel.Collapse>
+                <Panel.Body>
+                <Table responsive>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Item</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {org.donations.map((donation, i) => {
+                      return (
+                      <tr key={i}>
+                        <td>{
+                          moment.unix(donation.created_at).format('MMM Qo YYYY')
+                        }</td>
+                        <td>{donation.item}</td>
+                        <td>${donation.value.split('.')[0]}.00</td>
+                      </tr>
+                      )
+                    })}
+                    </tbody>
+                  </Table>
+                </Panel.Body>
+              </Panel.Collapse>
+            </Panel>
+        )
+        })
+      }
       </div>
      )
   }
