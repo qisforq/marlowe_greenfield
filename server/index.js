@@ -533,7 +533,7 @@ app.get('/*', (req, res) => {
   res.send(path.join(__dirname, "../client/dist"));
 })
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT;
 app.listen(port, function() {
   console.log('CONNECTED TO PORT', port)
 });
