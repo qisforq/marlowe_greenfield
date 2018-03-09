@@ -31,8 +31,8 @@ app.use(
 
 //This is for file uploading to AWS S3. It incorpoates the use of Multer which reads large files such as images, as chunks.
 aws.config.update({
-    secretAccessKey: process.env.AWS_SECRET,
-    accessKeyId: process.env.AWS_KEY,
+    secretAccessKey: config.AWS_SECRET || process.env.AWS_SECRET,
+    accessKeyId: config.AWS_KEY || process.env.AWS_KEY,
     region: 'us-east-1'
 });
 const s3 = new aws.S3();

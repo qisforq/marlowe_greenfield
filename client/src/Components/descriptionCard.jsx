@@ -9,7 +9,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
   let showImages;
   if (featuredItem.photoUrl) {
     myImages = featuredItem.photoUrl.slice(1, featuredItem.photoUrl.length - 1).split(',');
-    if(myImages.length<=1){
+    if (myImages[0].length <= 4) {
       myImages = []
     }
     showImages = myImages.map((photo) => <img height='150px' width='150px' src={photo} />)
