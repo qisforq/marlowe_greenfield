@@ -4,7 +4,7 @@ import axios from "axios";
 import GoogleSearchBox from "./Components/autocomplete.jsx";
 import NavigationBar from "./Components/navbar.jsx";
 import Maintron from "./Components/jumbotron.jsx";
-import List from "./Components/list.jsx";
+import List from "./Components/List.jsx";
 import Form from "./Components/form.jsx";
 import Settings from "./Components/Settings.jsx";
 import DescriptionCard from "./Components/descriptionCard.jsx";

@@ -1,5 +1,5 @@
 import React from 'react';
-import ListItem from './listItem.jsx'
+import ListItem from './ListItem.jsx'
 import {Tabs, Tab, PanelGroup, Panel} from 'react-bootstrap'
 
 class List extends React.Component {

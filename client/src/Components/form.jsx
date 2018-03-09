@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {FormControl, FormGroup, InputGroup, ControlLabel, Button, Label, HelpBlock} from 'react-bootstrap';
-import Trigger from "../components/responsiveButton.jsx";
+import Trigger from "./responsiveButton.jsx";
 import {compose, withProps, lifecycle} from "recompose";
 import {withScriptjs} from "react-google-maps";
 import {StandaloneSearchBox} from "react-google-maps/lib/components/places/StandaloneSearchBox";
