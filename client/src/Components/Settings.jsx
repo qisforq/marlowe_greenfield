@@ -2,27 +2,42 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Grid, Row, Col, FormControl, FormGroup, ControlLabel, Button, ListGroup, ListGroupItem, PageHeader, ButtonGroup} from 'react-bootstrap';
 
+import GoogleSearchBox from "./autocomplete.jsx"
+
 class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: '',
       email: '',
       address: '',
+      lat: '',
+      lng: '',
       verified: '',
+      org: '',
+      phone: '',
+      togglePhone: false,
       toggleEmail: false,
       toggleAddress: false,
+      toggleOrg: false,
     }
     this.saveChanges = this.saveChanges.bind(this)
     this.getUser = this.getUser.bind(this)
     this.editEmail = this.editEmail.bind(this)
+    this.editPhone = this.editPhone.bind(this)
     this.editAddress = this.editAddress.bind(this)
+    this.editOrg = this.editOrg.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.autocompleteHandler= this.autocompleteHandler.bind(this);
+    this.verify= this.verify.bind(this);
   }
 
   saveChanges() {
     axios.put('/settings', {
         email: this.state.email,
-        address: this.state.address
+        address: this.state.address,
+        lng: this.state.lng,
+        lat: this.state.lat
       }).then((response) => {
         console.log(response, 'axios response for saving settings!');
         this.props.toggleSettings();
@@ -38,6 +53,13 @@ class Settings extends Component {
     });
   }
 
+  editPhone() {
+    this.setState({
+      togglePhone: !this.state.togglePhone,
+      email: ''
+    });
+  }
+
   editAddress() {
     this.setState({
       toggleAddress: !this.state.toggleAddress,
@@ -45,16 +67,32 @@ class Settings extends Component {
     });
   }
 
+  editOrg() {
+    this.setState({
+      toggleOrg: !this.state.toggleOrg,
+      address: ''
+    });
+  }
+
   getUser() {
     axios.get('/settings')
     .then((results) => {
-      let address = results.data[0].address || '630 6th ave';
-      let email = results.data[0].email || '';
-      let verified = results.data[0].verified || '';
+      let address = results.data[0].address || `(none)`;
+      let email = results.data[0].email || `(none)`;
+      let verified = results.data[0].verified || 'Not Yet Verified';
+      let id = results.data[0].id || '';
+      let org = results.data[0].org || `(none)`;
+      let lng = results.data[0].lng || '';
+      let lat = results.data[0].lat || '';
+      let phone = results.data[0].phone || `(none)`;
+
       this.setState({
+        id: id,
         email: email,
         address: address,
-        verified: verified
+        verified: verified,
+        org: org,
+        phone: phone
       }, () => {
         if (!this.state.email) {
           this.setState({
@@ -71,9 +109,26 @@ class Settings extends Component {
     .catch((err) => console.log('ERROR:', err))
   }
 
+  verify() {
+    axios.post('/verified/email', {
+      email: this.state.email,
+      id: this.state.id
+    })
+  }
+
   handleChange(e) {
     this.setState({
       [e.target.id]: e.target.value,
+    });
+  }
+
+  autocompleteHandler(locationObj) {
+    this.setState({
+      address: locationObj.address,
+      lng:locationObj.longitude,
+      lat:locationObj.latitude,
+    }, () => {
+      console.log(locationObj, locationObj.lat, "<<<lat and long");
     });
   }
 
@@ -96,13 +151,14 @@ class Settings extends Component {
         <div>
           <Grid>
             <Row className="show-grid">
-              <Col xs={3} className="settings">
+              <Col xs={3} md={2} className="settingsLabel">
                 <ListGroup>
-                  <ListGroupItem className="settings"><strong>Email Address:</strong></ListGroupItem>
-                  <ListGroupItem className="settings"><strong>Street Address:</strong></ListGroupItem>
+                  <ListGroupItem className="settingsLabel2">
+                    <strong>Email Address:</strong>
+                  </ListGroupItem>
                 </ListGroup>
               </Col>
-              <Col xs={6}>
+              <Col xs={6} md={6} className="settingsForm2">
                 <FormGroup bsClass="settings">
                   <div>
                     {this.state.toggleEmail ? (
@@ -121,15 +177,43 @@ class Settings extends Component {
                       </ListGroup>
                     )}
                   </div>
+                </FormGroup>
+              </Col>
+              <Col xs={3} md={4}>
+                <ListGroup>
+                  <ListGroupItem className="settings">
+                    {!this.state.toggleEmail ? (
+                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editEmail}>Edit Email</Button></div>
+                    ) : (
+                      <div style={{"padding": "10px 15px"}}></div>
+                    )}
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={3} md={2} className="settingsLabel">
+                <ListGroup>
+                  <ListGroupItem className="settingsLabel2">
+                    <strong>Street Address:</strong>
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+              <Col xs={6} md={6} className="settingsForm2">
+                <FormGroup bsClass="settings">
                   <div>
                     {this.state.toggleAddress ? (
-                      <FormControl
+                      <GoogleSearchBox
                         id="address"
-                        type="text"
-                        value={this.state.address}
-                        placeholder="Enter Street Address"
-                        onChange={this.handleChange}
+                        autocompleteHandler={this.autocompleteHandler}
                       />
+                      // {/* <FormControl
+                      //   id="address"
+                      //   type="text"
+                      //   value={this.state.address}
+                      //   placeholder="Enter Street Address"
+                      //   onChange={this.handleChange}
+                      // /> */}
                     ) : (
                       <ListGroup>
                         <ListGroupItem className="settings settingsForm">
@@ -140,18 +224,122 @@ class Settings extends Component {
                   </div>
                 </FormGroup>
               </Col>
-              <Col xs={3}>
+              <Col xs={3} md={4}>
                 <ListGroup>
                   <ListGroupItem className="settings">
-                    {!this.state.toggleEmail ? (
-                      <div className="formButton"><Button onClick={this.editEmail}>Edit Email</Button></div>
+                    {!this.state.toggleAddress ? (
+                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editAddress}>Edit Address</Button></div>
                     ) : (
                       <div style={{"padding": "10px 15px"}}></div>
                     )}
                   </ListGroupItem>
+                </ListGroup>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={3} md={2} className="settingsLabel">
+                <ListGroup>
+                  <ListGroupItem className="settingsLabel2">
+                    <strong>Phone Number:</strong>
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+              <Col xs={6} md={6} className="settingsForm2">
+                <FormGroup bsClass="settings">
+                  <div>
+                    {this.state.togglePhone ? (
+                      <FormControl
+                        id="phone"
+                        type="text"
+                        value={this.state.phone}
+                        placeholder="Enter Phone Address"
+                        onChange={this.handleChange}
+                      />
+                    ) : (
+                      <ListGroup>
+                        <ListGroupItem className="settings settingsForm">
+                          <strong>{this.state.phone}</strong>
+                        </ListGroupItem>
+                      </ListGroup>
+                    )}
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col xs={3} md={4}>
+                <ListGroup>
                   <ListGroupItem className="settings">
-                    {!this.state.toggleAddress && (
-                      <div className="formButton"><Button onClick={this.editAddress}>Edit Address</Button></div>
+                    {!this.state.togglePhone ? (
+                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editPhone}>Edit Phone</Button></div>
+                    ) : (
+                      <div style={{"padding": "10px 15px"}}></div>
+                    )}
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={3} md={2} className="settingsLabel">
+                <ListGroup>
+                  <ListGroupItem className="settingsLabel2">
+                    <strong>Organization:</strong>
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+              <Col xs={6} md={6} className="settingsForm2">
+                <FormGroup bsClass="settings">
+                  <div>
+                    {this.state.toggleOrg ? (
+                      <FormControl
+                        id="org"
+                        type="text"
+                        value={this.state.org}
+                        placeholder="Enter Org"
+                        onChange={this.handleChange}
+                      />
+                    ) : (
+                      <ListGroup>
+                        <ListGroupItem className="settings settingsForm">
+                          <strong>{this.state.org}</strong>
+                        </ListGroupItem>
+                      </ListGroup>
+                    )}
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col xs={3} md={4}>
+                <ListGroup>
+                  <ListGroupItem className="settings">
+                    {!this.state.toggleOrg ? (
+                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editOrg}>Edit Organization</Button></div>
+                    ) : (
+                      <div style={{"padding": "10px 15px"}}></div>
+                    )}
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col xs={3} md={2} className="settingsLabel">
+                <ListGroup>
+                  <ListGroupItem className="settingsLabel2">
+                    <strong>Verification Status:</strong>
+                  </ListGroupItem>
+                </ListGroup>
+              </Col>
+              <Col xs={6} md={6} className="settingsForm2">
+                      <ListGroup>
+                        <ListGroupItem className="settings settingsForm">
+                          <strong>{this.state.verified}</strong>
+                        </ListGroupItem>
+                      </ListGroup>
+              </Col>
+              <Col xs={3} md={4}>
+                <ListGroup>
+                  <ListGroupItem className="settings">
+                    {!this.state.toggleOrg ? (
+                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.verify}>Verify Organization</Button></div>
+                    ) : (
+                      <div style={{"padding": "10px 15px"}}></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
@@ -171,5 +359,5 @@ class Settings extends Component {
     );
   }
 }
-// ugghhhhh
+
 export default Settings;
