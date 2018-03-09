@@ -7,7 +7,7 @@ const ListItem = ({post, handleClick, tab, featuredItem, claimHandler}) => {
   let {id, title, description, address} = post;
   return (
     <Panel eventKey={id}>
-      <Panel.Heading style={{backgroundColor:'#71d9ee'}}>
+      <Panel.Heading style={{backgroundColor:'white'}}>
         <Panel.Title toggle onClick={() => handleClick(post)}>{title} - {address}</Panel.Title>
       </Panel.Heading>
       <Panel.Body collapsible>
