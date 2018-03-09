@@ -8,12 +8,12 @@ import List from "./Components/list.jsx";
 import Form from "./Components/form.jsx";
 import Settings from "./Components/Settings.jsx";
 import DescriptionCard from "./Components/descriptionCard.jsx";
-import LoginPage from "./Components/login.jsx"
-import Signup from "./Components/signup.jsx"
-import MapComponent from "./Components/googleMaps.jsx"
-import Trigger from "./Components/responsiveButton.jsx"
-import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
-import example from './example.js'
+import LoginPage from "./Components/login.jsx";
+import Signup from "./Components/signup.jsx";
+import MapComponent from "./Components/googleMaps.jsx";
+import Trigger from "./Components/responsiveButton.jsx";
+import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
+import example from './example.js';
 import {Grid, Row, Col} from 'react-bootstrap';
 import DonationAmmount from './Components/DonationAmmount.jsx'
 
