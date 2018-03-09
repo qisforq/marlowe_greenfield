@@ -47,15 +47,15 @@ const upload = multer({
 });
 
 //This is the middleware used to authenticate the current session.
-// const auth = function(req, res, next) {
-//   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
-//     res.send({notLoggedIn: true})
-//     return
-//   }
-//   next();
-// }
+const auth = function(req, res, next) {
+  if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
+    res.send({notLoggedIn: true})
+    return
+  }
+  next();
+}
 
-// app.use(auth)
+app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -233,7 +233,7 @@ app.post("/login", function(req, res) {
       res.sendStatus(404);
     } else {
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        if (!error) {
+        if (result) {
           console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
