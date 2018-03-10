@@ -43,7 +43,6 @@ class Settings extends Component {
         org: this.state.org,
         phone: this.state.phone
       }).then((response) => {
-        console.log(response, 'axios response for saving settings!');
         this.props.toggleSettings();
       }).catch((error) => {
         console.log(error, 'Error: settings could not be saved');
@@ -114,7 +113,6 @@ class Settings extends Component {
         org: org,
         phone: phone
       }, () => {
-        console.log(this.state.verified);
         if (!this.state.email) {
           this.setState({
             toggleEmail: !this.state.toggleEmail,
@@ -151,8 +149,6 @@ class Settings extends Component {
       address: locationObj.address,
       lng:locationObj.longitude,
       lat:locationObj.latitude,
-    }, () => {
-      console.log(locationObj, locationObj.lat, "<<<lat and long");
     });
   }
 

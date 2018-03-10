@@ -32,7 +32,6 @@ export default class Signup extends Component {
 
   handleSignup(e){
     e.preventDefault();
-    console.log(this.state)
     axios.post('/signup', this.state)
     .then(() => {
       this.setState({username: '', password: '',}, this.changeToLogin());

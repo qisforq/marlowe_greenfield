@@ -7,7 +7,7 @@ import c3 from 'c3'
 class DonationAmmount extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       years: [],
       orgs: {
           1: {
@@ -34,7 +34,7 @@ class DonationAmmount extends React.Component {
                 value: '600',
               },
             ]
-         },   
+         },
          2: {
           orgInfo: {
             orgName: 'A REAL CHARITY',
@@ -82,7 +82,7 @@ class DonationAmmount extends React.Component {
   }
 
   processOrgs(key = this.state.selectedYear) {
-    let orgArr = [] 
+    let orgArr = []
     console.log('ORGS', this.state.orgs)
     for (let val in this.state.orgs) {
 
@@ -90,8 +90,6 @@ class DonationAmmount extends React.Component {
       let donations = org.donations.filter(donation => {
         return moment.unix(donation.createdAt).format('YYYY') === key.toString()
       })
-
-      // console.log(donations)
 
       org.donations = (key === 'All Years' ? org.donations : donations).sort((a,b)=> a.createdAt < b.createdAt)
 
@@ -107,7 +105,7 @@ class DonationAmmount extends React.Component {
         }
       }
     }
-    
+
     this.setState({displayOrgs: orgArr})
   }
 
@@ -132,7 +130,7 @@ class DonationAmmount extends React.Component {
     })
   }
 
-  render() {     
+  render() {
     // for each org donations list, filter by year where year is same as selected year
     // if donation list is not empty, push to org arr
 
@@ -157,7 +155,7 @@ class DonationAmmount extends React.Component {
       )
     }
 
-    return ( 
+    return (
       <div style={{marginTop: '50px'}}>
        <Grid>
          <Row>
@@ -171,7 +169,7 @@ class DonationAmmount extends React.Component {
             bsSize="large"
             title={this.state.selectedYear}
             id={`dropdown-years`}
-          > 
+          >
             <MenuItem onSelect={this.handleSelect} name={'All Years'} eventKey={'All Years'}>View All</MenuItem>
             {this.state.years.sort().reverse().map((year, i) => <MenuItem onSelect={this.handleSelect} name={year} eventKey={year}>{year}</MenuItem>)}
           </DropdownButton>
@@ -184,33 +182,33 @@ class DonationAmmount extends React.Component {
             block
             >
             <OverlayTrigger placement="top" overlay={buttonToolTip('Bad Actors')}>
-              <ToggleButton 
-                type="checkbox" 
+              <ToggleButton
+                type="checkbox"
                 checked={this.state.filters.includes(3)}
                 bsStyle={this.state.filters.includes(3) ? "danger" : 'default'}
-                onChange={this.handleChange} 
-                value={3} 
+                onChange={this.handleChange}
+                value={3}
               >
                 <Glyphicon glyph={"remove-sign"} />
                 </ToggleButton>
             </OverlayTrigger>
             <OverlayTrigger placement="top" overlay={buttonToolTip('Pending')}>
-              <ToggleButton 
-                type="checkbox" 
+              <ToggleButton
+                type="checkbox"
                 checked={this.state.filters.includes(2)}
-                bsStyle={this.state.filters.includes(2) ? "warning" : 'default'} 
-                onChange={this.handleChange} 
+                bsStyle={this.state.filters.includes(2) ? "warning" : 'default'}
+                onChange={this.handleChange}
                 value={2}
               >
                 <Glyphicon glyph={"question-sign"} />
               </ToggleButton>
             </OverlayTrigger>
             <OverlayTrigger placement="top" overlay={buttonToolTip('Verified')}>
-              <ToggleButton 
+              <ToggleButton
                 type="checkbox"
                 checked={this.state.filters.includes(1)}
-                bsStyle={this.state.filters.includes(1) ? "success" : 'default'} 
-                onChange={this.handleChange} 
+                bsStyle={this.state.filters.includes(1) ? "success" : 'default'}
+                onChange={this.handleChange}
                 value={1}
               >
                 <Glyphicon glyph={"ok-sign"} />
@@ -224,7 +222,7 @@ class DonationAmmount extends React.Component {
           </Col>
         </Row>
          <Row>
-           <Col xs={12} sm={7}> 
+           <Col xs={12} sm={7}>
         <div style={{height: window.innerHeight * 0.8, overflowY: 'scroll'}}>
         {this.state.displayOrgs.map((org, i) => {
           return (
@@ -234,8 +232,8 @@ class DonationAmmount extends React.Component {
                 <Grid>
                   <Row>
                     <Col xs={4}>
-                  <Panel.Title className="panel-title-margins" toggle componentClass="h2"> 
-                  {org.orgInfo.orgName} {' '} {org.orgInfo.verified === null ? <Glyphicon glyph={'question-sign'} />: <Glyphicon glyph={!!org.orgInfo.verified ? "ok-sign" : "remove-sign"} />} 
+                  <Panel.Title className="panel-title-margins" toggle componentClass="h2">
+                  {org.orgInfo.orgName} {' '} {org.orgInfo.verified === null ? <Glyphicon glyph={'question-sign'} />: <Glyphicon glyph={!!org.orgInfo.verified ? "ok-sign" : "remove-sign"} />}
                   </Panel.Title>
                     <OverlayTrigger placement="right" overlay={tooltip(org)}>
                       <span>EIN#: {org.orgInfo.ein}{' '}</span>
@@ -291,7 +289,7 @@ class DonationAmmount extends React.Component {
               }, 0)
             }</h1>
           </Panel>
-        </Col> 
+        </Col>
         </Row>
         </Grid>
       </div>
