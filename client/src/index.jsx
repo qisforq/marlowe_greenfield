@@ -77,7 +77,7 @@ class App extends React.Component {
       'All Posts': this.retrievePosts,
       'My Posts': this.retrieveMyPosts,
       'Nearby': this.retrieveClaimsByDist,
-      'My Claimed': this.retrieveMyClaims
+      'My Claimed': this.retrieveMyClaimedPosts
     }
     handle[key]()
       .then(()=> {
