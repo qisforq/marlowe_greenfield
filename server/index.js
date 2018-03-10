@@ -46,7 +46,6 @@ const upload = multer({
   })
 });
 
-<<<<<<< HEAD
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
   console.log(req.session);
@@ -60,19 +59,6 @@ const auth = function(req, res, next) {
   }
 }
 
-=======
-// This is the middleware used to authenticate the current session.
-const auth = function(req, res, next) {
-  if (!req.session.email || req.url !== '/login' || req.url !== '/current/address' || req.url !== '/signup' || req.url !== '/org') {
-    res.send({notLoggedIn: true})
-    return
-  }
-  next();
-}
-
-// app.use(auth)
-
->>>>>>> Finalized basic styling - commit before merge
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -98,11 +84,6 @@ app.get("/fetch", auth, function(req, res) {
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
-<<<<<<< HEAD
-=======
-    // console.log('LINE 78', query);
-    // console.log('LINE 79', results);
->>>>>>> Added verification styles, totals pannel and filtering for donation ammount
     if (err) console.log("FAILED to retrieve from database");
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
