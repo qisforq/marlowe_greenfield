@@ -272,6 +272,7 @@ class App extends React.Component {
           scrollTo={this.ScrollTo}
           onLogout={this.onLogout}
           handlePage={this.handlePage}
+          verStatus={this.state.isOrg}
         />
         {pages[this.state.page] ||
           <div>
