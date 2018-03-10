@@ -15,7 +15,7 @@ const createPassword = function(user) {
     })
 }
 
-const insertUsersQuery = 'INSERT INTO claimer (email, address, org, phone, lat, lng, cPassword, verified) VALUES ?;'
+const insertUsersQuery = 'INSERT INTO claimer (email, address, org, phone, lng, lat, cPassword, verified) VALUES ?;'
 const demoUsers = [
   ['Jerry@email.email', "89 E 42nd St, New York, NY 10017, USA", null, '5555555', '40.75272619999999', '-73.9772294', 'jerry', null],
   ['Eric@email.email', "Empire State Building, New York, NY 10001, US", null, '5555555', '40.7485413', '-73.98575770000002', 'eric', null],
@@ -39,9 +39,9 @@ Promise.all(demoUsers.map(user => {
       else {
         console.log('inserted demo users')
 
-        const insertPostsQuery = 
+        const insertPostsQuery =
         `INSERT INTO post (title, poster_id, description, address, lat, lng, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue) VALUES ?;`
-        const demoPosts = [      
+        const demoPosts = [
           // Jerry
           ["DONATING MY LIFE", 1, "MY LIFE IS WORTHLESSSSSSSS. JUST KIDDING ITS WORTH 500", "2348 7th Ave, New York, NY 10030, USA", "-73.94280520000001", "40.8171364", "1234567890", 0, null, 1520543425, "[]", "500"],
           ["I'm just a boy, giving out some love", 1, "Free love", "2345 4th Ave, Brooklyn, NY 11232, USA", "-74.0060355", "40.6523829", "1234567890", 0, null, 1520543530, "[]", "80"],
@@ -55,7 +55,7 @@ Promise.all(demoUsers.map(user => {
           ["DONATING my son's xbox", 2, "", "Empire State Building, New York, NY 10001, USA", "-73.98575770000002", "40.7485413", "124297752", 0, null, 1520544433, "[]", "200"],
           ["Donating a dozen donughts", 2, "Glazed only", "Hell's Kitchen, New York, NY, USA", "-73.99181809999999", "40.7637581", "9112132124", 0, null, 1520544706, "[]", "12"],
           ["50 Chicken nuggets", 2, "", "Hell's Kitchen, New York, NY, USA", "-73.99181809999999", "40.7637581", "12431212", 0, null, 1520544902, "[]", "13"],
-          
+
           // Quentin - Use for Donation ammount demo
           ["Moving Give Away ", 3, "Giving away stuff from moving sale. Furniture, clothes etc.", "259 1st St, Mineola, NY 11501, USA", "-73.64318709999998", "40.74097860000001", "555 5555", 1, 5, 1520609853, "[]", "200"],
           ["Canned food and Bottled Water", 3, "A few food items for donation", "New York, NY 10003, USA", "-73.99646089999999", "40.72951339999999", "555 5555", 1, 5, 1520609929, "[]", "60"],
@@ -82,7 +82,7 @@ Promise.all(demoUsers.map(user => {
             if (err) console.log('error inserting demo posts', err)
             else {
               console.log('inserted demo posts')
-              } 
+              }
               process.exit()
           })
         }
