@@ -28,6 +28,7 @@ class List extends React.Component {
                   tab={tab}
                   featuredItem = {featuredItem}
                   claimHandler={claimHandler}
+                  isOrg= {isOrg}
                 />
               )}
             </PanelGroup>

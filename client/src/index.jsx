@@ -275,6 +275,7 @@ class App extends React.Component {
                     featuredItem = {this.state.featuredItem}
                     claimHandler={this.handleClaim}
                     tab={this.state.tab}
+                    isOrg={this.state.isOrg}
                   />
                 </ReactBootstrap.Col>
                 <ReactBootstrap.Col className="pass" md={6}>
