@@ -136,15 +136,32 @@ body {
 
 .settingsLabel2 {
   border-style: none;
+  padding-right:0px !important;
+  color: #777;
 }
 
 .settingsForm {
-  padding: 5px 10px 5px 20px !important;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  padding: 8px 10px 5px 20px !important;
+  margin: 5px 0px 5px 0px !important;
   border: 1px solid #e7e7e7;
   background-color: #f8f8f8;
+  color: #777;
 }
+
 .settingsForm2 {
+  margin-left: 0px !important;
+  margin-right: 0px;
+  padding-left: 0px !important;
   padding-top: 14px;
+}
+.settingsButton {
+  padding: 8px 15px;
+  padding-bottom: 10px;
+  height: 0px;
+  margin-top: 1px;
+}
+.settingsButton2 {
+  width: 50px !important;
+  padding-left:0px !important;
+  margin-left:0px !important;
 }
