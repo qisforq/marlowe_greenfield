@@ -11,6 +11,7 @@ export default class Signup extends Component {
     this.state = {
       username: "",
       password: "",
+      badSignup: false
     };
 
     this.changeToLogin = this.changeToLogin.bind(this);
@@ -36,6 +37,9 @@ export default class Signup extends Component {
     .then(() => {
       this.setState({username: '', password: '',}, this.changeToLogin());
     }).catch((error) => {
+      this.setState({
+        badSignup: true
+      })
       throw error;
     })
   }
@@ -45,6 +49,15 @@ export default class Signup extends Component {
   }
 
   render() {
+    let showAlert;
+    if (this.state.badSignup === true) {
+      showAlert =
+      <Alert bsStyle="danger" onDismiss={() => this.setState({badSignup: false})}>
+        <h4>Sorry about that, we couldn't sign you up!</h4>
+        <p>Please make sure you entered a valid email address and password.</p>
+      </Alert>
+    }
+
     return (
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
@@ -70,16 +83,19 @@ export default class Signup extends Component {
             bsSize="large"
             disabled={!this.validateForm()}
             type="submit"
+            bsStyle="primary"
             onClick={this.handleSignup}
           >Sign up !
           </Button>
           <Button
             block
             bsSize="large"
+            bsStyle="primary"
             type="submit"
             onClick={this.changeToLogin}
           >Already Signed Up? Login!
-          </Button>
+        </Button> <br/>
+        {showAlert}
         </form>
       </div>
     );

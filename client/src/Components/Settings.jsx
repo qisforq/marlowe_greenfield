@@ -354,11 +354,11 @@ class Settings extends Component {
                 // className="settingsForm2"
                 >
                 {
-                  (this.state.verfied !== 0 && this.state.verified !== null)
+                  (this.state.verfied == 0 || this.state.verified == null || this.state.verified == '0')
                   ?
-                  (<h3><Label bsStyle="success">Verified</Label></h3>)
-                  :
                   ((<h3><Label bsStyle="danger">Not verified</Label></h3>))
+                  :
+                  (<h3><Label bsStyle="success">Verified</Label></h3>)
                 }
               </Col>
               <Col xs={3} md={4} className="settingsButton2">

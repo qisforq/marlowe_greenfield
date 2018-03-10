@@ -237,17 +237,16 @@ class App extends React.Component {
     });
   }
 
-
   render() {
-//     if (this.state.renderLoader === true) {
-//       return (
-//         <div>
-//           <div id='loader' style={{display:'block', margin: '0 auto', bottom:'50%', left:'45%', position:'absolute'}}>
-//             <img src='https://s3.amazonaws.com/oddjobs-best/loader.gif'/>
-//           </div>
-//         </div>
-//       )
-//     }
+    if (this.state.renderLoader === true) {
+      return (
+        <div>
+          <div id='loader' style={{display:'block', margin: '0 auto', bottom:'50%', left:'45%', position:'absolute'}}>
+            <img src='https://s3.amazonaws.com/oddjobs-best/loader.gif'/>
+          </div>
+        </div>
+      )
+    }
     const pages = {
       deduction: <DonationAmmount />,
       settings: <Settings toggleSettings={()=> this.setState({page: false})}/>,
@@ -312,7 +311,6 @@ axios.get('/checkLogin')
           console.log("HALLLOOOOOO",status.data);
           ReactDOM.render(<App />, document.getElementById("app"));
         } else {
-          console.log("HEY",status.data);
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
         }
       })
