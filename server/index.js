@@ -47,26 +47,26 @@ const upload = multer({
 });
 
 //This is the middleware used to authenticate the current session.
-// const auth = function(req, res, next) {
-//   if (
-//     !req.session.email
-//     && req.url !== '/login'
-//     && req.url !== '/current/address'
-//     && req.url !== '/signup'
-//     && req.url !== '/org'
-//     && req.url !== '/verified/email'
-//     && req.url !== '/user/verified'
-//     && req.url !== '/user/notVerified') {
-//     res.send({
-//       notLoggedIn: true,
-//       email: req.session.email
-//     })
-//     return
-//   }
-//   next();
-// }
-//
-// app.use(auth)
+const auth = function(req, res, next) {
+  if (
+    !req.session.email
+    || req.url !== '/login'
+    || req.url !== '/current/address'
+    || req.url !== '/signup'
+    || req.url !== '/org'
+    || req.url !== '/verified/email'
+    || req.url !== '/user/verified'
+    || req.url !== '/user/notVerified') {
+    res.send({
+      notLoggedIn: true,
+      email: req.session.email
+    })
+    return
+  }
+  next();
+}
+
+app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
