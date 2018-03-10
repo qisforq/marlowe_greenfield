@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
-import GoogleSearchBox from "./components/autocomplete.jsx";
-import NavigationBar from "./components/navbar.jsx";
-import Maintron from "./components/jumbotron.jsx";
-import List from "./components/list.jsx";
-import Form from "./components/form.jsx";
-import Settings from "./components/Settings.jsx";
-import DescriptionCard from "./components/descriptionCard.jsx";
-import LoginPage from "./components/login.jsx"
-import Signup from "./components/signup.jsx"
-import MapComponent from "./components/googleMaps.jsx"
-import Trigger from "./components/responsiveButton.jsx"
-import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
-import example from './example.js'
+import GoogleSearchBox from "./Components/autocomplete.jsx";
+import NavigationBar from "./Components/navbar.jsx";
+import Maintron from "./Components/jumbotron.jsx";
+import List from "./Components/List.jsx";
+import Form from "./Components/form.jsx";
+import Settings from "./Components/Settings.jsx";
+import DescriptionCard from "./Components/descriptionCard.jsx";
+import LoginPage from "./Components/login.jsx";
+import Signup from "./Components/signup.jsx";
+import MapComponent from "./Components/googleMaps.jsx";
+import Trigger from "./Components/responsiveButton.jsx";
+import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
+import example from './example.js';
 import {Grid, Row, Col} from 'react-bootstrap';
 import DonationAmmount from './Components/DonationAmmount.jsx'
 
@@ -239,15 +239,15 @@ class App extends React.Component {
 
 
   render() {
-    if (this.state.renderLoader === true) {
-      return (
-        <div>
-          <div id='loader' style={{display:'block', margin: '0 auto', bottom:'50%', left:'45%', position:'absolute'}}>
-            <img src='https://s3.amazonaws.com/oddjobs-best/loader.gif'/>
-          </div>
-        </div>
-      )
-    }
+//     if (this.state.renderLoader === true) {
+//       return (
+//         <div>
+//           <div id='loader' style={{display:'block', margin: '0 auto', bottom:'50%', left:'45%', position:'absolute'}}>
+//             <img src='https://s3.amazonaws.com/oddjobs-best/loader.gif'/>
+//           </div>
+//         </div>
+//       )
+//     }
     const pages = {
       deduction: <DonationAmmount />,
       settings: <Settings toggleSettings={()=> this.setState({page: false})}/>,
@@ -309,8 +309,10 @@ export default App
 axios.get('/checkLogin')
       .then(status => {
         if (!status.data.notLoggedIn) {
+          console.log("HALLLOOOOOO",status.data);
           ReactDOM.render(<App />, document.getElementById("app"));
         } else {
+          console.log("HEY",status.data);
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
         }
       })

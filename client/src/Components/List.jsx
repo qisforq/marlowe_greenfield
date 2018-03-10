@@ -1,5 +1,5 @@
 import React from 'react';
-import ListItem from './listItem.jsx'
+import ListItem from './ListItem.jsx'
 import {Tabs, Tab, PanelGroup, Panel} from 'react-bootstrap'
 
 class List extends React.Component {
@@ -9,6 +9,7 @@ class List extends React.Component {
 
   render() {
     const { posts, handleClick, handleSelect, currentTab, isOrg, featuredItem, claimHandler } = this.props
+    console.log(this.props);
     return (
       <Tabs
         activeKey={currentTab}

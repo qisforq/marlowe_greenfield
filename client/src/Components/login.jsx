@@ -31,7 +31,6 @@ export default class Login extends Component {
   }
 
   handleSubmit(e){
-    console.log('CLICKity CLACK');
     e.preventDefault();
     axios.post('/login', {
       username: this.state.email,

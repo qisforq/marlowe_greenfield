@@ -9,7 +9,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
   let showImages;
   if (featuredItem.photoUrl) {
     myImages = featuredItem.photoUrl.slice(1, featuredItem.photoUrl.length - 1).split(',');
-    if(myImages.length<=1){
+    if (myImages[0].length <= 4) {
       myImages = []
     }
     showImages = myImages.map((photo) => <img height='150px' width='150px' src={photo} />)
@@ -22,7 +22,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
         <p>{description}</p>
         <p>Reach me at: {featuredItem.phone}</p>
           {
-            myImages === null  ? <p></p> : showImages
+            myImages === null  ? <p>No Image</p> : showImages
           }
         <div>
         {tab !== 'My Posts' && <button onClick={() => claimHandler(featuredItem)}>Claim</button>}

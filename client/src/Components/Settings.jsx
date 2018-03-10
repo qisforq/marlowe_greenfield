@@ -329,7 +329,7 @@ class Settings extends Component {
               </Col>
               <Col xs={6} md={6} className="settingsForm2">
                 {
-                  (this.state.verfied !== 0)
+                  (this.state.verfied !== 0 && this.state.verified !== null)
                   ?
                   (<ListGroup>
                     <ListGroupItem id='yesVerfied' className="settings settingsForm">

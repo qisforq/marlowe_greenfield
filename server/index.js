@@ -4,7 +4,6 @@ var request = require("request");
 var db = require("../database/databaseHelpers");
 var session = require("express-session");
 var twilio = require("twilio");
-var app = express();
 var moment = require("moment");
 var geo = require("./geoHelper.js");
 var bcrypt = require("bcrypt");
@@ -13,6 +12,9 @@ var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
 var config = require('../config.js');
+var path = require('path');
+
+var app = express();
 
 app.use(express.static(__dirname + "/../client/dist"));
 app.use(bodyParser.json());
@@ -29,8 +31,8 @@ app.use(
 
 //This is for file uploading to AWS S3. It incorpoates the use of Multer which reads large files such as images, as chunks.
 aws.config.update({
-    secretAccessKey: config.AWS_SECRET,
-    accessKeyId: config.AWS_KEY,
+    secretAccessKey: config.AWS_SECRET || process.env.AWS_SECRET,
+    accessKeyId: config.AWS_KEY || process.env.AWS_KEY,
     region: 'us-east-1'
 });
 const s3 = new aws.S3();
@@ -45,15 +47,18 @@ const upload = multer({
 });
 
 //This is the middleware used to authenticate the current session.
-// const auth = function(req, res, next) {
-//   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
-//     res.send({notLoggedIn: true})
-//     return
-//   }
-//   next();
-// }
+const auth = function(req, res, next) {
+  console.log(req.session);
+  if (!req.session.email) {
+    res.send({
+      notLoggedIn: true
+    })
+    return
+  } else {
+    next();
+  }
+}
 
-// app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -66,21 +71,19 @@ const upload = multer({
 //only relevant postings to the user
 
 app.get('/checkLogin', function(req, res) {
-  res.send({notLoggedIn: !req.session.email})
+  res.send({notLoggedIn: !req.session.email, HELLOOO: req.session})
 })
 
-app.get('/allPosts', function(req, res) {
+app.get('/allPosts', auth, function(req, res) {
   db.query(`SELECT * FROM post`, (err, data)=> res.send(data))
 })
 
-app.get("/fetch", function(req, res) {
+app.get("/fetch", auth, function(req, res) {
   console.log('in the server fetch')
   let { lng, lat } = req.query
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
-    console.log('LINE 78', query);
-    console.log('LINE 79', results);
     if (err) console.log("FAILED to retrieve from database");
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
@@ -102,7 +105,7 @@ app.get("/fetch", function(req, res) {
 });
 
 // Gets email address from user's session
-app.get("/fetchMyPosts", function(req, res) {
+app.get("/fetchMyPosts", auth, function(req, res) {
   console.log('req.session:', req.session);
   var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
@@ -137,7 +140,7 @@ app.post("/savepost", upload.any(), function(req, res) {
   );
 });
 
-app.post("/latlong", function(req, res) {
+app.post("/latlong", auth, function(req, res) {
 
   //This function is using geohelper function which utilizes Google's geocoder API
   //Note: if an invalid address is passed to this method, it will cause the server to crash
@@ -152,7 +155,7 @@ app.post("/latlong", function(req, res) {
 });
 
 //This route handles updating a post that has been claimed by the user
-app.post("/updateentry", function(req, res) {
+app.post("/updateentry", auth, function(req, res) {
   db.query(
     `UPDATE post SET claimer_id=(SELECT id FROM claimer WHERE email="${req.session.email}"), isClaimed=true WHERE id="${req.body.id}"`,
     (err, data) => {
@@ -186,7 +189,7 @@ app.post("/updateentry", function(req, res) {
   })
 });
 
-app.post('/current/address', (req,res)=>{
+app.post('/current/address', auth, (req,res)=>{
  currentAddress = req.body.location[0].formatted_address;
  currentLat = req.body.location[0].geometry.location.lat;
  currentLng = req.body.location[0].geometry.location.lng;
@@ -229,7 +232,7 @@ app.post("/login", function(req, res) {
       res.sendStatus(404);
     } else {
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        if (!error) {
+        if (result) {
           console.log("Time to session.regenerate()");
           req.session.regenerate(() => {
             req.session.email = req.body.username;
@@ -244,7 +247,7 @@ app.post("/login", function(req, res) {
   });
 });
 
-app.post('/logout', function(req, res) {
+app.post('/logout', auth, function(req, res) {
   req.session.destroy();
   res.end();
 })
@@ -261,7 +264,7 @@ app.get('/org', function(req, res) {
 
 // These routes are for updating user's Settings
 
-app.get("/settings", (req, res) => {
+app.get("/settings", auth, (req, res) => {
   db.query(`SELECT * FROM claimer WHERE email="${req.session.email}";`,
   (err, results) => {
     if (err) {
@@ -274,7 +277,7 @@ app.get("/settings", (req, res) => {
   });
 });
 
-app.put('/settings', (req, res) => {
+app.put('/settings', auth, (req, res) => {
   let query = ``;
   let {email, address} = req.body;
   if (email && address) {
@@ -345,26 +348,29 @@ app.put('/settings', (req, res) => {
 //     });
 // });
 
-app.post("/email", (req,res)=>{
-  var data = req.body
-  var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
-  var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!'
-  var sender = '&from=' + 'kindlywebmasters@gmail.com'
-  var senderName = '&fromName' + 'some organization name'
-  var receiver = '&to=eshum89@gmail.com' //donaters email address
-  var message = '&bodyText=' + 'Your Donation has been Claimed by ' + 'some org ' + 'Thanks for saving contributing to the community!'
-  var isTransactional = '&isTransactional=true'
-
-  var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
-
-  axios.post(URL)
-  .then((response) => {
-    console.log('sent')
-    console.log(response)
-    res.send(response.data)
-  })
-  .catch((err) => {
-    console.log(err)
+app.post("/email", auth, (req,res)=>{
+  var donater
+  db.query(`select email from claimer where id=${req.body.poster_id}`, (err, result)=>{
+    if(err){
+      throw(err)
+    }
+    donater = result[0].email
+      var data = req.body
+      var rootUrl = 'https://api.elasticemail.com/v2/email/send?apikey=11247b43-8015-4e70-b075-4327381d0e0f'
+      var subject = '&subject=YOUR DONATION HAS BEEN CLAIMED!'
+      var sender = '&from=' + 'kindlywebmasters@gmail.com'
+      var senderName = '&fromName' + 'Kindly Webmasters'
+      var receiver = '&to='+ `${donater}` //donaters email address
+      var message = '&bodyText=' + 'Your Donation has been Claimed by :' + `${req.session.email}` + '\n\n Thanks for saving contributing to the community! \n\n'
+      var isTransactional = '&isTransactional=true'
+      var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
+      axios.post(URL)
+      .then((response) => {
+        res.send(response.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   })
 })
 
@@ -377,8 +383,8 @@ app.post('/verified/email', (req, res) => {
     var senderName = '&fromName' + 'Kindly Webmaster'
     var receiver = '&to=kindlywebmasters@gmail.com' //donaters email address
     var message = '&bodyText=' + 'The following organization/user is requesting verification: \t ' + `${data.email}`
-    + '\n\n To verify the user, click the following link : \n\n' + `http://localhost:3000/user/verified/?id=${data.id}`
-    + '\n\n To deny user verification, click the following link: \n\n' + `http://www.localhost:3000/user/notVerified/?id=${data.id}` + '\n\n'
+    + '\n\n To verify the user, click the following link : \n\n' + `http://kindly-jonson.herokuapp.com/user/verified/?id=${data.id}`
+    + '\n\n To deny user verification, click the following link: \n\n' + `http://kindly-jonson.herokuapp.com/user/notVerified/?id=${data.id}` + '\n\n'
     var isTransactional = '&isTransactional=true'
 
     var URL = rootUrl + subject + sender + senderName + receiver + message + isTransactional
@@ -450,7 +456,7 @@ app.get('/user/notVerified', (req, res) => {
   }
   */
 
-app.get('/donations', (req, res)=> {
+app.get('/donations', auth, (req, res)=> {
   // get all claimed posts for this user
 
   db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email=${req.session.email})`, (err, results)=> {
@@ -490,8 +496,8 @@ app.get('/donations', (req, res)=> {
          // get ein number and deductibility status from charity navigator
           axios.get(`https://api.data.charitynavigator.org/v2/Organizations`,
             {params: {
-              app_id: config.charityNav.id,
-              app_key: config.charityNav.key,
+              app_id: process.env.CHARITY_ID || config.charityNav.id,
+              app_key: process.env.CHARITY_KEY || config.charityNav.key,
               pageSize: 1,
               pageNum: 1,
               search: orgName
@@ -528,6 +534,9 @@ app.get('/donations', (req, res)=> {
   })
 })
 
-var _PORT = process.env.PORT || 3000;
-app.listen(_PORT, function() {
-});
+app.get('/*', (req, res) => {
+  res.send(__dirname + '/../client/dist');
+})
+
+var port = process.env.PORT || 3000;
+app.listen(port, () => console.log("Connected to port:", port) )
