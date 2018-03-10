@@ -229,18 +229,20 @@ app.post("/login", function(req, res) {
     if (error) {
       throw error;
     } else if (results.length === 0) {
-      res.sendStatus(404);
+      console.log("Could not find user length is 0")
+      res.status(404).send();
     } else {
       bcrypt.compare(req.body.password, results[0].cPassword, (error, result) => {
-        if (result) {
-          console.log("Time to session.regenerate()");
+        if (error) {
+          res.send(error);
+        } else if (result === true) {
+          console.log(result);
           req.session.regenerate(() => {
             req.session.email = req.body.username;
             res.end();
           });
         } else {
-          console.log('error!');
-          res.send(error);
+          res.status(404).send();
         }
       })
     }

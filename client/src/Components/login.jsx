@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom'
 import App from '../index.jsx'
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { Button, FormGroup, FormControl, ControlLabel, Alert } from "react-bootstrap";
 import axios from 'axios'
 import Signup from './signup.jsx'
 
@@ -12,7 +12,8 @@ export default class Login extends Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      badLogin: false
     };
     this.validateForm =this.validateForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -40,6 +41,9 @@ export default class Login extends Component {
       this.setState({username: '', password: ''});
       ReactDOM.render(<App />, document.getElementById("app"));
     }).catch((error) => {
+      this.setState({
+        badLogin: true
+      });
       throw error;
     })
   }
@@ -49,12 +53,20 @@ export default class Login extends Component {
   }
 
   render() {
+    let showAlert;
+    if (this.state.badLogin === true) {
+      showAlert =
+      <Alert bsStyle="danger" onDismiss={() => this.setState({badLogin: false})}>
+        <h4>There was an error logging in.</h4>
+        <p>Please check your email or password and try again.</p>
+      </Alert>
+    }
+
     return (
     <div className='styleLogin' style={{backgroundImage: `url('images/kindness.png')`, backgroundSize: 'cover', width: '100%', height: '100%', position:'absolute', backgroundPosition:'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
-
           <h1>Kindly</h1>
             <ControlLabel>Email</ControlLabel>
             <FormControl
@@ -74,7 +86,7 @@ export default class Login extends Component {
           </FormGroup>
           <Button
             block
-            bsStyle="warning"
+            bsStyle="primary"
             bsSize="large"
             disabled={!this.validateForm()}
             type="submit"
@@ -84,13 +96,14 @@ export default class Login extends Component {
           </Button>
           <Button
             block
-            bsStyle="warning"
+            bsStyle="primary"
             bsSize="large"
             type="submit"
             onClick={this.changeToSignup}
           >
             New User? Sign Up!
-          </Button>
+          </Button> <br/>
+          {showAlert}
         </form>
       </div>
     </div>
