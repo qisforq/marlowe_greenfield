@@ -57,7 +57,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    //setTimeout(() => this.setState({renderLoader: false}), 1500)
+    setTimeout(() => this.setState({renderLoader: false}), 1500)
     this.checkOrgStatus()
     .then(()=> this.retrievePosts())
   }
@@ -306,6 +306,7 @@ class App extends React.Component {
 }
 
 export default App
+setTimeout(() =>
 axios.get('/checkLogin')
       .then(status => {
         if (!status.data.notLoggedIn) {
@@ -314,3 +315,4 @@ axios.get('/checkLogin')
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
         }
       })
+, 5000);

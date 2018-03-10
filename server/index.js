@@ -56,7 +56,8 @@ const auth = function(req, res, next) {
     || req.url !== '/org'
     || req.url !== '/verified/email'
     || req.url !== '/user/verified'
-    || req.url !== '/user/notVerified') {
+    || req.url !== '/user/notVerified'
+    || req.url !== '/checkLogin') {
     res.send({
       notLoggedIn: true,
       email: req.session.email
