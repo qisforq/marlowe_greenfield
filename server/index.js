@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(
   session({
     secret: "this-is-a-secret-token",
-    cookie: { maxAge: 600000 },
+    cookie: { maxAge: 600000 * 1000 },
     resave: true,
     saveUninitialized: true
   })
@@ -84,7 +84,7 @@ app.get("/fetch", auth, function(req, res) {
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
-    if (err) console.log("FAILED to retrieve from database");
+    if (err) console.log("FAILED to retrieve from database for: ", req.session.email );
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
         let ky = 40000 / 360;
@@ -126,6 +126,8 @@ app.post("/savepost", upload.any(), function(req, res) {
   const listing = req.body;
   const images = req.files.map((image) => image.location)
   const storeImages = `[${images.join(', ')}]`;
+
+  console.log(req.session.email)
 
   db.query(
     `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, createdAt, photoUrl, estimatedValue)
@@ -446,7 +448,7 @@ app.get('/user/notVerified', (req, res) => {
 app.get('/donations', auth, (req, res)=> {
   // get all claimed posts for this user
 
-  db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email=${req.session.email})`, (err, results)=> {
+  db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}")`, (err, results)=> {
 
     var output = {years:[], organizations:{}}
 
@@ -459,19 +461,19 @@ app.get('/donations', auth, (req, res)=> {
       }
 
       //if organization does not yet exist in output, create that organization
-      if(!output.organizations[donation.poster_id]) {
-        output.organizations[donation.poster_id] = {donations:[]} // add org info at end
+      if(!output.organizations[donation.claimer_id]) {
+        output.organizations[donation.claimer_id] = {donations:[]} // add org info at end
       }
 
       // push dontation to it's organization's donation array
-      output.organizations[donation.poster_id].donations
+      output.organizations[donation.claimer_id].donations
         .push({item: donation.title, value: donation.estimatedValue, createdAt: donation.createdAt})
     })
 
     return Promise.all(Object.keys(output.organizations).map(orgId =>
       new Promise((resolve)=> {
         // get org name and verified status
-        db.query(`SELECT org, verified FROM claimer WHERE id=${orgId}`, (err, info) => {
+        db.query(`SELECT org, verified FROM claimer WHERE id="${orgId}"`, (err, info) => {
          let orgName = info[0].org
          let verified = info[0].verified
 
@@ -487,14 +489,16 @@ app.get('/donations', auth, (req, res)=> {
               app_key: process.env.CHARITY_KEY || config.charityNav.key,
               pageSize: 1,
               pageNum: 1,
-              search: orgName
+              search: orgName,
+              // searchType: 'NAME_ONLY'
             }}
           ).then(charityData => {
             let ein = charityData.data[0].ein
             let deductable = charityData.data[0].irsClassification.deductibility
+            let guessedName = charityData.data[0].charityName
 
             // Each promise resolves with this org info object
-            resolve({id: orgId, orgName, ein, deductable, verified})
+            resolve({id: orgId, orgName, ein, deductable, verified, guessedName})
           })
           .catch(err => {
             console.log('err')

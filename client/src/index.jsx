@@ -84,6 +84,19 @@ class App extends React.Component {
   }
 
   handlePage(e) {
+    // Conditional prevents scrolling of the main page on the deductions page
+    if (e.target.name === 'deduction') {
+      document.body.scroll = "no";
+      document.body.style.overflow = 'hidden';
+      document.height = window.innerHeight;
+      document.width = window.innerWidth;
+    } else {
+      document.body.scroll = "yes";
+      document.body.style.overflow = 'auto';
+      document.height = window.innerHeight;
+      document.width = window.innerWidth;
+    }
+
     this.setState({page: e.target.name})
   }
 
@@ -99,14 +112,14 @@ class App extends React.Component {
         latitude: Number(listItem.lat),
         longitude : Number(listItem.lng),
      });
-      // let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
-      // axios.post('/latlong', {address: address})
-      //   .then(result => {
-      //     this.setState({
-      //       latitude: Number(result.data.lat),
-      //       longitude: Number(result.data.long)
-      //     })
-      //   })
+      let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
+      axios.post('/latlong', {address: address})
+        .then(result => {
+          this.setState({
+            latitude: Number(result.data.lat),
+            longitude: Number(result.data.long)
+          })
+        })
       console.log(this.state)
     }
     else if(this.state.show === true){
