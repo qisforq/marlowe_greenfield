@@ -54,11 +54,7 @@ class App extends React.Component {
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.handlePage = this.handlePage.bind(this);
-<<<<<<< HEAD
     this.retrieveMyClaims = this.retrieveMyClaims.bind(this);
-=======
-    this.retrieveMyClaimedPosts = this.retrieveMyClaimedPosts.bind(this)
->>>>>>> Commit before merge
   }
 
   componentDidMount() {
