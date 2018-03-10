@@ -61,8 +61,8 @@ class NavigationBar extends React.Component {
                 {(this.state.org) ? (<span>Hello, {this.state.org}&nbsp;</span>): (<span>Hello, {this.state.email}&nbsp;</span>)}
               </span>
               <span>
-                {this.state.verified &&
-                  (<Glyphicon glyph={"ok-sign"} style={{color: "#5cb85c"}}/>)}
+                {this.state.verified ? (<Glyphicon glyph={"ok-sign"} style={{color: "#5cb85c"}}/>) : (<div></div>)
+                  ()}
               </span>
             </div>
 
