@@ -84,7 +84,7 @@ app.get("/fetch", auth, function(req, res) {
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
   db.query(query, (err, results) => {
-    if (err) console.log("FAILED to retrieve from database");
+    if (err) console.log("FAILED to retrieve from database for: ", req.session.email );
     else {
       var findDistance = function(centerPoint, checkPoint, miles) {
         let ky = 40000 / 360;

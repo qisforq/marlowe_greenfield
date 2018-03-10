@@ -7,11 +7,64 @@ import c3 from 'c3'
 class DonationAmmount extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { 
       years: [],
-      orgs: [],
-      selectedYear: null,
-      selectedOrg: false
+      orgs: {
+          1: {
+            orgInfo: {
+              orgName: 'UNICEF',
+              ein: 203287404,
+              deductable: '501(c)(3)',
+              verified: true
+            },
+            donations: [
+              {
+                 createdAt: 1320543744,
+                 item: 'MY LIFE',
+                 value: '500',
+               },
+               {
+                createdAt: 1320443900,
+                item: 'MY STUFF',
+                value: '100',
+              },
+              {
+                createdAt: 1520229039,
+                item: 'MY FAMILY',
+                value: '600',
+              },
+            ]
+         },   
+         2: {
+          orgInfo: {
+            orgName: 'A REAL CHARITY',
+            ein: 2972349198,
+            deductable: '501(c)(7)',
+            verified: false
+          },
+          donations: [
+            {
+               createdAt: 1520543744,
+               item: 'MY LEFT ARM',
+               value: '1234',
+             },
+             {
+              createdAt: 1520543900,
+              item: 'MY MIND',
+              value: '123',
+            },
+            {
+              createdAt: 1520529039,
+              item: 'MY RIGHT KIDNEY',
+              value: '2000',
+            },
+          ]
+       },
+        },
+      displayOrgs: [],
+      selectedYear: 'All Years',
+      selectedOrg: false,
+      filters: [1,2,3],
      }
      this.handleChange = this.handleChange.bind(this)
      this.handleSelect = this.handleSelect.bind(this)
@@ -105,7 +158,7 @@ class DonationAmmount extends React.Component {
     }
 
     return ( 
-      <div>
+      <div style={{marginTop: '50px'}}>
        <Grid>
          <Row>
            <Col xs={12}>
@@ -124,7 +177,7 @@ class DonationAmmount extends React.Component {
           </DropdownButton>
           </Col>
           <Col xs={3}>
-            <p style={{display: "inline-block", marginLeft: '48px'}} > Filter by Verification </p>
+            <p style={{display: "inline-block", marginLeft: '44px'}} > Filter by Verification </p>
             <ToggleButtonGroup
             type="checkbox"
             style={{marginTop: '3px', marginLeft: '50px'}}
