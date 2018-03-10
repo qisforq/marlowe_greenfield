@@ -3,6 +3,7 @@ import {ToggleButtonGroup, ToggleButton, Panel, Table, DropdownButton, MenuItem,
 import axios from 'axios'
 import moment from 'moment'
 import c3 from 'c3'
+import Chart from './Chart.jsx'
 
 class DonationAmmount extends React.Component {
   constructor(props) {
@@ -222,8 +223,8 @@ class DonationAmmount extends React.Component {
           </Col>
         </Row>
          <Row>
-           <Col xs={12} sm={7}>
-        <div style={{height: window.innerHeight * 0.8, overflowY: 'scroll'}}>
+           <Col xs={12} sm={7}> 
+        <div style={{height: window.innerHeight * 0.8, overflowY: 'scroll', overflowX: 'hidden'}}>
         {this.state.displayOrgs.map((org, i) => {
           return (
             /*defaultExpanded*/
@@ -282,12 +283,16 @@ class DonationAmmount extends React.Component {
       </div>
         </Col>
         <Col xs={12} sm={5} style={{}}>
-          <Panel>
-            <h4 style={{fontSize: '18px', textAlign: 'center'}}>Your total deduction for {' ' + this.state.selectedYear.toString().toLowerCase()}</h4>
-            <h1 style={{fontSize: '72px', textAlign: 'center'}}>${this.state.displayOrgs.reduce((total, org) => {
+          <Panel style={{color: 'black'}}>
+            <h4 style={{fontSize: '18px', textAlign: 'center', color: '#4482bc'}}>Your total deduction for {' ' + this.state.selectedYear.toString().toLowerCase()}</h4>
+            <h1 style={{fontSize: '72px', textAlign: 'center', color: '#4482bc'}}>${this.state.displayOrgs.reduce((total, org) => {
                 return total += org.donations.reduce((sum, donation) => { return sum += parseInt(donation.value)},0 )
               }, 0)
             }</h1>
+
+            
+            <Chart orgs={this.state.displayOrgs} />
+
           </Panel>
         </Col>
         </Row>

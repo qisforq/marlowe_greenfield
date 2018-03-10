@@ -25,7 +25,7 @@ class App extends React.Component {
       lgShow: false, //this state is used to show/hide the Trigger component/modal, which is changed via lgSHow and lgHide functions
       posts: example,
       isOrg: false,
-      tab: 'All Posts',
+      tab: false,
       showDeductions: false,
       featuredItem: {
         id: null,
@@ -54,13 +54,19 @@ class App extends React.Component {
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.handlePage = this.handlePage.bind(this);
+<<<<<<< HEAD
     this.retrieveMyClaims = this.retrieveMyClaims.bind(this);
+=======
+    this.retrieveMyClaimedPosts = this.retrieveMyClaimedPosts.bind(this)
+>>>>>>> Commit before merge
   }
 
   componentDidMount() {
     setTimeout(() => this.setState({renderLoader: false}), 1500)
+
     this.checkOrgStatus()
     .then(()=> this.retrievePosts())
+    .then(()=> this.setState({tab: this.state.isOrg ? 'My Claimed' : 'My Posts'}))
   }
 
   checkOrgStatus() {
@@ -155,6 +161,25 @@ class App extends React.Component {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
         }
+        this.setState({
+          posts: results.data,
+        })
+      })
+      .catch(function(error) {
+        console.log("There was an error retrieving user's posts.", error);
+      });
+  }
+
+  retrieveMyClaimedPosts() {
+    console.log('begin retrieveMyClaimedPosts!');
+    return axios
+      .get("/fetchMyPosts", {params: {claimed: true}})
+      .then(results => {
+        if (results.data.notLoggedIn) {
+          ReactDOM.render(<LoginPage />, document.getElementById("app"));
+          return
+        }
+        console.log(results.data)
         this.setState({
           posts: results.data,
         })
