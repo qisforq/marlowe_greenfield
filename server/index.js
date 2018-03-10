@@ -49,26 +49,16 @@ const upload = multer({
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
   console.log(req.session);
-  if (
-    !req.session.email
-    &&
-    (req.url !== '/login'
-    || req.url !== '/current/address'
-    || req.url !== '/signup'
-    || req.url !== '/org'
-    || req.url !== '/verified/email'
-    || req.url !== '/user/verified'
-    || req.url !== '/user/notVerified'
-    || req.url !== '/checkLogin')) {
+  if (!req.session.email) {
     res.send({
       notLoggedIn: true
     })
     return
+  } else {
+    next();
   }
-  next();
 }
 
-app.use(auth)
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 
@@ -84,11 +74,11 @@ app.get('/checkLogin', function(req, res) {
   res.send({notLoggedIn: !req.session.email, HELLOOO: req.session})
 })
 
-app.get('/allPosts', function(req, res) {
+app.get('/allPosts', auth, function(req, res) {
   db.query(`SELECT * FROM post`, (err, data)=> res.send(data))
 })
 
-app.get("/fetch", function(req, res) {
+app.get("/fetch", auth, function(req, res) {
   console.log('in the server fetch')
   let { lng, lat } = req.query
     var query = `SELECT * FROM post WHERE isClaimed=false AND poster_id <>(SELECT id FROM claimer WHERE email="${req.session.email}");`
@@ -115,7 +105,7 @@ app.get("/fetch", function(req, res) {
 });
 
 // Gets email address from user's session
-app.get("/fetchMyPosts", function(req, res) {
+app.get("/fetchMyPosts", auth, function(req, res) {
   console.log('req.session:', req.session);
   var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}");`
 
@@ -150,7 +140,7 @@ app.post("/savepost", upload.any(), function(req, res) {
   );
 });
 
-app.post("/latlong", function(req, res) {
+app.post("/latlong", auth, function(req, res) {
 
   //This function is using geohelper function which utilizes Google's geocoder API
   //Note: if an invalid address is passed to this method, it will cause the server to crash
@@ -165,7 +155,7 @@ app.post("/latlong", function(req, res) {
 });
 
 //This route handles updating a post that has been claimed by the user
-app.post("/updateentry", function(req, res) {
+app.post("/updateentry", auth, function(req, res) {
   db.query(
     `UPDATE post SET claimer_id=(SELECT id FROM claimer WHERE email="${req.session.email}"), isClaimed=true WHERE id="${req.body.id}"`,
     (err, data) => {
@@ -199,7 +189,7 @@ app.post("/updateentry", function(req, res) {
   })
 });
 
-app.post('/current/address', (req,res)=>{
+app.post('/current/address', auth, (req,res)=>{
  currentAddress = req.body.location[0].formatted_address;
  currentLat = req.body.location[0].geometry.location.lat;
  currentLng = req.body.location[0].geometry.location.lng;
@@ -257,7 +247,7 @@ app.post("/login", function(req, res) {
   });
 });
 
-app.post('/logout', function(req, res) {
+app.post('/logout', auth, function(req, res) {
   req.session.destroy();
   res.end();
 })
@@ -274,7 +264,7 @@ app.get('/org', function(req, res) {
 
 // These routes are for updating user's Settings
 
-app.get("/settings", (req, res) => {
+app.get("/settings", auth, (req, res) => {
   db.query(`SELECT * FROM claimer WHERE email="${req.session.email}";`,
   (err, results) => {
     if (err) {
@@ -287,7 +277,7 @@ app.get("/settings", (req, res) => {
   });
 });
 
-app.put('/settings', (req, res) => {
+app.put('/settings', auth, (req, res) => {
   let query = ``;
   let {email, address} = req.body;
   if (email && address) {
@@ -358,7 +348,7 @@ app.put('/settings', (req, res) => {
 //     });
 // });
 
-app.post("/email", (req,res)=>{
+app.post("/email", auth, (req,res)=>{
   var donater
   db.query(`select email from claimer where id=${req.body.poster_id}`, (err, result)=>{
     if(err){
@@ -466,7 +456,7 @@ app.get('/user/notVerified', (req, res) => {
   }
   */
 
-app.get('/donations', (req, res)=> {
+app.get('/donations', auth, (req, res)=> {
   // get all claimed posts for this user
 
   db.query(`SELECT * FROM post WHERE isClaimed=TRUE AND poster_id=(SELECT id FROM claimer WHERE email=${req.session.email})`, (err, results)=> {

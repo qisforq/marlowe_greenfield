@@ -312,6 +312,7 @@ axios.get('/checkLogin')
           console.log("HALLLOOOOOO",status.data);
           ReactDOM.render(<App />, document.getElementById("app"));
         } else {
+          console.log("HEY",status.data);
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
         }
       })
