@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Grid, Row, Col, FormControl, FormGroup, ControlLabel, Button, ListGroup, ListGroupItem, PageHeader, ButtonGroup} from 'react-bootstrap';
+import {Grid, Row, Col, Label, FormControl, FormGroup, ControlLabel, Button, ListGroup, ListGroupItem, PageHeader, ButtonGroup} from 'react-bootstrap';
 
 import GoogleSearchBox from "./autocomplete.jsx"
 
@@ -16,6 +16,7 @@ class Settings extends Component {
       verified: '',
       org: '',
       phone: '',
+      toggleVer: false,
       togglePhone: false,
       toggleEmail: false,
       toggleAddress: false,
@@ -33,11 +34,14 @@ class Settings extends Component {
   }
 
   saveChanges() {
+
     axios.put('/settings', {
         email: this.state.email,
         address: this.state.address,
         lng: this.state.lng,
-        lat: this.state.lat
+        lat: this.state.lat,
+        org: this.state.org,
+        phone: this.state.phone
       }).then((response) => {
         console.log(response, 'axios response for saving settings!');
         this.props.toggleSettings();
@@ -47,43 +51,59 @@ class Settings extends Component {
   }
 
   editEmail() {
+    let eml = this.state.email;
+    if (eml === `(none)`) {
+      eml = ''
+    }
     this.setState({
       toggleEmail: !this.state.toggleEmail,
-      email: ''
+      email: eml
     });
   }
 
   editPhone() {
+    let pho = this.state.phone;
+    if (pho === `(none)`) {
+      pho = ''
+    }
     this.setState({
       togglePhone: !this.state.togglePhone,
-      email: ''
+      phone: pho
     });
   }
 
   editAddress() {
+    let addr = this.state.address;
+    if (addr === `(none)`) {
+      addr = ''
+    }
     this.setState({
       toggleAddress: !this.state.toggleAddress,
-      address: ''
+      address: addr
     });
   }
 
   editOrg() {
+    let orgn = this.state.org;
+    if (orgn === `(none)`) {
+      orgn = '';
+    }
     this.setState({
       toggleOrg: !this.state.toggleOrg,
-      address: ''
+      org: orgn
     });
   }
 
   getUser() {
     axios.get('/settings')
     .then((results) => {
-      let address = results.data[0].address || `(none)`;
-      let email = results.data[0].email || `(none)`;
+      let address = results.data[0].address || '';
+      let email = results.data[0].email || '';
       let id = results.data[0].id || '';
-      let org = results.data[0].org || `(none)`;
+      let org = results.data[0].org || '';
       let lng = results.data[0].lng || '';
       let lat = results.data[0].lat || '';
-      let phone = results.data[0].phone || `(none)`;
+      let phone = results.data[0].phone || '';
       let verified = results.data[0].verified;
 
       this.setState({
@@ -113,8 +133,11 @@ class Settings extends Component {
   verify() {
     axios.post('/verified/email', {
       email: this.state.email,
-      id: this.state.id
+      id: this.state.id,
     })
+    this.setState({
+      toggleVer: !this.state.toggleVer
+    });
   }
 
   handleChange(e) {
@@ -143,16 +166,16 @@ class Settings extends Component {
 
   render() {
     return (
-      <div style={{"margin": "20px 15px"}}>
+      <div style={{"margin": "50px 15px"}}>
         <div>
           <PageHeader style={{marginTop: '60px'}}>
             <small>User Settings</small>
           </PageHeader>
         </div>
         <div>
-          <Grid>
+          <Grid className="pull-left" style={{"marginLeft": "15px"}}>
             <Row className="show-grid">
-              <Col xs={3} md={2} className="settingsLabel">
+              <Col xs={3} md={2} style={{"width":"150px"}} className="settingsLabel">
                 <ListGroup>
                   <ListGroupItem className="settingsLabel2">
                     <strong>Email Address:</strong>
@@ -173,27 +196,27 @@ class Settings extends Component {
                     ) : (
                       <ListGroup>
                         <ListGroupItem className="settings settingsForm">
-                          <strong>{this.state.email}</strong>
+                          <strong>{this.state.email || `(none)`}</strong>
                         </ListGroupItem>
                       </ListGroup>
                     )}
                   </div>
                 </FormGroup>
               </Col>
-              <Col xs={3} md={4}>
+              <Col xs={3} md={4} className="settingsButton2">
                 <ListGroup>
                   <ListGroupItem className="settings">
                     {!this.state.toggleEmail ? (
-                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editEmail}>Edit Email</Button></div>
+                      <div className="formButton settingsButton"><Button onClick={this.editEmail}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     ) : (
-                      <div style={{"padding": "10px 15px"}}></div>
+                      <div className="formButton settingsButton"><Button disabled >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
               </Col>
             </Row>
             <Row className="show-grid">
-              <Col xs={3} md={2} className="settingsLabel">
+              <Col xs={3} md={2} style={{"width":"150px"}} className="settingsLabel">
                 <ListGroup>
                   <ListGroupItem className="settingsLabel2">
                     <strong>Street Address:</strong>
@@ -218,27 +241,27 @@ class Settings extends Component {
                     ) : (
                       <ListGroup>
                         <ListGroupItem className="settings settingsForm">
-                          <strong>{this.state.address}</strong>
+                          <strong>{this.state.address || `(none)`}</strong>
                         </ListGroupItem>
                       </ListGroup>
                     )}
                   </div>
                 </FormGroup>
               </Col>
-              <Col xs={3} md={4}>
+              <Col xs={3} md={4} className="settingsButton2">
                 <ListGroup>
                   <ListGroupItem className="settings">
                     {!this.state.toggleAddress ? (
-                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editAddress}>Edit Address</Button></div>
+                      <div className="formButton settingsButton"><Button onClick={this.editAddress}>&nbsp;&nbsp;&nbsp;&nbsp;Edit Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     ) : (
-                      <div style={{"padding": "10px 15px"}}></div>
+                      <div className="formButton settingsButton"><Button disabled >&nbsp;&nbsp;&nbsp;&nbsp;Edit Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
               </Col>
             </Row>
             <Row className="show-grid">
-              <Col xs={3} md={2} className="settingsLabel">
+              <Col xs={3} md={2} style={{"width":"150px"}} className="settingsLabel">
                 <ListGroup>
                   <ListGroupItem className="settingsLabel2">
                     <strong>Phone Number:</strong>
@@ -259,27 +282,27 @@ class Settings extends Component {
                     ) : (
                       <ListGroup>
                         <ListGroupItem className="settings settingsForm">
-                          <strong>{this.state.phone}</strong>
+                          <strong>{this.state.phone || `(none)`}</strong>
                         </ListGroupItem>
                       </ListGroup>
                     )}
                   </div>
                 </FormGroup>
               </Col>
-              <Col xs={3} md={4}>
+              <Col xs={3} md={4} className="settingsButton2">
                 <ListGroup>
                   <ListGroupItem className="settings">
                     {!this.state.togglePhone ? (
-                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editPhone}>Edit Phone</Button></div>
+                      <div className="formButton settingsButton"><Button onClick={this.editPhone}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     ) : (
-                      <div style={{"padding": "10px 15px"}}></div>
+                      <div className="formButton settingsButton"><Button disabled>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Button></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
               </Col>
             </Row>
             <Row className="show-grid">
-              <Col xs={3} md={2} className="settingsLabel">
+              <Col xs={3} md={2} style={{"width":"150px"}} className="settingsLabel">
                 <ListGroup>
                   <ListGroupItem className="settingsLabel2">
                     <strong>Organization:</strong>
@@ -300,71 +323,67 @@ class Settings extends Component {
                     ) : (
                       <ListGroup>
                         <ListGroupItem className="settings settingsForm">
-                          <strong>{this.state.org}</strong>
+                          <strong>{this.state.org || `(none)`}</strong>
                         </ListGroupItem>
                       </ListGroup>
                     )}
                   </div>
                 </FormGroup>
               </Col>
-              <Col xs={3} md={4}>
+              <Col xs={3} md={4} className="settingsButton2">
                 <ListGroup>
                   <ListGroupItem className="settings">
                     {!this.state.toggleOrg ? (
-                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.editOrg}>Edit Organization</Button></div>
+                      <div className="formButton settingsButton"><Button onClick={this.editOrg}>&nbsp;Edit Organization&nbsp;</Button></div>
                     ) : (
-                      <div style={{"padding": "10px 15px"}}></div>
+                      <div className="formButton settingsButton"><Button disabled>&nbsp;Edit Organization&nbsp;</Button></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
               </Col>
             </Row>
             <Row className="show-grid">
-              <Col xs={3} md={2} className="settingsLabel">
+              <Col xs={3} md={2} style={{"width":"150px"}} className="settingsLabel">
                 <ListGroup>
                   <ListGroupItem className="settingsLabel2">
                     <strong>Verification Status:</strong>
                   </ListGroupItem>
                 </ListGroup>
               </Col>
-              <Col xs={6} md={6} className="settingsForm2">
+              <Col xs={6} md={6}
+                // className="settingsForm2"
+                >
                 {
-                  (this.state.verfied !== 0)
+                  (this.state.verfied !== 0 && this.state.verified !== null)
                   ?
-                  (<ListGroup>
-                    <ListGroupItem id='yesVerfied' className="settings settingsForm">
-                      <strong>Verified</strong>
-                    </ListGroupItem>
-                  </ListGroup>)
+                  (<h3><Label bsStyle="success">Verified</Label></h3>)
                   :
-                  (<ListGroup>
-                    <ListGroupItem id='notVerfied' className="settings settingsForm">
-                      <strong>Not Yet Verified</strong>
-                    </ListGroupItem>
-                  </ListGroup>)
+                  ((<h3><Label bsStyle="danger">Not verified</Label></h3>))
                 }
               </Col>
-              <Col xs={3} md={4}>
+              <Col xs={3} md={4} className="settingsButton2">
                 <ListGroup>
                   <ListGroupItem className="settings">
-                    {!this.state.toggleOrg ? (
-                      <div style={{"padding": "10px 15px"}} className="formButton"><Button onClick={this.verify}>Verify Organization</Button></div>
+                    {!this.state.toggleVer ? (
+                      <div className="formButton settingsButton"><Button onClick={this.verify}>Verify Organization</Button></div>
                     ) : (
-                      <div style={{"padding": "10px 15px"}}></div>
+                      <div className="formButton settingsButton"><Button disabled>Request sent!</Button></div>
                     )}
                   </ListGroupItem>
                 </ListGroup>
               </Col>
             </Row>
+            <Row>
+              <div className="formButton settingsButton">
+                <ButtonGroup style={{"marginTop": "25px"}}>
+                  <Button bsStyle="success" onClick={this.saveChanges}>
+                    Save Changes
+                  </Button>
+                  <Button bsStyle="warning" onClick={this.props.toggleSettings}>Cancel</Button>
+                </ButtonGroup>
+              </div>
+            </Row>
           </Grid>
-        </div>
-        <div className="formButton">
-          <ButtonGroup>
-            <Button bsStyle="success" onClick={this.saveChanges}>
-              Save Changes
-            </Button>
-            <Button bsStyle="warning" onClick={this.props.toggleSettings}>Cancel</Button>
-          </ButtonGroup>
         </div>
       </div>
     );

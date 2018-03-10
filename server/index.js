@@ -276,40 +276,25 @@ app.get("/settings", (req, res) => {
 
 app.put('/settings', (req, res) => {
   let query = ``;
-  let {email, address} = req.body;
-  if (email && address) {
-    console.log('both address and email');
-
-    query = `
-      UPDATE claimer
-      SET email="${req.body.email}", address="${req.body.address}"
-      WHERE email="${req.session.email}";
-    `
-  } else if (email) {
-    console.log('just email, no address');
-    query = `
-      UPDATE claimer
-      SET email="${req.body.email}"
-      WHERE email="${req.session.email}";
-    `
-  } else if (address) {
-    console.log('just address, no email');
-    query = `
-      UPDATE claimer
-      SET address="${req.body.address}"
-      WHERE email="${req.session.email}";
-    `
-  } else {
-    res.status(400).send()
-  }
-
-  db.query(query, (err, result) => {
-    if (err) {
-      res.status(500).send('uh oh spaghettio in app.post:/settings');
-      throw err;
+  let setQueries = []
+  let fields =[[req.body.email,`email`], [req.body.address,`address`], [req.body.lng,`lng`], [req.body.lat,`lat`], [req.body.org,`org`], [req.body.phone,`phone`]];
+  fields.forEach((el) => {
+    if (el[0]) {
+      setQueries.push(`${el[1]}="${el[0]}"`);
     }
-    res.send(result)
   })
+  if (setQueries.length) {
+    console.log(`TESTTTTTT: UPDATE claimer SET ${setQueries.join(', ')} WHERE email="${req.session.email}";`);
+    db.query(`UPDATE claimer SET ${setQueries.join(', ')} WHERE email="${req.session.email}";`, (err, result) => {
+      if (err) {
+        res.status(500).send('uh oh spaghettio in app.post:/settings');
+        throw err;
+      }
+      res.send(result)
+    })
+  } else {
+    res.status(400).send();
+  }
 })
 
 /************************************************************/
