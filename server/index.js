@@ -50,14 +50,15 @@ const upload = multer({
 const auth = function(req, res, next) {
   if (
     !req.session.email
-    || req.url !== '/login'
+    && (req.url !== '/login'
     || req.url !== '/current/address'
     || req.url !== '/signup'
     || req.url !== '/org'
     || req.url !== '/verified/email'
     || req.url !== '/user/verified'
     || req.url !== '/user/notVerified'
-    || req.url !== '/checkLogin') {
+    || req.url !== '/checkLogin')
+    ) {
     res.send({
       notLoggedIn: true,
       email: req.session.email
