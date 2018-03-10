@@ -48,20 +48,20 @@ const upload = multer({
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
+  console.log(req.session);
   if (
     !req.session.email
-    && (req.url !== '/login'
+    &&
+    (req.url !== '/login'
     || req.url !== '/current/address'
     || req.url !== '/signup'
     || req.url !== '/org'
     || req.url !== '/verified/email'
     || req.url !== '/user/verified'
     || req.url !== '/user/notVerified'
-    || req.url !== '/checkLogin')
-    ) {
+    || req.url !== '/checkLogin')) {
     res.send({
-      notLoggedIn: true,
-      email: req.session.email
+      notLoggedIn: true
     })
     return
   }
@@ -81,7 +81,7 @@ app.use(auth)
 //only relevant postings to the user
 
 app.get('/checkLogin', function(req, res) {
-  res.send({notLoggedIn: !req.session.email})
+  res.send({notLoggedIn: !req.session.email, HELLOOO: req.session})
 })
 
 app.get('/allPosts', function(req, res) {

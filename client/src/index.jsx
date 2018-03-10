@@ -306,13 +306,12 @@ class App extends React.Component {
 }
 
 export default App
-setTimeout(() =>
 axios.get('/checkLogin')
       .then(status => {
         if (!status.data.notLoggedIn) {
+          console.log("HALLLOOOOOO",status.data);
           ReactDOM.render(<App />, document.getElementById("app"));
         } else {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
         }
       })
-, 5000);
