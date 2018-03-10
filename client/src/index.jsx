@@ -54,6 +54,7 @@ class App extends React.Component {
     this.ScrollTo = this.ScrollTo.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.handlePage = this.handlePage.bind(this);
+    this.retrieveMyClaims = this.retrieveMyClaims.bind(this);
   }
 
   componentDidMount() {
@@ -73,10 +74,9 @@ class App extends React.Component {
     let handle = {
       'All Posts': this.retrievePosts,
       'My Posts': this.retrieveMyPosts,
-      'Nearby': this.retrieveClaimsByDist
+      'Nearby': this.retrieveClaimsByDist,
+      'My Claimed': this.retrieveMyClaims
     }
-    console.log('handle:', handle, 'key:', key);
-    console.log('this.props',this.props);
     handle[key]()
       .then(()=> {
         this.setState({tab: key})
@@ -104,44 +104,35 @@ class App extends React.Component {
   //retrieves lat/long data from server/geo-helper function
   //sets the lat/long state, which is passed to the googleMaps component that renders the map
   changeFeatured(listItem) {
-    // let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
-    if (this.state.show === false){
+  // let {title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue} = listItem;
+  if (this.state.show === false) {
+    this.setState({
+      featuredItem: listItem,
+      show: true,
+      latitude: Number(listItem.lat),
+      longitude: Number(listItem.lng)
+    });
+    let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
+    axios.post('/latlong', {address: address}).then(result => {
       this.setState({
-        featuredItem: listItem,
-        show: true,
-        latitude: Number(listItem.lat),
-        longitude : Number(listItem.lng),
-     });
-      let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
-      axios.post('/latlong', {address: address})
-        .then(result => {
-          this.setState({
-            latitude: Number(result.data.lat),
-            longitude: Number(result.data.long)
-          })
-        })
-      console.log(this.state)
-    }
-    else if(this.state.show === true){
-      if (this.state.featuredItem.id === listItem.id){
-        this.setState({
-          show: false
-        })
-      } else {
-        this.setState({
-          featuredItem: listItem,
-          show: true
-        })
-      }
+        latitude: Number(result.data.lat),
+        longitude: Number(result.data.long)
+      })
+    })
+  } else if (this.state.show === true) {
+    if (this.state.featuredItem.id === listItem.id) {
+      this.setState({show: false})
+    } else {
+      this.setState({featuredItem: listItem, show: true})
     }
   }
+}
 
   //This function retrieves all post data from the mySql database
   retrievePosts() {
     return axios
       .get("/fetch")
       .then(results => {
-        console.log(results);
         if (results.data.notLoggedIn) {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
@@ -157,7 +148,6 @@ class App extends React.Component {
   }
 
   retrieveMyPosts() {
-    console.log('begin retrieveMyPosts!');
     return axios
       .get("/fetchMyPosts")
       .then(results => {
@@ -165,7 +155,6 @@ class App extends React.Component {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
         }
-        console.log(results.data)
         this.setState({
           posts: results.data,
         })
@@ -194,11 +183,9 @@ class App extends React.Component {
 
   //This function updates the selected post that is claimed (in database)
   handleClaim(claimedPostID) {
-    console.log(claimedPostID)
     axios.post("/updateentry", claimedPostID)
       .then(done => {
         if (done.data.notLoggedIn) {
-          console.log('tick')
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
         }
@@ -213,9 +200,26 @@ class App extends React.Component {
       });
   }
 
+  //This function retrieves claims for "My Claims" the Tab
+  retrieveMyClaims() {
+    return axios
+    .get('/fetchClaims')
+    .then((results) => {
+      if (results.data.notLoggedIn) {
+        ReactDOM.render(<LoginPage />, document.getElementById("app"));
+        return
+      }
+      this.setState({
+        posts: results.data
+      })
+    })
+    .catch((error) => {
+      throw error;
+    })
+  }
+
   //This func is being passed to the Form Compnent and closes the Trigger Component/Modal
   lgClose() {
-    console.log('closed')
     this.setState({
       lgShow: false
     });
@@ -322,7 +326,6 @@ export default App
 axios.get('/checkLogin')
       .then(status => {
         if (!status.data.notLoggedIn) {
-          console.log("HALLLOOOOOO",status.data);
           ReactDOM.render(<App />, document.getElementById("app"));
         } else {
           ReactDOM.render(<LoginPage />, document.getElementById("app"));

@@ -5,7 +5,6 @@ import {Popover, Panel} from 'react-bootstrap';
 //This renders the description for each panel and it goes inside the panel body..
 const DescriptionCard = ({featuredItem, claimHandler, tab, isOrg}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
-  console.log(isOrg)
   let myImages = null;
   let showImages;
   if (featuredItem.photoUrl) {
