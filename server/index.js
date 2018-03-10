@@ -120,6 +120,18 @@ app.get("/fetchMyPosts", auth, function(req, res) {
   });
 });
 
+app.get('/fetchClaims', auth, (req, res) => {
+  var query = `SELECT * FROM post WHERE claimer_id=(SELECT id FROM claimer WHERE email="${req.session.email}")`;
+  db.query(query, (error, results) => {
+    if (error) {
+      res.send([])
+      throw error;
+    } else {
+      res.send(results);
+    }
+  })
+})
+
 //This route receives a request upon submit from the form. The form holds all fields necesaary
 //to make a new db entry. This route will take in the request and simply save to the db
 app.post("/savepost", upload.any(), function(req, res) {

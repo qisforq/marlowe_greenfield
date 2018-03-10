@@ -25,10 +25,6 @@ class Form extends React.Component {
     this.savePost = this.savePost.bind(this);
     this.clearFields = this.clearFields.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    // this.handleUsername = this.handleUsername.bind(this);
-    // this.handlePhone = this.handlePhone.bind(this);
-    // this.handleTitle = this.handleTitle.bind(this);
-    // this.handleDescription = this.handleDescription.bind(this);
     this.handlePhoto = this.handlePhoto.bind(this);
     this.autocompleteHandler= this.autocompleteHandler.bind(this);
   }
@@ -48,15 +44,13 @@ class Form extends React.Component {
     } else {
       formData.append('emptyPhoto', this.state.photoUrl);
     }
-    console.log('FORM DATA', formData)
+
     axios.post('/savepost', formData)
       .then( (response) =>{
         if (response.data.notLoggedIn) {
-          console.log('tick')
           ReactDOM.render(<LoginPage />, document.getElementById("app"));
           return
         } else {
-          console.log('Post has been saved.', response);
           this.clearFields();
           this.props.showModal();
         }
@@ -77,7 +71,9 @@ class Form extends React.Component {
   }
 
   autocompleteHandler(locationObj) {
-    this.setState({address:locationObj}, ()=>{console.log(locationObj)})
+    this.setState({
+      address:locationObj
+    })
   }
 
   handleChange(e) {
@@ -89,7 +85,7 @@ class Form extends React.Component {
   handlePhoto(photos) {
     this.setState({
       photoUrl: photos
-    }, () => console.log(this.state.photoUrl));
+    });
   }
 
   validateEstimate() {
