@@ -3,8 +3,9 @@ import moment from 'moment';
 import {Popover, Panel} from 'react-bootstrap';
 
 //This renders the description for each panel and it goes inside the panel body..
-const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
+const DescriptionCard = ({featuredItem, claimHandler, tab, isOrg}) => {
   let {id, title, description, address, lng, lat} = featuredItem;
+  console.log(isOrg)
   let myImages = null;
   let showImages;
   if (featuredItem.photoUrl) {
@@ -25,7 +26,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab}) => {
             myImages === null  ? <p>No Image</p> : showImages
           }
         <div>
-        {tab !== 'My Posts' && <button onClick={() => claimHandler(featuredItem)}>Claim</button>}
+        {isOrg===true && <button onClick={() => claimHandler(featuredItem)}>Claim</button>}
         </div>
       </div>
 	)
