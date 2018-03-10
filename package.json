@@ -11,9 +11,7 @@
   },
   "author": "Adam Mateo",
   "license": "MIT",
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "dependencies": {
     "aws-sdk": "^2.205.0",
     "axios": "^0.18.0",
