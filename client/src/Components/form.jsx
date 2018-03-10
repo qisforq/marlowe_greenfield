@@ -36,7 +36,7 @@ class Form extends React.Component {
     formData.append('title', this.state.title)
     formData.append('description', this.state.description)
     formData.append('isClaimed', this.state.isClaimed)
-    formData.apennd('estimatedValue', this.state.estimatedValue)
+    formData.append('estimatedValue', this.state.estimatedValue)
     for (let key in this.state.address) {
       formData.append(key, this.state.address[key]);
     }
