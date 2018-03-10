@@ -107,7 +107,16 @@ app.get("/fetch", auth, function(req, res) {
 // Gets email address from user's session
 app.get("/fetchMyPosts", auth, function(req, res) {
   console.log('req.session:', req.session);
-  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}");`
+  var query = `SELECT * FROM post WHERE poster_id=(SELECT id FROM claimer WHERE email="${req.session.email}")`
+
+  if (req.query.claimed) {
+    query += ` AND isClaimed=TRUE`
+  }
+
+  query += ';'
+
+
+  console.log('>>>>>>>', query)
 
   db.query(query, (err, results) => {
     if (err) {

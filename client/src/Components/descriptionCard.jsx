@@ -22,7 +22,7 @@ const DescriptionCard = ({featuredItem, claimHandler, tab, isOrg}) => {
         <p>{description}</p>
         <p>Reach me at: {featuredItem.phone}</p>
           {
-            myImages === null  ? <p>No Image</p> : showImages
+            myImages === null ? <p>No Image</p> : showImages
           }
         <div>
         {isOrg===true && <button onClick={() => claimHandler(featuredItem)}>Claim</button>}
