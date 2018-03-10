@@ -57,7 +57,10 @@ const auth = function(req, res, next) {
     && req.url !== '/verified/email'
     && req.url !== '/user/verified'
     && req.url !== '/user/notVerified') {
-    res.send({notLoggedIn: true})
+    res.send({
+      notLoggedIn: true,
+      email: req.session.email
+    })
     return
   }
   next();
