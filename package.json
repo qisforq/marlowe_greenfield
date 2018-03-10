@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
-    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress && node server/demoDataLoader.js",
+    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress",
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon server/index.js"
   },

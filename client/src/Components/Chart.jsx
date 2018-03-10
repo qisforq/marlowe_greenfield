@@ -22,7 +22,7 @@ class Chart extends React.Component {
     // var totals = orgs.map(org => org.donations.reduce((total, donation)=> total+=donation.value ));
 
     console.log(orgs.map(org => [
-      org.orgInfo.orgName, 
+      org.orgInfo.orgName,
       org.donations.reduce((total, donation)=> {
          return total += parseInt(donation.value)
         }, 0)
@@ -31,7 +31,7 @@ class Chart extends React.Component {
     var chart = c3.generate({
       data: {
         columns: orgs.map(org => [
-          org.orgInfo.orgName, 
+          org.orgInfo.orgName,
           org.donations.reduce((total, donation)=> {
              return total += parseInt(donation.value)
             }, 0)
@@ -47,12 +47,17 @@ class Chart extends React.Component {
         width: {
           ratio: 0.5
         }
+      },
+      padding: {
+        bottom: 30,
+        left: 10,
+        right: 10
       }
     });
   }
 
-  render() { 
-    return ( 
+  render() {
+    return (
       <div id="chart"></div>
     );
   }

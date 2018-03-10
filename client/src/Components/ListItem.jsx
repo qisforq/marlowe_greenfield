@@ -18,7 +18,4 @@ const ListItem = ({post, handleClick, tab, featuredItem, claimHandler, isOrg}) =
   )
 }
 
-
-
-
 export default ListItem;

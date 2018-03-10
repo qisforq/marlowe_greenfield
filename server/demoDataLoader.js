@@ -15,7 +15,7 @@ const createPassword = function(user) {
     })
 }
 
-const insertUsersQuery = 'INSERT INTO claimer (email, address, org, phone, lng, lat, cPassword, verified) VALUES ?;'
+const insertUsersQuery = 'INSERT INTO claimer (email, address, org, phone, lat, lng, cPassword, verified) VALUES ?;'
 const demoUsers = [
   ['Jerry@email.email', "89 E 42nd St, New York, NY 10017, USA", null, '5555555', '40.75272619999999', '-73.9772294', 'jerry', null],
   ['Eric@email.email', "Empire State Building, New York, NY 10001, US", null, '5555555', '40.7485413', '-73.98575770000002', 'eric', null],
@@ -40,7 +40,7 @@ Promise.all(demoUsers.map(user => {
         console.log('inserted demo users')
 
         const insertPostsQuery =
-        `INSERT INTO post (title, poster_id, description, address, lat, lng, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue) VALUES ?;`
+        `INSERT INTO post (title, poster_id, description, address, lng, lat, phone, isClaimed, claimer_id, createdAt, photoUrl, estimatedValue) VALUES ?;`
         const demoPosts = [
           // Jerry
           ["DONATING MY LIFE", 1, "MY LIFE IS WORTHLESSSSSSSS. JUST KIDDING ITS WORTH 500", "2348 7th Ave, New York, NY 10030, USA", "-73.94280520000001", "40.8171364", "1234567890", 0, null, 1520543425, "[]", "500"],
