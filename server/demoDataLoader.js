@@ -22,7 +22,9 @@ const demoUsers = [
   ['Quentin@email.email', "Union Square, New York, NY 10003, USA", null, '5555555', '40.7358633', '-73.9910835', 'quentin', null],
   ['Riley@email.email', "369 Lexington Avenue, 11th Floor, New York, NY 10017, USA", null, '5555555', '40.75048649999999', '-73.97640100000001', 'riley', null],
   ['Unicef@email.email', "3 United Nations Plaza, New York, NY 10017, USA", 'UNICEF', '5555555', '40.75040190000001', '-73.96991659999998', 'unicef', true],
-  ['ARealCharity@email.email', "Trump Tower, 725 5th Ave, New York, NY 10022, USA", 'A Real Charity', '5555555', '40.7623737', '-73.97391189999', 'trump', null]
+  ['ARealCharity@email.email', "Trump Tower, 725 5th Ave, New York, NY 10022, USA", 'A Real Charity', '5555555', '40.7623737', '-73.97391189999', 'trump', false],
+  ['FoodNYC@email.email', "356 Fulton St, Brooklyn, NY 11201, USA", 'Food Bank for NYC', '5555555', '40.6915383', '-73.9883011', 'foodnyc', true],
+  ['Mynewcharity@email.email', "159 West 33rd Street, New York, NY 10120, USA", 'My New Charity', '5555555', '40.7503031', '-73.99090590000003', 'mynewcharity', null],
 ]
 
 Promise.all(demoUsers.map(user => {
@@ -68,6 +70,7 @@ Promise.all(demoUsers.map(user => {
           ["Moving Give Away ", 3, "Giving away stuff from moving sale. Furniture, clothes etc.", "259 1st St, Mineola, NY 11501, USA", "-73.64318709999998", "40.74097860000001", "555 5555", 1, 5, 1520609853, "[]", "200"],
           ["Canned food and Bottled Water", 3, "A few food items for donation", "New York, NY 10003, USA", "-73.99646089999999", "40.72951339999999", "555 5555", 1, 5, 1520609929, "[]", "60"],
           ["Desktop Computer", 3, "Late 2013 iMac computer", "Astoria, Queens, NY, USA", "-73.9234619", "40.7643574", "555 5555", 0, null, 1520609969, "[]", "900"],
+<<<<<<< HEAD
           ["XBOX", 3, "XBOX One with a few games. Maybe useful for a children's hospital", "New York, NY 10018, USA", "-73.98323260000001", "40.7535965", "555 5555", 1, 5, 1520610009, "[]", "400"],
           ["iPhone 6", 3, "Working iPhone 6.", "Bank of America Tower, New York, NY 10036, USA", "-73.98493129999997", "40.7556029", "555 5555", 0, null, 1520610046, "[]", "300"],
 <<<<<<< HEAD
@@ -76,9 +79,16 @@ Promise.all(demoUsers.map(user => {
           ["Canada Goose Jacket", 3, "That one jacket that everyone has. You can have one too!", "Midtown, New York, NY, USA", "-73.98401949999999", "40.7549309", "555 5555", 1, 5, 1520610082, "[]", "1500"],
 >>>>>>> Added verification styles, totals pannel and filtering for donation ammount
           ["Coffee", 3, "Extra bag of coffee beans", "16 W 23rd St, New York, NY 10010, USA", "-73.990456", "40.741602", "555 5555", 0, null, 1520610120, "[]", "12"],
+=======
+          ["XBOX", 3, "XBOX One with a few games. Maybe useful for a children's hospital", "New York, NY 10018, USA", "-73.98323260000001", "40.7535965", "555 5555", 1, 7, 1520610009, "[]", "400"],
+          ["iPhone 6", 3, "Working iPhone 6.", "Bank of America Tower, New York, NY 10036, USA", "-73.98493129999997", "40.7556029", "555 5555", 1, 7, 1520610046, "[]", "300"],
+          ["Canada Goose Jacket", 3, "That one jacket that everyone has. You can have one too!", "Midtown, New York, NY, USA", "-73.98401949999999", "40.7549309", "555 5555", 1, 5, 1520610082, "[]", "1500"],
+          ["Coffee", 3, "Extra bag of coffee beans", "16 W 23rd St, New York, NY 10010, USA", "-73.990456", "40.741602", "555 5555", 1, 8, 1520610120, "[]", "12"],
+>>>>>>> Finalized basic styling - commit before merge
           ["Art Supplies", 3, "A whole collection of school art supplies. Enough for a class of ~ 20", "New York, NY 10174, USA", "-73.9755189", "40.75175779999999", "555 5555", 1, 6, 1520610374, "[]", "300"],
           ["Laser tag party for group of 15", 3, "Giving away a laser tag party for a group of 15. Great for a kids party", "62 Chelsea Piers, New York, NY 10011, USA", "-74.00853560000002", "40.7480678", "555 5555", 1, 5, 1520610466, "[]", "600"],
           ["Computer monitor", 3, "Done with HackReactor - giving away my monitor!", "369 Lexington Avenue, 11th Floor, New York, NY 10017, USA", "-73.97640100000001", "40.75048649999999", "555 5555", 1, 6, 1520610547, "[]", "140"]
+
         ]
 
           db.query(insertPostsQuery, [demoPosts], (err) => {

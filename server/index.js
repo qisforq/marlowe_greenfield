@@ -46,6 +46,7 @@ const upload = multer({
   })
 });
 
+<<<<<<< HEAD
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
   console.log(req.session);
@@ -59,6 +60,19 @@ const auth = function(req, res, next) {
   }
 }
 
+=======
+// This is the middleware used to authenticate the current session.
+const auth = function(req, res, next) {
+  if (!req.session.email || req.url !== '/login' || req.url !== '/current/address' || req.url !== '/signup' || req.url !== '/org') {
+    res.send({notLoggedIn: true})
+    return
+  }
+  next();
+}
+
+// app.use(auth)
+
+>>>>>>> Finalized basic styling - commit before merge
 // Due to express, when you load the page, it doesnt make a get request to '/', it simply serves up the dist folder
 //Recommend inplementing a wild-card route app.get('/*')...
 

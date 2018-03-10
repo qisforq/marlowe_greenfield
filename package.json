@@ -19,7 +19,11 @@
     "axios": "^0.18.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
+<<<<<<< HEAD
     "eslint-loader": "^2.0.0",
+=======
+    "c3": "^0.4.21",
+>>>>>>> Finalized basic styling - commit before merge
     "express": "^4.15.0",
     "express-session": "^1.15.6",
     "geocoder": "^0.2.3",

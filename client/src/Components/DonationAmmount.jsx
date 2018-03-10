@@ -2,6 +2,7 @@ import React from 'react'
 import {ToggleButtonGroup, ToggleButton, Panel, Table, DropdownButton, MenuItem, Grid, Row, Col, Tooltip, OverlayTrigger, Glyphicon} from 'react-bootstrap'
 import axios from 'axios'
 import moment from 'moment'
+import c3 from 'c3'
 
 class DonationAmmount extends React.Component {
   constructor(props) {
@@ -58,7 +59,16 @@ class DonationAmmount extends React.Component {
   }
 
   handleChange(e) {
-    this.setState({ filters: e }, ()=> {
+    var value = parseInt(e.target.value)
+    var arr = this.state.filters.slice()
+
+    if (arr.includes(value)) {
+      arr.splice(arr.indexOf(value), 1)
+    } else {
+      arr.push(value)
+    }
+
+    this.setState({ filters: arr }, ()=> {
       this.processOrgs()
     });
   }
@@ -99,13 +109,12 @@ class DonationAmmount extends React.Component {
        <Grid>
          <Row>
            <Col xs={12}>
-           <Panel style={{padding: '10px 5px 10px 5px', marginTop: '10px'}}>
+           <Panel style={{padding: '10px 5px 15px 5px', margin: '10px 0 10px 0'}}>
            <Grid>
             <Row>
             <Col xs={9}>
-           <div style={{display: 'inline-block', margin: '5px 10px 0 10px', fontSize: '18px'}}> Showing Your Deductions For: {' '} </div>
+           <div style={{display: 'inline-block', margin: '20px 10px 0 10px', fontSize: '24px'}}> Showing Your Deductions For: {' '} </div>
           <DropdownButton
-            // bsClass={'yearsDrop'}
             bsSize="large"
             title={this.state.selectedYear}
             id={`dropdown-years`}
@@ -115,22 +124,45 @@ class DonationAmmount extends React.Component {
           </DropdownButton>
           </Col>
           <Col xs={3}>
-            {/* <div display="inline-block">Filter by Verification: {' '}</div> */}
+            <p style={{display: "inline-block", marginLeft: '48px'}} > Filter by Verification </p>
             <ToggleButtonGroup
             type="checkbox"
-            value={this.state.filters}
-            onChange={this.handleChange}
-            style={{marginTop: '5px', marginLeft: '50px', display: 'inline-block'}}
+            style={{marginTop: '3px', marginLeft: '50px'}}
+            block
             >
-            {/* <OverlayTrigger placement="top" overlay={buttonToolTip('Bad Actor')}> */}
-              <ToggleButton value={3} ><Glyphicon glyph={"remove-sign"} /></ToggleButton>
-            {/* </OverlayTrigger> */}
-            {/* <OverlayTrigger placement="top" overlay={buttonToolTip('Pending')}> */}
-              <ToggleButton value={2} ><Glyphicon glyph={"question-sign"} /></ToggleButton>
-            {/* </OverlayTrigger> */}
-            {/* <OverlayTrigger placement="top" overlay={buttonToolTip('Verified')}> */}
-              <ToggleButton value={1} ><Glyphicon glyph={"ok-sign"} /></ToggleButton>
-            {/* </OverlayTrigger> */}
+            <OverlayTrigger placement="top" overlay={buttonToolTip('Bad Actors')}>
+              <ToggleButton 
+                type="checkbox" 
+                checked={this.state.filters.includes(3)}
+                bsStyle={this.state.filters.includes(3) ? "danger" : 'default'}
+                onChange={this.handleChange} 
+                value={3} 
+              >
+                <Glyphicon glyph={"remove-sign"} />
+                </ToggleButton>
+            </OverlayTrigger>
+            <OverlayTrigger placement="top" overlay={buttonToolTip('Pending')}>
+              <ToggleButton 
+                type="checkbox" 
+                checked={this.state.filters.includes(2)}
+                bsStyle={this.state.filters.includes(2) ? "warning" : 'default'} 
+                onChange={this.handleChange} 
+                value={2}
+              >
+                <Glyphicon glyph={"question-sign"} />
+              </ToggleButton>
+            </OverlayTrigger>
+            <OverlayTrigger placement="top" overlay={buttonToolTip('Verified')}>
+              <ToggleButton 
+                type="checkbox"
+                checked={this.state.filters.includes(1)}
+                bsStyle={this.state.filters.includes(1) ? "success" : 'default'} 
+                onChange={this.handleChange} 
+                value={1}
+              >
+                <Glyphicon glyph={"ok-sign"} />
+              </ToggleButton>
+            </OverlayTrigger>
             </ToggleButtonGroup>
             </Col>
           </Row>
@@ -140,9 +172,11 @@ class DonationAmmount extends React.Component {
         </Row>
          <Row>
            <Col xs={12} sm={7}> 
+        <div style={{height: window.innerHeight * 0.8, overflowY: 'scroll'}}>
         {this.state.displayOrgs.map((org, i) => {
           return (
-            <Panel defaultExpanded key={i} className="panel-dense" bsStyle={org.orgInfo.verified === null ? "default" : !!org.orgInfo.verified ? "success" : "danger"} >
+            /*defaultExpanded*/
+            <Panel key={i} className="panel-dense" bsStyle={org.orgInfo.verified === null ? "default" : !!org.orgInfo.verified ? "success" : "danger"} >
                 <Panel.Heading>
                 <Grid>
                   <Row>
@@ -192,16 +226,17 @@ class DonationAmmount extends React.Component {
                 </Panel.Collapse>
               </Panel>
           )
-          })
-        }
+        })
+      }
+      </div>
         </Col>
-        <Col xs={12} sm={5}>
+        <Col xs={12} sm={5} style={{}}>
           <Panel>
-              <h4>Total</h4>
-              <h1>${this.state.displayOrgs.reduce((total, org) => {
-                  return total += org.donations.reduce((sum, donation) => { return sum += parseInt(donation.value)},0 )
-                }, 0)
-              }.00</h1>
+            <h4 style={{fontSize: '18px', textAlign: 'center'}}>Your total deduction for {' ' + this.state.selectedYear.toString().toLowerCase()}</h4>
+            <h1 style={{fontSize: '72px', textAlign: 'center'}}>${this.state.displayOrgs.reduce((total, org) => {
+                return total += org.donations.reduce((sum, donation) => { return sum += parseInt(donation.value)},0 )
+              }, 0)
+            }</h1>
           </Panel>
         </Col> 
         </Row>
