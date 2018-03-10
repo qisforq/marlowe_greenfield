@@ -48,6 +48,18 @@ const upload = multer({
 
 //This is the middleware used to authenticate the current session.
 const auth = function(req, res, next) {
+  app.get('/user/verified', (req, res) => {
+    console.log('this is req', req)
+    console.log('this is req.url', req.url);
+    console.log('this is req.query', req.query);
+    var sqlQuery = `UPDATE claimer SET verified = true WHERE id = ${req.query.id}`;
+    db.query(sqlQuery, (error) => {
+      if (error) {
+        res.send(error);
+      }
+      res.end();
+    })
+  })
   if (!req.session.email && req.url !== '/login' && req.url !== '/current/address' && req.url !== '/signup' && req.url !== '/org') {
     res.send({notLoggedIn: true})
     return
