@@ -112,14 +112,14 @@ class App extends React.Component {
         latitude: Number(listItem.lat),
         longitude : Number(listItem.lng),
      });
-      // let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
-      // axios.post('/latlong', {address: address})
-      //   .then(result => {
-      //     this.setState({
-      //       latitude: Number(result.data.lat),
-      //       longitude: Number(result.data.long)
-      //     })
-      //   })
+      let address = `${listItem.address}, ${listItem.city}, ${listItem.state} ${listItem.zipCode}`;
+      axios.post('/latlong', {address: address})
+        .then(result => {
+          this.setState({
+            latitude: Number(result.data.lat),
+            longitude: Number(result.data.long)
+          })
+        })
       console.log(this.state)
     }
     else if(this.state.show === true){
