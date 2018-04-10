@@ -22,6 +22,7 @@ class Settings extends Component {
       toggleAddress: false,
       toggleOrg: false,
     }
+    
     this.saveChanges = this.saveChanges.bind(this)
     this.getUser = this.getUser.bind(this)
     this.editEmail = this.editEmail.bind(this)
