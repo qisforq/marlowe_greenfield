@@ -5,9 +5,9 @@
 
 ## Team
 
-  - __Product Owner__: Adam Mateo
-  - __Scrum Master__: Aloralyn Ayran
-  - __Development Team Members__: Adam Mateo, Aloralyn Ayran, Mike Vasios, Yu Qing Dong
+  - __Product Owner__: Eric Shum
+  - __Scrum Master__: Quentin Vidal
+  - __Development Team Members__: Riley Alsman, Jerry Chen, Eric Shum, Quentin Vidal
 
 
 ## Usage
